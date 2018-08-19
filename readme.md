@@ -1,4 +1,4 @@
-# OSWEB Extention for OpenSesame
+# OSWEB Extension for OpenSesame
 
 Copyright 2018 Sebastiaan Mathôt (@smathot)
 
