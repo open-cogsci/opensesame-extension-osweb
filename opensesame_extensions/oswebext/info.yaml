@@ -1,0 +1,9 @@
+description: Create online experiments
+icon: applications-internet
+label: OSWeb
+version: 1.0.2
+menu:
+  index: -1
+  separator_after: false
+  separator_before: true
+  submenu: Tools
