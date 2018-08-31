@@ -130,8 +130,7 @@ def _html(osexp, dst, type_, js=None, params=None, bundled=False):
             # Embed the params as JSON
             scriptTag.append('const params = JSON.parse(\'{}\')'.format(json.dumps(params)))
         for js_file in js:
-            with open(js_file['src']) as fp:
-                scriptTag.append(fp.read())
+            scriptTag.append(_read(js_file))
         dom.head.append(scriptTag)
     else:
         # If a json params file has been specified, save it as a node
@@ -152,38 +151,8 @@ def _html(osexp, dst, type_, js=None, params=None, bundled=False):
     )
     dom.body.append(expTag)
 
-    # html = _read(tmpl).format(
-    #     javascript=_format_js(js,
-    #         subject=_subject_js(subject),
-    #         fullscreen=u'true' if fullscreen else u'false'
-    #     ),
-    #     osexp_blob=
-    # )
-
     with open(dst, 'w') as fd:
         fd.write(dom.prettify())
-
-
-def _format_js(js, **kwargs):
-
-    tmpl = '\n'.join([_read(path) for path in js])
-    for name, val in kwargs.items():
-        key = u'{{{{{}}}}}'.format(name)
-        if key not in tmpl:
-            warnings.warn(u'{} not in template'.format(name))
-            continue
-        tmpl = tmpl.replace(key, val)
-    return tmpl
-
-
-def _subject_js(subjects):
-
-    if isinstance(subjects, int):
-        return str(subjects)
-    return u'{}[Math.floor(Math.random()*{})]'.format(
-        subjects,
-        len(subjects)
-    )
 
 
 def _read(path):
@@ -197,7 +166,6 @@ def _read_b64(path):
     with open(path, 'rb') as fd:
         e = base64.b64encode(fd.read())
         return e.decode()
-
 
 def _unique_hash():
 
