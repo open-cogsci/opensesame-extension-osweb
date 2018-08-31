@@ -1,7 +1,7 @@
 let context = {
 	confirm: onConfirm,
 	debug: false,
-	fullScreen: {{fullscreen}},
+	fullScreen: params.fullscreen,
 	introClick: false,
 	introScreen: true,
 	mimetype: '',
@@ -10,7 +10,7 @@ let context = {
 	prompt: null,
 	scaleMode: 'exactFit',
 	source: null,
-	subject: {{subject}},
+	subject: params.fullscreen,
 	target: null
 }
 
@@ -40,7 +40,7 @@ function URItoFile(uri) {
 /**
  * Is called on page load to launch the experiment
  */
-function run_experiment() {
+function runExperiment() {
 	context.source = URItoFile(document.getElementById('osexp_src').src)
 	runner = osweb.getRunner('osweb_div')
 	runner.run(context)
@@ -51,7 +51,7 @@ function run_experiment() {
  * @param {Object} sessionData - The session data.
  */
 function onFinishedHandler(data, sessionData) {
-    document.getElementById("osweb_div").style.display = "none"
+  document.getElementById("osweb_div").style.display = "none"
 }
 
 /** Callback function for handling Escape key presses

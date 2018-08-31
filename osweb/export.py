@@ -25,12 +25,21 @@ import base64
 import warnings
 import tempfile
 import zipfile
+import json
+
+from bs4 import BeautifulSoup
+
+# Folder containing osweb javascript
+js_folder = os.path.join(os.path.dirname(__file__), u'src', u'js')
+
+# Folder containing HTML templates
+tmpl_folder = os.path.join(os.path.dirname(__file__), u'src', u'html')
 
 
 def standalone(osexp, dst, subject=0, fullscreen=False):
-
-    _html(osexp, dst, u'standalone', subject=subject, fullscreen=fullscreen)
-
+    params = {'subject': subject, 'fullscreen': fullscreen}
+    mode = u'standalone'
+    _html(osexp, dst, mode, _js_files(mode), params, bundled=True)
 
 def jatos(
     osexp,
@@ -41,18 +50,25 @@ def jatos(
     fullscreen=False
 ):
 
+    mode = u'jatos'
     asset = _unique_hash()
     dirname = tempfile.mkdtemp(suffix=u'.jatos')
     os.mkdir(os.path.join(dirname, asset))
     asset_path = os.path.join(dirname, asset, u'index.html')
     jas_path = os.path.join(dirname, u'info.jas')
+
+    js_sources = _js_files(mode)
+
+    params = {'subject': subject, 'fullscreen': fullscreen}
+
     _html(
         osexp,
         asset_path,
-        u'jatos',
-        subject=subject,
-        fullscreen=fullscreen
+        mode,
+        js_sources,
+        params
     )
+
     info = {
     	'version': '3',
     	'data': {
@@ -72,29 +88,80 @@ def jatos(
     		'batchList': []
     	}
     }
+
     with open(jas_path, u'w') as fd:
         json.dump(info, fd)
+
     with zipfile.ZipFile(dst, 'w') as fd:
         fd.write(jas_path, u'info.jas')
         fd.write(asset_path, os.path.join(asset, u'index.html'))
+        for js in js_sources:
+            fd.write(js['src'], os.path.join(asset, js['dest']))
 
 
 # Private functions
 
+def _js_files(mode):
 
-def _html(osexp, dst, type_, subject=0, fullscreen=False):
+    # The osweb source and vendor js bundles.
+    jsFiles = [
+        {'src': os.path.join(js_folder, basename), 'dest': os.path.join('js', basename)}
+        for basename in os.listdir(js_folder)
+        if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb.')
+    ]
 
-    js = js_osweb + [os.path.join(js_folder, u'{}.js'.format(type_))]
+    #  The current environment js (Jatos or otherwise)
+    envJs = u'{}.js'.format(mode)
+    jsFiles.append({'src': os.path.join(js_folder, envJs), 'dest': os.path.join('js', envJs)})
+    return jsFiles
+
+def _html(osexp, dst, type_, js=None, params=None, bundled=False):
+    # js = js_osweb + [os.path.join(js_folder, u'{}.js'.format(type_))]
+    js = js or []
     tmpl = os.path.join(tmpl_folder, u'{}.html'.format(type_))
-    html = _read(tmpl).format(
-        javascript=_format_js(js,
-            subject=_subject_js(subject),
-            fullscreen=u'true' if fullscreen else u'false'
-        ),
-        osexp_blob=_read_b64(osexp)
+
+    # The HTML file parsed as a DOM Tree
+    with open(tmpl, 'r') as t_pid:
+        dom = BeautifulSoup(t_pid, 'html.parser')
+
+    if bundled:
+        scriptTag = dom.new_tag('script', type="text/javascript")
+        if params:
+            # Embed the params as JSON
+            scriptTag.append('const params = JSON.parse(\'{}\')'.format(json.dumps(params)))
+        for js_file in js:
+            with open(js_file['src']) as fp:
+                scriptTag.append(fp.read())
+        dom.head.append(scriptTag)
+    else:
+        # If a json params file has been specified, save it as a node
+        if params:
+            # Create a script node that references the JSON file
+            scriptTag = dom.new_tag('script', id="parameters", type="text/javascript")
+            scriptTag.append('const params = JSON.parse(\'{}\')'.format(json.dumps(params)))
+            dom.head.append(scriptTag)
+        for js_file in js:
+            scriptTag = dom.new_tag('script', src=js_file['dest'], type="text/javascript")
+            dom.head.append(scriptTag)
+
+    expTag = dom.new_tag(
+        'embed',
+        id='osexp_src',
+        src='data:application/gzip;base64,' + _read_b64(osexp),
+        style='display:none'
     )
+    dom.body.append(expTag)
+
+    # html = _read(tmpl).format(
+    #     javascript=_format_js(js,
+    #         subject=_subject_js(subject),
+    #         fullscreen=u'true' if fullscreen else u'false'
+    #     ),
+    #     osexp_blob=
+    # )
+
     with open(dst, 'w') as fd:
-        fd.write(html)
+        fd.write(dom.prettify())
 
 
 def _format_js(js, **kwargs):
@@ -136,11 +203,6 @@ def _unique_hash():
 
     return hashlib.md5(str(time.time()).encode()).hexdigest()
 
+if __name__ == "__main__":
+    jatos('','output.zip')
 
-js_folder = os.path.join(os.path.dirname(__file__), u'src', u'js')
-tmpl_folder = os.path.join(os.path.dirname(__file__), u'src', u'html')
-js_osweb = [
-    os.path.join(js_folder, basename)
-    for basename in os.listdir(js_folder)
-    if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb.')
-]
