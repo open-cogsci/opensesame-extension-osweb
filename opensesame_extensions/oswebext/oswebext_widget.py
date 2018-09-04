@@ -76,7 +76,7 @@ class oswebext_widget(base_widget):
 		osexp = self._tmp_osexp()
 		html = self._tmp_html()
 		export.standalone(osexp, html)
-		webbrowser.open(html)
+		webbrowser.open('file://{}'.format(html))
 		os.remove(osexp)
 
 	def _export_jatos(self):
