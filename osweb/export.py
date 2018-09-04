@@ -143,9 +143,9 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	scriptTag = dom.new_tag(u'script', type=u"text/javascript")
 	if params:
 		# Embed the params as JSON
-		scriptTag.append(u'const params = JSON.parse(\'{}\')'.format(json.dumps(params)))
+		scriptTag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
 	for js_file in js:
-		scriptTag.append(_read(js_file))
+		scriptTag.append(_read(js_file['src']) + '\n')
 	dom.head.append(scriptTag)
 
 	# Add experiment as base64 encoded string
@@ -194,5 +194,5 @@ def _unique_hash():
 	return hashlib.md5(str(time.time()).encode()).hexdigest()
 
 if __name__ == "__main__":
-	jatos('','output.zip')
+	standalone('','output.html')
 
