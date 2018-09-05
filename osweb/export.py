@@ -65,8 +65,7 @@ def jatos(
 		osexp,
 		asset_path,
 		mode,
-		js_sources,
-		params
+		js_sources
 	)
 
 	info = {
@@ -76,14 +75,19 @@ def jatos(
 			'description': description,
 			'groupStudy': False,
 			'dirName': asset,
-			'comments': '',
+			'comments': 'Experiment exported by OpenSesame',
 			'jsonData': None,
 			'componentList': [{
-				'title': 'Experiment',
+				'title': 'OSWeb experiment',
 				'htmlFilePath': 'index.html',
 				'reloadable': False,
 				'active': True,
-				'jsonData': None
+				'comments': """The following variables can be passed to the OSWeb runner with the JSON Input field:
+- subject (int): the subject number. If ommited, the current jatos component result id will be used.
+- fullscreen (bool): indicates whether the experiment should be run fullscreen
+- omitJatosIds (bool): If set to true, Jatos specific data will not be appended to the results
+				""",
+				'jsonData': json.dumps(params),
 			}],
 			'batchList': []
 		}
@@ -166,10 +170,10 @@ def _compose_for_jatos(osexp, dom, js, params=None):
 	if params:
 		# Create a script node that exposes the experiment's parameters
 		scriptTag.append(u'const params = JSON.parse(\'{}\')'.format(json.dumps(params)))
-		dom.head.append(scriptTag)
 
 	# Get the OpenSesame experiment file name, and add a JS variable to its location
 	scriptTag.append(u'const osexpFile = "{}"'.format(os.path.basename(osexp)))
+	dom.head.append(scriptTag)
 
 	# Add script nodes referencing the sources of all other required javascript files.
 	for js_file in js:
