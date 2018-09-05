@@ -140,14 +140,14 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	""" Builds on top of the base HTML template to create a structure that is appropriate
 	for a standalone HTML file """
 
-	scriptTag = dom.new_tag(u'script', type=u"text/javascript")
 	if params:
-		# Embed the params as JSON
-		scriptTag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
+		paramsTag = dom.new_tag(u'script', type=u"text/javascript")
+		paramsTag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
+		dom.head.append(paramsTag)
+	scriptTag = dom.new_tag(u'script', type=u"text/javascript")
 	for js_file in js:
 		scriptTag.append(_read(js_file['src']) + '\n')
 	dom.head.append(scriptTag)
-
 	# Add experiment as base64 encoded string
 	expTag = dom.new_tag(
 		'embed',
