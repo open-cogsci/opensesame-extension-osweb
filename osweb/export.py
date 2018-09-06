@@ -18,6 +18,7 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import sys
 import hashlib
 import time
 import json
@@ -127,17 +128,21 @@ def _html(osexp, dst, type_, js=None, params=None, bundled=False):
 	tmpl = os.path.join(tmpl_folder, u'{}.html'.format(type_))
 
 	# The HTML file parsed as a DOM Tree
-	with open(tmpl, 'r') as t_pid:
-		dom = BeautifulSoup(t_pid, u'html.parser')
+	with open(tmpl, 'r') as t_fp:
+		dom = BeautifulSoup(t_fp, u'html.parser')
 
 	if bundled:
 		_compose_for_standalone(osexp, dom, js, params)
 	else:
 		_compose_for_jatos(osexp, dom, js, params)
-		# If a json params file has been specified, save it as a node
+
+	html = dom.prettify()
+	# Perform an extra conversion for backwards compatibility
+	if sys.version_info[0] < 3:
+		html = html.encode('utf-8')
 
 	with open(dst, 'w') as fd:
-		fd.write(dom.prettify())
+		fd.write(html)
 
 
 def _compose_for_standalone(osexp, dom, js, params=None):
@@ -152,12 +157,13 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	for js_file in js:
 		scriptTag.append(_read(js_file['src']) + '\n')
 	dom.head.append(scriptTag)
+
 	# Add experiment as base64 encoded string
 	expTag = dom.new_tag(
-		'embed',
-		id='osexp_src',
-		src='data:application/gzip;base64,' + _read_b64(osexp),
-		style='display:none'
+		u'embed',
+		id=u'osexp_src',
+		src=u'data:application/gzip;base64,' + _read_b64(osexp),
+		style=u'display:none'
 	)
 	dom.body.append(expTag)
 
