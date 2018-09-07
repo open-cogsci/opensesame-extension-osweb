@@ -30,11 +30,13 @@ import json
 
 from bs4 import BeautifulSoup
 
+src_folder = os.path.join(os.path.dirname(__file__), u'src')
 # Folder containing osweb javascript
-js_folder = os.path.join(os.path.dirname(__file__), u'src', u'js')
-
+js_folder = os.path.join(src_folder, u'js')
 # Folder containing HTML templates
-tmpl_folder = os.path.join(os.path.dirname(__file__), u'src', u'html')
+tmpl_folder = os.path.join(src_folder, u'html')
+# Folder containing image assets
+img_folder = os.path.join(src_folder, u'img')
 
 
 def standalone(osexp, dst, subject=0, fullscreen=False):
@@ -55,7 +57,8 @@ def jatos(
 	asset = _unique_hash()
 	dirname = tempfile.mkdtemp(suffix=u'.jatos')
 	os.mkdir(os.path.join(dirname, asset))
-	asset_path = os.path.join(dirname, asset, u'index.html')
+	index_path = os.path.join(dirname, asset, u'index.html')
+	logo_path = os.path.join(img_folder, u'opensesame.png')
 	jas_path = os.path.join(dirname, u'info.jas')
 
 	js_sources = _js_files(mode)
@@ -64,7 +67,7 @@ def jatos(
 
 	_html(
 		osexp,
-		asset_path,
+		index_path,
 		mode,
 		js_sources
 	)
@@ -99,7 +102,8 @@ def jatos(
 
 	with zipfile.ZipFile(dst, 'w') as fd:
 		fd.write(jas_path, u'info.jas')
-		fd.write(asset_path, os.path.join(asset, u'index.html'))
+		fd.write(index_path, os.path.join(asset, u'index.html'))
+		fd.write(logo_path, os.path.join(asset, u'img', u'opensesame.png'))
 		fd.write(osexp, os.path.join(asset, os.path.basename(osexp)))
 		for js in js_sources:
 			fd.write(js['src'], os.path.join(asset, js['dest']))
