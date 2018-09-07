@@ -12,13 +12,11 @@ function loadExperiment() {
     context = {
         source: (new URL(osexpFile, window.location)).href,
         debug: false,
-        subject: (Number.isInteger(params.subject) && params.subject >= 0)
-            ? params.subject
-            : jatos.componentResultId,
+        subject: (Number.isInteger(params.subject) && params.subject >= 0) ?
+            params.subject : jatos.componentResultId,
         fullScreen: params.fullscreen || false,
-        introClick: false,
+        introClick: true, // Required to enable fullscreen mode (and circumvent browser security for doing so)
         introScreen: true,
-        mimetype: '',
         name: 'osweb',
         prompt: null,
         scaleMode: 'exactFit',
@@ -28,18 +26,16 @@ function loadExperiment() {
         onFinished: onFinishedHandler
     };
     runner = osweb.getRunner('osweb_div');
-    if (params.fullscreen) {
-        showRunButton();
-    } else {
-        run();
-    }
+    runner.run(context);
 }
 
-function showRunButton(){
-    document.getElementById('run-button').style.display('block');
-}
-
-function run () {
+/**
+ * Starts the experiment. Is called by a click on runbutton
+ *
+ */
+function startExperiment () {
+    document.getElementById('run-button').style.display = 'none';
+    document.querySelector('.osweb-canvas-container').style.display = 'block';
     runner.run(context);
 }
 
@@ -52,7 +48,7 @@ function onLogHandler(data) {
         return;
     }
     // Add Jatos parameters to this log entry
-    if( jatos.componentJsonInput && jatos.componentJsonInput.omitJatosIds !== true) {
+    if (jatos.componentJsonInput && jatos.componentJsonInput.omitJatosIds !== true) {
         jatos.addJatosIds(data);
     }
 
