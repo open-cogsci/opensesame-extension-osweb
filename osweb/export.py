@@ -153,23 +153,29 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	""" Builds on top of the base HTML template to create a structure that is appropriate
 	for a standalone HTML file """
 
+	logo_tag = dom.new_tag(u'script', type=u'text/javascript')
+	logo_path = os.path.join(img_folder, u'opensesame.png')
+	logo_tag.append(u'const logoSrc = "data:image/png;base64,{}"'.format(_read_b64(logo_path)))
+	dom.head.append(logo_tag)
+
 	if params:
-		paramsTag = dom.new_tag(u'script', type=u"text/javascript")
-		paramsTag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
-		dom.head.append(paramsTag)
-	scriptTag = dom.new_tag(u'script', type=u"text/javascript")
+		params_tag = dom.new_tag(u'script', type=u"text/javascript")
+		params_tag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
+		dom.head.append(params_tag)
+	script_tag = dom.new_tag(u'script', type=u"text/javascript")
 	for js_file in js:
-		scriptTag.append(_read(js_file['src']) + '\n')
-	dom.head.append(scriptTag)
+		script_tag.append(_read(js_file['src']) + '\n')
+
+	dom.head.append(script_tag)
 
 	# Add experiment as base64 encoded string
-	expTag = dom.new_tag(
+	exp_tag = dom.new_tag(
 		u'embed',
 		id=u'osexp_src',
 		src=u'data:application/gzip;base64,' + _read_b64(osexp),
 		style=u'display:none'
 	)
-	dom.body.append(expTag)
+	dom.body.append(exp_tag)
 
 
 def _compose_for_jatos(osexp, dom, js, params=None):
