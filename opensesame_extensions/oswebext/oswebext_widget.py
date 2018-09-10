@@ -103,6 +103,8 @@ class oswebext_widget(base_widget):
 			description=self.experiment.description
 		)
 		os.remove(osexp)
+		self.extension_manager.fire('notify', message='Experiment succesfully exported',
+			category='success', always_show=True)
 
 	def _tmp_osexp(self):
 
