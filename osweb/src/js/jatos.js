@@ -27,16 +27,8 @@ function loadExperiment() {
     };
     runner = osweb.getRunner('osweb_div');
     runner.run(context);
-}
-
-/**
- * Starts the experiment. Is called by a click on runbutton
- *
- */
-function startExperiment () {
-    document.getElementById('run-button').style.display = 'none';
-    document.querySelector('.osweb-canvas-container').style.display = 'block';
-    runner.run(context);
+    // Open JSON data array
+    send('[');
 }
 
 /**
@@ -52,11 +44,16 @@ function onLogHandler(data) {
         jatos.addJatosIds(data);
     }
 
+    send(JSON.stringify(data) + ',\n');
+}
+
+function send (data) {
     // Send this log entry to the server
     jatos.appendResultData(
-        JSON.stringify(data),
+        data,
         () => {},
         (err) => {
+            console.error(err);
             // How to handle errors?
             errorsOccured = true;
         }
@@ -68,6 +65,8 @@ function onLogHandler(data) {
  * @param {Object} sessionData - The session data.
  */
 function onFinishedHandler(data, sessionData) {
+    // Close JSON data array
+    send('{}]');
     if (aborted) {
         jatos.endStudy(false, 'Experiment aborted by user');
     } else if (errorsOccured) {
