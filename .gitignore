@@ -1,5 +1,7 @@
 ./**/__pycache__
 *.pyc
-
+build
 .vscode
 .gitignore
+dist
+*.egg-info/
