@@ -25,7 +25,7 @@ setup(
 	# Some general metadata. By convention, a extension is named:
 	# opensesame-extension-[extension name]
 	name='opensesame-extension-osweb',
-	version='1.1.1',
+	version='1.1.2',
 	description='OSWeb extension for OpenSesame',
 	author='Sebastiaan Mathot',
 	author_email='s.mathot@cogsci.nl',
