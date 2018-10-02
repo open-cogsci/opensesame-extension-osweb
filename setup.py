@@ -25,7 +25,7 @@ setup(
 	# Some general metadata. By convention, a extension is named:
 	# opensesame-extension-[extension name]
 	name='opensesame-extension-osweb',
-	version='1.1.0',
+	version='1.1.1',
 	description='OSWeb extension for OpenSesame',
 	author='Sebastiaan Mathot',
 	author_email='s.mathot@cogsci.nl',
@@ -43,10 +43,14 @@ setup(
 	packages=[
 		'osweb'
 	],
+	install_requires=[
+		'beautifulsoup4'
+	],
 	package_data={
-		'osweb' : [
+		'osweb': [
 			'src/html/*.html',
 			'src/js/*.js',
+			'src/img/*.png'
 		]
 	},
 	data_files=[('share/opensesame_extensions/oswebext',
