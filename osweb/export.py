@@ -27,7 +27,7 @@ import warnings
 import tempfile
 import zipfile
 import json
-
+import io
 from bs4 import BeautifulSoup
 
 src_folder = os.path.join(os.path.dirname(__file__), u'src')
@@ -97,7 +97,7 @@ def jatos(
 		}
 	}
 
-	with open(jas_path, u'w') as fd:
+	with io.open(jas_path, u'w', encoding=u'utf-8') as fd:
 		json.dump(info, fd)
 
 	with zipfile.ZipFile(dst, 'w') as fd:
@@ -145,7 +145,7 @@ def _html(osexp, dst, type_, js=None, params=None, bundled=False):
 	if sys.version_info[0] < 3:
 		html = html.encode('utf-8')
 
-	with open(dst, 'w') as fd:
+	with io.open(dst, 'w', encoding=u'utf-8') as fd:
 		fd.write(html)
 
 
@@ -199,7 +199,7 @@ def _compose_for_jatos(osexp, dom, js, params=None):
 
 def _read(path):
 
-	with open(path) as fd:
+	with io.open(path, encoding='utf-8') as fd:
 		return fd.read()
 
 
@@ -215,4 +215,3 @@ def _unique_hash():
 
 if __name__ == "__main__":
 	standalone('','output.html')
-
