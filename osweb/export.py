@@ -18,16 +18,14 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-import sys
 import hashlib
 import time
 import json
 import base64
-import warnings
 import tempfile
 import zipfile
-import json
 import io
+import sys
 from bs4 import BeautifulSoup
 
 src_folder = os.path.join(os.path.dirname(__file__), u'src')
@@ -37,12 +35,22 @@ js_folder = os.path.join(src_folder, u'js')
 tmpl_folder = os.path.join(src_folder, u'html')
 # Folder containing image assets
 img_folder = os.path.join(src_folder, u'img')
+py3 = sys.version_info[0] >= 3
+
+
+def safe_decode(s):
+
+	if (py3 and isinstance(s, bytes)) or (not py3 and isinstance(s, str)):
+		return s.decode('utf-8')
+	return s
 
 
 def standalone(osexp, dst, subject=0, fullscreen=False):
+
 	params = {'subject': subject, 'fullscreen': fullscreen}
 	mode = u'standalone'
 	_html(osexp, dst, mode, _js_files(mode), params, bundled=True)
+
 
 def jatos(
 	osexp,
@@ -98,7 +106,7 @@ def jatos(
 	}
 
 	with io.open(jas_path, u'w', encoding=u'utf-8') as fd:
-		json.dump(info, fd)
+		fd.write(safe_decode(json.dumps(info)))
 
 	with zipfile.ZipFile(dst, 'w') as fd:
 		fd.write(jas_path, u'info.jas')
@@ -115,14 +123,20 @@ def _js_files(mode):
 
 	# The osweb source and vendor js bundles.
 	jsFiles = [
-		{'src': os.path.join(js_folder, basename), 'dest': os.path.join(u'js', basename)}
+		{
+			'src': os.path.join(js_folder, basename),
+			'dest': os.path.join(u'js', basename)
+		}
 		for basename in os.listdir(js_folder)
 		if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb.')
 	]
 
 	#  The current environment js (Jatos or otherwise)
 	envJs = u'{}.js'.format(mode)
-	jsFiles.append({'src': os.path.join(js_folder, envJs), 'dest': os.path.join(u'js', envJs)})
+	jsFiles.append({
+		'src': os.path.join(js_folder, envJs),
+		'dest': os.path.join(u'js', envJs)
+	})
 	return jsFiles
 
 
@@ -141,12 +155,8 @@ def _html(osexp, dst, type_, js=None, params=None, bundled=False):
 		_compose_for_jatos(osexp, dom, js, params)
 
 	html = dom.prettify()
-	# Perform an extra conversion for backwards compatibility
-	if sys.version_info[0] < 3:
-		html = html.encode('utf-8')
-
 	with io.open(dst, 'w', encoding=u'utf-8') as fd:
-		fd.write(html)
+		fd.write(safe_decode(html))
 
 
 def _compose_for_standalone(osexp, dom, js, params=None):
