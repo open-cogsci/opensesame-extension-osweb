@@ -24,7 +24,7 @@ import webbrowser
 from qtpy.QtWidgets import QFileDialog
 from libqtopensesame.widgets.base_widget import base_widget
 from libopensesame.osexpfile import osexpwriter
-from osweb import export, linter
+from osweb import export, linter, __version__
 from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
 _ = translation_context(u'oswebext', category=u'extension')
@@ -53,6 +53,7 @@ class oswebext_widget(base_widget):
 		)
 		self.ui.button_test.clicked.connect(self._test)
 		self.ui.button_jatos.clicked.connect(self._export_jatos)
+		self.ui.label_version.setText(__version__)
 		self._run_linter()
 
 	def on_activate(self):

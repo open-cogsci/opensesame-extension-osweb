@@ -20,12 +20,13 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 
 
 from setuptools import setup
+from osweb import __version__
 
 setup(
 	# Some general metadata. By convention, a extension is named:
 	# opensesame-extension-[extension name]
 	name='opensesame-extension-osweb',
-	version='1.1.2.1',
+	version=__version__,
 	description='OSWeb extension for OpenSesame',
 	author='Sebastiaan Mathot',
 	author_email='s.mathot@cogsci.nl',

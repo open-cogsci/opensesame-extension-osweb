@@ -65,7 +65,8 @@
       <string>Export experiment as JATOS study</string>
      </property>
      <property name="icon">
-      <iconset theme="document-save-as"/>
+      <iconset theme="document-save-as">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -75,7 +76,8 @@
       <string>Test experiment in external browser</string>
      </property>
      <property name="icon">
-      <iconset theme="system-run"/>
+      <iconset theme="system-run">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -97,6 +99,25 @@
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Compatibility check</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Version</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="label_version">
+     <property name="font">
+      <font>
+       <family>Monospace</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>X.X.X.X</string>
      </property>
     </widget>
    </item>
