@@ -30,7 +30,7 @@ from bs4 import BeautifulSoup
 
 src_folder = os.path.join(os.path.dirname(__file__), u'src')
 # Folder containing osweb javascript
-assets = {
+srcPaths = {
 	'js': os.path.join(src_folder, u'js'),
 	'css': os.path.join(src_folder, u'css'),
 	'html': os.path.join(src_folder, u'html'),
@@ -47,8 +47,7 @@ def safe_decode(s):
 def standalone(osexp, dst, subject=0, fullscreen=False):
 
 	params = {'subject': subject, 'fullscreen': fullscreen}
-	mode = u'standalone'
-	_html(osexp, dst, mode, _get_files(mode), params, bundled=True)
+	_html(osexp, dst, u'standalone', params)
 
 
 def jatos(
@@ -60,23 +59,23 @@ def jatos(
 	fullscreen=False
 ):
 
-	mode = u'jatos'
-	asset = _unique_hash()
+	uuid = _unique_hash()
 	dirname = tempfile.mkdtemp(suffix=u'.jatos')
-	os.mkdir(os.path.join(dirname, asset))
-	index_path = os.path.join(dirname, asset, u'index.html')
-	logo_path = os.path.join(assets['img'], u'opensesame.png')
+	os.mkdir(os.path.join(dirname, uuid))
+	index_path = os.path.join(dirname, uuid, u'index.html')
+	logo_path = os.path.join(srcPaths['img'], u'opensesame.png')
 	jas_path = os.path.join(dirname, u'info.jas')
 
-	js_sources = _get_files('js', mode)
+	params = {
+		'subject': subject,
+		'fullscreen': fullscreen
+	}
 
-	params = {'subject': subject, 'fullscreen': fullscreen}
-
-	_html(
+	assets = _html(
 		osexp,
 		index_path,
-		mode,
-		js_sources
+		u'jatos',
+		params
 	)
 
 	info = {
@@ -85,7 +84,7 @@ def jatos(
 			'title': title,
 			'description': description,
 			'groupStudy': False,
-			'dirName': asset,
+			'dirName': uuid,
 			'comments': 'Experiment exported by OpenSesame',
 			'jsonData': None,
 			'componentList': [{
@@ -109,57 +108,65 @@ def jatos(
 
 	with zipfile.ZipFile(dst, 'w') as fd:
 		fd.write(jas_path, u'info.jas')
-		fd.write(index_path, os.path.join(asset, u'index.html'))
-		fd.write(logo_path, os.path.join(asset, u'img', u'opensesame.png'))
-		fd.write(osexp, os.path.join(asset, os.path.basename(osexp)))
-		for js in js_sources:
-			fd.write(js['src'], os.path.join(asset, js['dest']))
+		fd.write(index_path, os.path.join(uuid, u'index.html'))
+		fd.write(logo_path, os.path.join(uuid, u'img', u'opensesame.png'))
+		fd.write(osexp, os.path.join(uuid, os.path.basename(osexp)))
+		for js in assets['js']:
+			fd.write(js['src'], os.path.join(uuid, js['dest']))
+		for css in assets['css']:
+			fd.write(css['src'], os.path.join(uuid, css['dest']))
 
 
 # Private functions
 
-def _get_files(type, mode):
-	if not type in ['js','css']:
-		raise ValueError('Possible types: js or css')
-
-	# The osweb source and vendor bundles.
-	files = [
-		{'src': os.path.join(assets[type], basename), 'dest': os.path.join(type, basename)}
-		for basename in os.listdir(assets[type])
+def _get_os_assets(type):
+	return [
+		{'src': os.path.join(srcPaths[type], basename), 'dest': os.path.join(type, basename)}
+		for basename in os.listdir(srcPaths[type])
 		if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb.')
 	]
 
-	#  The current environment js (Jatos or otherwise)
-	if type == 'js':
-		envJs = u'{}.js'.format(mode)
-		files.append({'src': os.path.join(assets[type], envJs), 'dest': os.path.join(type, envJs)})
+
+def _js(mode):
+	# The osweb js source and vendor bundles.
+	files = _get_os_assets(u'js')
+	envJs = u'{}.js'.format(mode)
+	files.append({
+		'src': os.path.join(srcPaths[u'js'], envJs),
+		'dest': os.path.join(u'js', envJs)
+	})
 	return files
 
-def _html(osexp, dst, type_, js=None, params=None, bundled=False):
+def _html(osexp, dst, mode, params=None):
+	assets = {
+		'js': _js(mode),
+		'css': _get_os_assets(u'css')
+	}
 
-	js = js or []
-	tmpl = os.path.join(assets['html'], u'{}.html'.format(type_))
+	tmpl = os.path.join(srcPaths['html'], u'{}.html'.format(mode))
 
 	# The HTML file parsed as a DOM Tree
 	with open(tmpl, 'r') as t_fp:
 		dom = BeautifulSoup(t_fp, u'html.parser')
 
-	if bundled:
-		_compose_for_standalone(osexp, dom, js, params)
-	else:
-		_compose_for_jatos(osexp, dom, js, params)
+	if mode == u'standalone':
+		_compose_for_standalone(osexp, dom, assets, params)
+	elif mode == u'jatos':
+		_compose_for_jatos(osexp, dom, assets, params)
 
 	html = dom.prettify()
 	with io.open(dst, 'w', encoding=u'utf-8') as fd:
 		fd.write(safe_decode(html))
 
+	return assets
 
-def _compose_for_standalone(osexp, dom, js, params=None):
+
+def _compose_for_standalone(osexp, dom, assets, params=None):
 	""" Builds on top of the base HTML template to create a structure that is appropriate
 	for a standalone HTML file """
 
 	logo_tag = dom.new_tag(u'script', type=u'text/javascript')
-	logo_path = os.path.join(assets['img'], u'opensesame.png')
+	logo_path = os.path.join(srcPaths['img'], u'opensesame.png')
 	logo_tag.append(u'const logoSrc = "data:image/png;base64,{}"'.format(_read_b64(logo_path)))
 	dom.head.append(logo_tag)
 
@@ -168,10 +175,14 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 		params_tag.append(u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
 		dom.head.append(params_tag)
 	script_tag = dom.new_tag(u'script', type=u"text/javascript")
-	for js_file in js:
+	for js_file in assets['js']:
 		script_tag.append(_read(js_file['src']) + '\n')
-
 	dom.head.append(script_tag)
+
+	css_tag = dom.new_tag(u'style')
+	for css_file in assets['css']:
+		css_tag.append(_read(css_file['src']) + '\n')
+	dom.head.append(css_tag)
 
 	# Add experiment as base64 encoded string
 	exp_tag = dom.new_tag(
@@ -183,7 +194,7 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	dom.body.append(exp_tag)
 
 
-def _compose_for_jatos(osexp, dom, js, params=None):
+def _compose_for_jatos(osexp, dom, assets, params=None):
 	""" Builds on top of the base HTML template to create a structure that is appropriate
 	for integration in JATOS """
 
@@ -197,10 +208,13 @@ def _compose_for_jatos(osexp, dom, js, params=None):
 	dom.head.append(scriptTag)
 
 	# Add script nodes referencing the sources of all other required javascript files.
-	for js_file in js:
+	for js_file in assets['js']:
 		scriptTag = dom.new_tag('script', src=js_file['dest'], type="text/javascript")
 		dom.head.append(scriptTag)
 
+	for cssFile in assets['css']:
+		styleTag = dom.new_tag('link', href=cssFile['dest'], type="text/css", rel="stylesheet", media="all")
+		dom.head.append(styleTag)
 
 def _read(path):
 
