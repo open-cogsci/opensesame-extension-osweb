@@ -30,13 +30,13 @@ from bs4 import BeautifulSoup
 
 src_folder = os.path.join(os.path.dirname(__file__), u'src')
 # Folder containing osweb javascript
-js_folder = os.path.join(src_folder, u'js')
-# Folder containing HTML templates
-tmpl_folder = os.path.join(src_folder, u'html')
-# Folder containing image assets
-img_folder = os.path.join(src_folder, u'img')
+assets = {
+	'js': os.path.join(src_folder, u'js'),
+	'css': os.path.join(src_folder, u'css'),
+	'html': os.path.join(src_folder, u'html'),
+	'img': os.path.join(src_folder, u'img')
+}
 py3 = sys.version_info[0] >= 3
-
 
 def safe_decode(s):
 
@@ -44,12 +44,11 @@ def safe_decode(s):
 		return s.decode('utf-8')
 	return s
 
-
 def standalone(osexp, dst, subject=0, fullscreen=False):
 
 	params = {'subject': subject, 'fullscreen': fullscreen}
 	mode = u'standalone'
-	_html(osexp, dst, mode, _js_files(mode), params, bundled=True)
+	_html(osexp, dst, mode, _get_files(mode), params, bundled=True)
 
 
 def jatos(
@@ -66,10 +65,10 @@ def jatos(
 	dirname = tempfile.mkdtemp(suffix=u'.jatos')
 	os.mkdir(os.path.join(dirname, asset))
 	index_path = os.path.join(dirname, asset, u'index.html')
-	logo_path = os.path.join(img_folder, u'opensesame.png')
+	logo_path = os.path.join(assets['img'], u'opensesame.png')
 	jas_path = os.path.join(dirname, u'info.jas')
 
-	js_sources = _js_files(mode)
+	js_sources = _get_files('js', mode)
 
 	params = {'subject': subject, 'fullscreen': fullscreen}
 
@@ -119,31 +118,27 @@ def jatos(
 
 # Private functions
 
-def _js_files(mode):
+def _get_files(type, mode):
+	if not type in ['js','css']:
+		raise ValueError('Possible types: js or css')
 
-	# The osweb source and vendor js bundles.
-	jsFiles = [
-		{
-			'src': os.path.join(js_folder, basename),
-			'dest': os.path.join(u'js', basename)
-		}
-		for basename in os.listdir(js_folder)
+	# The osweb source and vendor bundles.
+	files = [
+		{'src': os.path.join(assets[type], basename), 'dest': os.path.join(type, basename)}
+		for basename in os.listdir(assets[type])
 		if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb.')
 	]
 
 	#  The current environment js (Jatos or otherwise)
-	envJs = u'{}.js'.format(mode)
-	jsFiles.append({
-		'src': os.path.join(js_folder, envJs),
-		'dest': os.path.join(u'js', envJs)
-	})
-	return jsFiles
-
+	if type == 'js':
+		envJs = u'{}.js'.format(mode)
+		files.append({'src': os.path.join(assets[type], envJs), 'dest': os.path.join(type, envJs)})
+	return files
 
 def _html(osexp, dst, type_, js=None, params=None, bundled=False):
 
 	js = js or []
-	tmpl = os.path.join(tmpl_folder, u'{}.html'.format(type_))
+	tmpl = os.path.join(assets['html'], u'{}.html'.format(type_))
 
 	# The HTML file parsed as a DOM Tree
 	with open(tmpl, 'r') as t_fp:
@@ -164,7 +159,7 @@ def _compose_for_standalone(osexp, dom, js, params=None):
 	for a standalone HTML file """
 
 	logo_tag = dom.new_tag(u'script', type=u'text/javascript')
-	logo_path = os.path.join(img_folder, u'opensesame.png')
+	logo_path = os.path.join(assets['img'], u'opensesame.png')
 	logo_tag.append(u'const logoSrc = "data:image/png;base64,{}"'.format(_read_b64(logo_path)))
 	dom.head.append(logo_tag)
 
