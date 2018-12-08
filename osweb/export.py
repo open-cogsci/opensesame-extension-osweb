@@ -45,6 +45,7 @@ def safe_decode(s):
 	return s
 
 def standalone(osexp, dst, subject='0', fullscreen=False):
+
 	params = {'subject': subject, 'fullscreen': fullscreen}
 	_html(osexp, dst, u'standalone', params)
 
@@ -119,6 +120,7 @@ def jatos(
 # Private functions
 
 def _get_os_assets(type):
+
 	return [
 		{'src': os.path.join(srcPaths[type], basename), 'dest': os.path.join(type, basename)}
 		for basename in os.listdir(srcPaths[type])
@@ -127,6 +129,7 @@ def _get_os_assets(type):
 
 
 def _js(mode):
+
 	# The osweb js source and vendor bundles.
 	files = _get_os_assets(u'js')
 	envJs = u'{}.js'.format(mode)
@@ -137,6 +140,7 @@ def _js(mode):
 	return files
 
 def _html(osexp, dst, mode, params=None):
+
 	assets = {
 		'js': _js(mode),
 		'css': _get_os_assets(u'css')
