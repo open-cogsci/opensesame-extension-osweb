@@ -76,7 +76,12 @@ class oswebext_widget(base_widget):
 
 		osexp = self._tmp_osexp()
 		html = self._tmp_html()
-		export.standalone(osexp, html)
+		poss_subject_nrs = self.ui.linedit_subject.text()
+		fullscreen = self.ui.fs_checkBox.isChecked()
+
+		export.standalone(osexp, html,
+		subject=poss_subject_nrs,
+		fullscreen=fullscreen)
 		webbrowser.open('file://{}'.format(html))
 		os.remove(osexp)
 
@@ -97,11 +102,16 @@ class oswebext_widget(base_widget):
 		if not path:
 			return
 		osexp = self._tmp_osexp()
+		poss_subject_nrs = self.ui.linedit_subject.text()
+		fullscreen = self.ui.fs_checkBox.isChecked()
+
 		export.jatos(
 			osexp,
 			path,
 			title=self.experiment.title,
-			description=self.experiment.description
+			description=self.experiment.description,
+			subject=poss_subject_nrs,
+			fullscreen=fullscreen
 		)
 		os.remove(osexp)
 		self.extension_manager.fire('notify', message='Experiment succesfully exported',

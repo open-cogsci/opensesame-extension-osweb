@@ -44,8 +44,7 @@ def safe_decode(s):
 		return s.decode('utf-8')
 	return s
 
-def standalone(osexp, dst, subject=0, fullscreen=False):
-
+def standalone(osexp, dst, subject='0', fullscreen=False):
 	params = {'subject': subject, 'fullscreen': fullscreen}
 	_html(osexp, dst, u'standalone', params)
 
@@ -55,7 +54,7 @@ def jatos(
 	dst,
 	title='My OpenSesame experiment',
 	description='No description',
-	subject=0,
+	subject='0',
 	fullscreen=False
 ):
 

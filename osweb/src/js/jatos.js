@@ -9,11 +9,16 @@ let errorsOccured = false;
 function loadExperiment() {
     const params = jatos.componentJsonInput || {};
 
+    let subject_nr = jatos.componentResultId
+    if (params.subject) {
+        const poss_nrs = params.subject.split(/\s*,\s*/)
+        subject_nr = poss_nrs[Math.floor(Math.random() * poss_nrs.length)]
+    }
+
     context = {
         source: (new URL(osexpFile, window.location)).href,
         debug: false,
-        subject: (Number.isInteger(params.subject) && params.subject >= 0) ?
-            params.subject : jatos.componentResultId,
+        subject: subject_nr,
         fullScreen: params.fullscreen || false,
         introClick: true, // Required to enable fullscreen mode (and circumvent browser security for doing so)
         introScreen: true,
