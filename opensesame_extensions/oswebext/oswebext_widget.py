@@ -78,10 +78,12 @@ class oswebext_widget(base_widget):
 		html = self._tmp_html()
 		poss_subject_nrs = self.ui.linedit_subject.text()
 		fullscreen = self.ui.fs_checkBox.isChecked()
-
-		export.standalone(osexp, html,
-		subject=poss_subject_nrs,
-		fullscreen=fullscreen)
+		export.standalone(
+			osexp,
+			html,
+			subject=poss_subject_nrs,
+			fullscreen=fullscreen
+		)
 		webbrowser.open('file://{}'.format(html))
 		os.remove(osexp)
 
@@ -97,7 +99,7 @@ class oswebext_widget(base_widget):
 			directory=suggested_path,
 			filter=u'JATOS study (*.zip)'
 		)
-		if isinstance(path,tuple):
+		if isinstance(path, tuple):
 			path = path[0]
 		if not path:
 			return
@@ -114,8 +116,12 @@ class oswebext_widget(base_widget):
 			fullscreen=fullscreen
 		)
 		os.remove(osexp)
-		self.extension_manager.fire('notify', message='Experiment succesfully exported',
-			category='success', always_show=True)
+		self.extension_manager.fire(
+			'notify',
+			message='Experiment succesfully exported',
+			category='success',
+			always_show=True
+		)
 
 	def _tmp_osexp(self):
 
