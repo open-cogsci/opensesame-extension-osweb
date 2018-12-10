@@ -51,7 +51,8 @@ setup(
 		'osweb': [
 			'src/html/*.html',
 			'src/js/*.js',
-			'src/img/*.png'
+			'src/img/*.png',
+			'src/css/*.css'
 		]
 	},
 	data_files=[('share/opensesame_extensions/oswebext',
