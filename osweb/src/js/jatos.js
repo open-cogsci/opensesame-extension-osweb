@@ -28,12 +28,34 @@ function loadExperiment() {
         target: null,
         confirm: onConfirmHandler,
         onLog: onLogHandler,
-        onFinished: onFinishedHandler
+        onFinished: onFinishedHandler,
+        onError: errorHandler
     };
     runner = osweb.getRunner('osweb_div');
     runner.run(context);
     // Open JSON data array
     send('[');
+}
+
+if (!alertify.errorAlert) {
+    //define a new errorAlert base on alert
+    alertify.dialog('errorAlert', function factory() {
+        return {
+            build: function () {
+                var errorHeader = '<img src="img/warning.png"' +
+                    'style="vertical-align:middle;color:#e10000"> ' +
+                    'Application Error';
+                this.setHeader(errorHeader);
+            }
+        };
+    }, true, 'alert');
+}
+
+// Callback function to handle errors
+function errorHandler (msg, url, line, col, error) {
+    let text = '<p><b>' + msg + '</b></p>'
+    text += '<p>See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details</p>';
+    alertify.errorAlert(text);
 }
 
 /**
@@ -145,27 +167,6 @@ const onLoaded = function ( fn ) {
 
 // Execute the code below after the page has been loaded.
 onLoaded(function() {
-    // Set position of notifications
-    alertify.set('notifier', 'position', 'bottom-right');
-
-    // Extend existing 'alert' dialog
-    if (!alertify.errorAlert) {
-        //define a new errorAlert base on alert
-        alertify.dialog('errorAlert', function factory() {
-            return {
-                build: function () {
-                    var errorHeader = '<span class="fa fa-times-circle fa-2x" ' +
-							'style="vertical-align:middle;color:#e10000;">' +
-							'</span> Application Error';
-                    this.setHeader(errorHeader);
-                }
-            };
-        }, true, 'alert');
-    }
-
     // Set event callback for handling error messages using alertify.
-    window.onerror = function (msg, url, line, col, error) {
-        var text = '<p><b>' + msg + '</b></p>' + '<p>See console for further details</p>';
-        alertify.errorAlert(text);
-    };
+    window.onerror = errorHandler
 });

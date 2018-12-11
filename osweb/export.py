@@ -63,7 +63,6 @@ def jatos(
 	dirname = tempfile.mkdtemp(suffix=u'.jatos')
 	os.mkdir(os.path.join(dirname, uuid))
 	index_path = os.path.join(dirname, uuid, u'index.html')
-	logo_path = os.path.join(srcPaths['img'], u'opensesame.png')
 	jas_path = os.path.join(dirname, u'info.jas')
 
 	params = {
@@ -109,7 +108,8 @@ def jatos(
 	with zipfile.ZipFile(dst, 'w') as fd:
 		fd.write(jas_path, u'info.jas')
 		fd.write(index_path, os.path.join(uuid, u'index.html'))
-		fd.write(logo_path, os.path.join(uuid, u'img', u'opensesame.png'))
+		for img in [u'opensesame.png', u'warning.png']:
+			fd.write(os.path.join(srcPaths['img'], img), os.path.join(uuid, u'img', img))
 		fd.write(osexp, os.path.join(uuid, os.path.basename(osexp)))
 		for js in assets['js']:
 			fd.write(js['src'], os.path.join(uuid, js['dest']))

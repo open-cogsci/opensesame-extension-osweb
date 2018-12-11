@@ -7,6 +7,7 @@ const context = {
     mimetype: '',
     name: 'osweb',
     onFinished: onFinishedHandler,
+    onError: errorHandler,
     prompt: prompt,
     scaleMode: 'exactFit',
     source: null,
@@ -16,6 +17,24 @@ const context = {
 
 let runner = null;
 
+if (!alertify.errorAlert) {
+    //define a new errorAlert base on alert
+    alertify.dialog('errorAlert', function factory() {
+        return {
+            build: function () {
+                this.setHeader('Application Error');
+            }
+        };
+    }, true, 'alert');
+}
+
+// Callback function to handle errors
+function errorHandler (msg, url, line, col, error) {
+    let text = '<b>' + msg + '</b><br>'
+    text += 'See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details';
+    alertify.errorAlert(text);
+}
+window.onerror = errorHandler;
 
 /**
  * Converts base-64-encoded data to a File object, which can be passed to
@@ -96,45 +115,3 @@ function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
         }.bind(this)
     ).showModal();
 }
-
-const onLoaded = function ( fn ) {
-
-    // Sanity check
-    if ( typeof fn !== 'function' ) return;
-
-    // If document is already loaded, run method
-    if ( document.readyState === 'complete'  ) {
-        return fn();
-    }
-
-    // Otherwise, wait until document is loaded
-    document.addEventListener( 'DOMContentLoaded', fn, false );
-
-};
-
-// Execute the code below after the page has been loaded.
-onLoaded(function() {
-    // Set position of notifications
-    alertify.set('notifier', 'position', 'bottom-right');
-
-    // Extend existing 'alert' dialog
-    if (!alertify.errorAlert) {
-        //define a new errorAlert base on alert
-        alertify.dialog('errorAlert', function factory() {
-            return {
-                build: function () {
-                    var errorHeader = '<span class="fa fa-times-circle fa-2x" ' +
-							'style="vertical-align:middle;color:#e10000;">' +
-							'</span> Application Error';
-                    this.setHeader(errorHeader);
-                }
-            };
-        }, true, 'alert');
-    }
-
-    // Set event callback for handling error messages using alertify.
-    window.onerror = function (msg, url, line, col, error) {
-        var text = '<p><b>' + msg + '</b></p>' + '<p>See console for further details</p>';
-        alertify.errorAlert(text);
-    };
-});
