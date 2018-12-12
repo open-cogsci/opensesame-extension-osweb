@@ -22,6 +22,8 @@ import os
 import tempfile
 import webbrowser
 from qtpy.QtWidgets import QFileDialog
+from qtpy.QtCore import QRegExp
+from qtpy.QtGui import QRegExpValidator
 from libqtopensesame.widgets.base_widget import base_widget
 from libopensesame.osexpfile import osexpwriter
 from osweb import export, linter, __version__
@@ -54,6 +56,9 @@ class oswebext_widget(base_widget):
 		self.ui.button_test.clicked.connect(self._test)
 		self.ui.button_jatos.clicked.connect(self._export_jatos)
 		self.ui.label_version.setText(__version__)
+		self.ui.linedit_subject.setValidator(
+			QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
+		)
 		self._run_linter()
 
 	def on_activate(self):

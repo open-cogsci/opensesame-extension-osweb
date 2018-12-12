@@ -9,10 +9,10 @@ let errorsOccured = false;
 function loadExperiment() {
     const params = jatos.componentJsonInput || {};
 
-    let subject_nr = jatos.componentResultId
+    let subject_nr = jatos.componentResultId;
     if (params.subject) {
-        const poss_nrs = params.subject.split(/\s*,\s*/)
-        subject_nr = poss_nrs[Math.floor(Math.random() * poss_nrs.length)]
+        const poss_nrs = params.subject.split(/\s*,\s*/);
+        subject_nr = poss_nrs[Math.floor(Math.random() * poss_nrs.length)];
     }
 
     context = {
@@ -53,8 +53,10 @@ if (!alertify.errorAlert) {
 
 // Callback function to handle errors
 function errorHandler (msg, url, line, col, error) {
-    let text = '<p><b>' + msg + '</b></p>'
-    text += '<p>See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details</p>';
+    let text = '<p><b>' + msg + '</b></p>';
+    text += '<p>See ' + (url && url.includes('osdoc')
+        ? '<a href="'+url+'" target="_BLANK">the osweb documentation</a>'
+        : 'the console') + ' for further details</p>';
     alertify.errorAlert(text);
 }
 
@@ -93,7 +95,7 @@ function send (data) {
  */
 function onFinishedHandler(data, sessionData) {
     // Close JSON data array
-    send('{}]');
+    send(JSON.stringify(sessionData) + ']');
     if (abortedByUser) {
         jatos.endStudy(false, 'Experiment aborted by user');
     } else if (errorsOccured) {
@@ -168,5 +170,5 @@ const onLoaded = function ( fn ) {
 // Execute the code below after the page has been loaded.
 onLoaded(function() {
     // Set event callback for handling error messages using alertify.
-    window.onerror = errorHandler
+    window.onerror = errorHandler;
 });
