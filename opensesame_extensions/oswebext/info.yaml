@@ -1,7 +1,7 @@
 description: Create online experiments
 icon: applications-internet
 label: OSWeb
-version: 1.2.2.1
+version: 1.2.3.1
 menu:
   index: -1
   separator_after: false
