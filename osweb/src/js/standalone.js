@@ -1,3 +1,33 @@
+let subject_nr = 0;
+if (params.subject) {
+    // Check if last character is a , or - and remove it.
+    if (params.subject.endsWith(',') || params.subject.endsWith('-')) {
+        params.subject = params.subject.slice(0,-1);
+    }
+    const splitted = params.subject.split(/\s*,\s*/);
+    const possible_subject_nrs = [];
+    for (let item of splitted) {
+        if (item.includes('-')) {
+            const operands = item.split('-').map(no => parseInt(no));
+            for (let i = operands[0]; i <= operands[1]; i++) {
+                if (!possible_subject_nrs.includes(i)){
+                    possible_subject_nrs.push(i);
+                }
+            }
+        } else {
+            const curr_nr = parseInt(item);
+            if (!Number.isInteger(curr_nr)) {
+                throw new Error('Invalid character among possible subject numbers');
+            }
+            if (!possible_subject_nrs.includes(curr_nr)) {
+                possible_subject_nrs.push(curr_nr);
+            }
+        }
+    }
+    subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)];
+    console.log('The used subject number is', subject_nr);
+}
+
 const context = {
     confirm: onConfirmHandler,
     debug: false,
@@ -11,7 +41,7 @@ const context = {
     prompt: prompt,
     scaleMode: 'exactFit',
     source: null,
-    subject: parseInt(params.subject),
+    subject: parseInt(subject_nr),
     target: null
 };
 
@@ -30,7 +60,7 @@ if (!alertify.errorAlert) {
 
 // Callback function to handle errors
 function errorHandler (msg, url, line, col, error) {
-    let text = '<b>' + msg + '</b><br>'
+    let text = '<b>' + msg + '</b><br>';
     text += 'See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details';
     alertify.errorAlert(text);
 }

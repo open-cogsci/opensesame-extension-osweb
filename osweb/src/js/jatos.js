@@ -10,9 +10,43 @@ function loadExperiment() {
     const params = jatos.componentJsonInput || {};
 
     let subject_nr = jatos.componentResultId;
+
     if (params.subject) {
-        const poss_nrs = params.subject.split(/\s*,\s*/);
-        subject_nr = poss_nrs[Math.floor(Math.random() * poss_nrs.length)];
+        // Check if last character is a , or - and remove it.
+        if (params.subject.endsWith(',') || params.subject.endsWith('-')) {
+            params.subject = params.subject.slice(0,-1);
+        }
+        // Split the string over the ',' separator
+        const splitted = params.subject.split(/\s*,\s*/);
+        const possible_subject_nrs = [];
+        for (let item of splitted) {
+            // Check if item specifies a range (i.e. 5-10)
+            if (item.includes('-')) {
+                const operands = item.split('-').map(no => parseInt(no));
+                // Interpolate the range values, and make sure each value occurs only once in
+                // the array of possible subject nrs
+                for (let i = operands[0]; i <= operands[1]; i++) {
+                    if (!possible_subject_nrs.includes(i)) {
+                        possible_subject_nrs.push(i);
+                    }
+                }
+            } else {
+                // See if the current item is an integer, and throw an error if it isn't
+                const curr_nr = parseInt(item);
+                if (!Number.isInteger(curr_nr)) {
+                    throw new Error('Invalid character among possible subject numbers');
+                }
+                // Only add the number if it isn't present yet
+                if (!possible_subject_nrs.includes(curr_nr)) {
+                    possible_subject_nrs.push(curr_nr);
+                }
+            }
+        }
+        // Random selection
+        //subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)];
+        // Selection depending on jatos ID
+        subject_nr = possible_subject_nrs[jatos.componentResultId % possible_subject_nrs.length];
+        console.log('The used subject number is', subject_nr);
     }
 
     context = {
@@ -37,25 +71,11 @@ function loadExperiment() {
     send('[');
 }
 
-if (!alertify.errorAlert) {
-    //define a new errorAlert base on alert
-    alertify.dialog('errorAlert', function factory() {
-        return {
-            build: function () {
-                var errorHeader = '<img src="img/warning.png"' +
-                    'style="vertical-align:middle;color:#e10000"> ' +
-                    'Application Error';
-                this.setHeader(errorHeader);
-            }
-        };
-    }, true, 'alert');
-}
-
 // Callback function to handle errors
 function errorHandler (msg, url, line, col, error) {
     let text = '<p><b>' + msg + '</b></p>';
     text += '<p>See ' + (url && url.includes('osdoc')
-        ? '<a href="'+url+'" target="_BLANK">the osweb documentation</a>'
+        ? '<a href="'+url+'" target="_BLANK">the OSWeb documentation</a>'
         : 'the console') + ' for further details</p>';
     alertify.errorAlert(text);
 }
@@ -150,25 +170,20 @@ function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
     ).showModal();
 }
 
+// Set event callback for handling error messages using alertify.
+window.onerror = errorHandler;
 jatos.onLoad(loadExperiment);
 
-const onLoaded = function ( fn ) {
-
-    // Sanity check
-    if ( typeof fn !== 'function' ) return;
-
-    // If document is already loaded, run method
-    if ( document.readyState === 'complete'  ) {
-        return fn();
-    }
-
-    // Otherwise, wait until document is loaded
-    document.addEventListener( 'DOMContentLoaded', fn, false );
-
-};
-
-// Execute the code below after the page has been loaded.
-onLoaded(function() {
-    // Set event callback for handling error messages using alertify.
-    window.onerror = errorHandler;
-});
+if (!alertify.errorAlert) {
+    //define a new errorAlert base on alert
+    alertify.dialog('errorAlert', function factory() {
+        return {
+            build: function () {
+                var errorHeader = '<img src="img/warning.png"' +
+                    'style="vertical-align:middle;color:#e10000"> ' +
+                    'Application Error';
+                this.setHeader(errorHeader);
+            }
+        };
+    }, true, 'alert');
+}
