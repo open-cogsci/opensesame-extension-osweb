@@ -92,7 +92,7 @@ def jatos(
 				'reloadable': False,
 				'active': True,
 				'comments': """The following variables can be passed to the OSWeb runner with the JSON Input field:
-- subject (string): the allowed range of subject numbers. If ommited, the current jatos component result id will be used.
+- subject (string): the allowed range of subject numbers. If empty or ommitted, the current jatos component result id will be used for the subject number.
 The value can be a range ('1-10'), a comma-separated list of numbers ('1,2,3,6,7,8') or a combination of the two ('1,2,3,5-10,25')
 - fullscreen (bool): indicates whether the experiment should be run fullscreen
 - omitJatosIds (bool): If set to true, Jatos specific data will not be appended to the results
