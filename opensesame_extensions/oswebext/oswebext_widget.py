@@ -23,7 +23,7 @@ import tempfile
 import webbrowser
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtCore import QRegExp
-from qtpy.QtGui import QRegExpValidator
+from qtpy.QtGui import QRegExpValidator, QIcon
 from libqtopensesame.widgets.base_widget import base_widget
 from libopensesame.osexpfile import osexpwriter
 from osweb import export, linter, __version__
@@ -59,11 +59,15 @@ class oswebext_widget(base_widget):
 		self.ui.linedit_subject.setValidator(
 			QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
 		)
+		self.ui.icon_expsize_warning.setPixmap(
+			QIcon.fromTheme('emblem-important').pixmap(32,32)
+		)
 		self._run_linter()
 
 	def on_activate(self):
 
 		self._run_linter()
+		self._check_filesize()
 
 	def _run_linter(self):
 
@@ -71,6 +75,23 @@ class oswebext_widget(base_widget):
 		if not error_report:
 			error_report = u'No problems detected'
 		self.ui.label_linter.setText(error_report)
+
+	def _check_filesize(self):
+
+		try:
+			size = self.pool.size()
+		except:
+			size = -1
+		if size > 10*1024**2:
+			self.ui.label_expsize_warning.setText(_('Your experiment is '
+				'%d MB which is larger than the recommended maximum size of 10MB.\n'
+				'This is detrimental to loading times and performance when the experiment is run online.'
+				) % (size / 1048576))
+			self.ui.icon_expsize_warning.setVisible(True)
+			self.ui.label_expsize_warning.setVisible(True)
+		else:
+			self.ui.icon_expsize_warning.setVisible(False)
+			self.ui.label_expsize_warning.setVisible(False)
 
 	def _test(self):
 
