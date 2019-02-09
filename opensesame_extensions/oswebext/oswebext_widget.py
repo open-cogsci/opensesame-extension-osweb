@@ -31,6 +31,8 @@ from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
 _ = translation_context(u'oswebext', category=u'extension')
 
+MEGABYTE = 1024 ** 2
+
 
 class oswebext_widget(base_widget):
 
@@ -60,7 +62,7 @@ class oswebext_widget(base_widget):
 			QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
 		)
 		self.ui.icon_expsize_warning.setPixmap(
-			QIcon.fromTheme('emblem-important').pixmap(32,32)
+			QIcon.fromTheme('emblem-important').pixmap(32, 32)
 		)
 		self._run_linter()
 
@@ -82,11 +84,12 @@ class oswebext_widget(base_widget):
 			size = self.pool.size()
 		except:
 			size = -1
-		if size > 10*1024**2:
-			self.ui.label_expsize_warning.setText(_('Your experiment is '
-				'%d MB which is larger than the recommended maximum size of 10MB.\n'
-				'This is detrimental to loading times and performance when the experiment is run online.'
-				) % (size / 1048576))
+		if size > 10 * MEGABYTE:
+			self.ui.label_expsize_warning.setText(_(
+				u'Your experiment is %d MB. <br />'
+				u'This exceeds the recommended maximum size of 10 MB. <br /> '
+				u'This may increase online loading time.'
+			) % (size // MEGABYTE))
 			self.ui.icon_expsize_warning.setVisible(True)
 			self.ui.label_expsize_warning.setVisible(True)
 		else:
