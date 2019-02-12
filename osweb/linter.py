@@ -31,6 +31,7 @@ SUPPORTED_ITEMS = [
 	u'reset_feedback',
 	u'repeat_cycle',
 	u'advanced_delay',
+	u'inline_javascript'
 ]
 
 
