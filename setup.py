@@ -45,7 +45,7 @@ setup(
 		'osweb'
 	],
 	install_requires=[
-		'beautifulsoup4'
+		'beautifulsoup4', 'js2py'
 	],
 	package_data={
 		'osweb': [
@@ -55,12 +55,22 @@ setup(
 			'src/css/*.css'
 		]
 	},
-	data_files=[('share/opensesame_extensions/oswebext',
-		[
-			'opensesame_extensions/oswebext/oswebext.py',
-			'opensesame_extensions/oswebext/oswebext.ui',
-			'opensesame_extensions/oswebext/oswebext_widget.py',
-			'opensesame_extensions/oswebext/info.yaml',
-		]
-	)]
+	data_files=[
+		(
+			'share/opensesame_extensions/oswebext',
+			[
+				'opensesame_extensions/oswebext/oswebext.py',
+				'opensesame_extensions/oswebext/oswebext.ui',
+				'opensesame_extensions/oswebext/oswebext_widget.py',
+				'opensesame_extensions/oswebext/info.yaml',
+			]
+		),
+		(
+			'share/opensesame_plugins/inline_javascript',
+			[
+				'opensesame_plugins/inline_javascript/info.yaml',
+				'opensesame_plugins/inline_javascript/inline_javascript.py',
+			]
+		)
+	]
 )
