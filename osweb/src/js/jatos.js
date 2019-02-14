@@ -170,20 +170,24 @@ function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
     ).showModal();
 }
 
-// Set event callback for handling error messages using alertify.
-window.onerror = errorHandler;
-jatos.onLoad(loadExperiment);
-
-if (!alertify.errorAlert) {
-    //define a new errorAlert base on alert
-    alertify.dialog('errorAlert', function factory() {
-        return {
-            build: function () {
-                var errorHeader = '<img src="img/warning.png"' +
-                    'style="vertical-align:middle;color:#e10000"> ' +
-                    'Application Error';
-                this.setHeader(errorHeader);
-            }
-        };
-    }, true, 'alert');
+/**
+ * Function to handle input prompt dialog messages from the runner.
+ **/
+function onPageLoad() {
+  // Starts the experiment when the page is fully loaded.
+  window.onerror = errorHandler;
+  jatos.onLoad(loadExperiment);
+  if (!alertify.errorAlert) {
+      //define a new errorAlert base on alert
+      alertify.dialog('errorAlert', function factory() {
+          return {
+              build: function () {
+                  var errorHeader = '<img src="img/warning.png"' +
+                      'style="vertical-align:middle;color:#e10000"> ' +
+                      'Application Error';
+                  this.setHeader(errorHeader);
+              }
+          };
+      }, true, 'alert');
+  }
 }
