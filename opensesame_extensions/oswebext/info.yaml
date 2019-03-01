@@ -1,9 +1,14 @@
 description: Create online experiments
-icon: applications-internet
-label: OSWeb
+icon: os-run-browser
+label: Run in browser
 version: 1.3.0.0
+shortcut: Ctrl+Alt+W
 menu:
   index: -1
   separator_after: false
-  separator_before: true
-  submenu: Tools
+  separator_before: false
+  submenu: Run
+toolbar:
+  index: 6
+  separator_after: false
+  separator_before: false

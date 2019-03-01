@@ -18,8 +18,9 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from libopensesame.py3compat import *
-from libopensesame.oslogging import oslogger
 from libqtopensesame.extensions import base_extension
+from libqtopensesame.misc.translate import translation_context
+_ = translation_context(u'oswebext', category=u'extension')
 
 
 class oswebext(base_extension):
@@ -32,8 +33,24 @@ class oswebext(base_extension):
 	def event_startup(self):
 
 		self._widget = None
+		self._show_controls_action = self.qaction(
+			u'applications-internet',
+			u'OSWeb',
+			self._show_controls,
+		)
+		self.add_action(
+			self.get_submenu(u'tools'),
+			self._show_controls_action,
+			3,
+			False,
+			False
+		)
 
 	def activate(self):
+
+		self.widget()._test()
+
+	def _show_controls(self):
 
 		"""
 		desc:

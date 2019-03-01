@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>504</width>
+    <height>244</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -68,7 +76,7 @@
       <string>Test experiment in external browser</string>
      </property>
      <property name="icon">
-      <iconset theme="system-run">
+      <iconset theme="os-run-browser">
        <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>

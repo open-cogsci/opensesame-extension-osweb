@@ -4,6 +4,7 @@ import js2py
 from js2py.translators import translate_js
 from libopensesame.inline_script import inline_script
 from libqtopensesame.items.inline_script import inline_script as qtinline_script
+from libqtopensesame.items.qtplugin import qtplugin
 from libqtopensesame.misc.translate import translation_context
 _ = translation_context(u'inline_javascript', category=u'plugin')
 
@@ -73,6 +74,11 @@ class qtinline_javascript(qtinline_script):
 	description = _(u'Executes JavaScript code (ECMA 5.1)')
 	language = u'JavaScript'
 
+	def __init__(self, name, experiment, string=None):
+
+		inline_script.__init__(self, name, experiment, string)
+		qtplugin.__init__(self, plugin_file=__file__)
+
 	def item_icon(self):
 
-		return u'applications-internet'
+		return self.qicon
