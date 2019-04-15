@@ -26,7 +26,7 @@ from qtpy.QtCore import QRegExp
 from qtpy.QtGui import QRegExpValidator, QIcon
 from libqtopensesame.widgets.base_widget import base_widget
 from libopensesame.osexpfile import osexpwriter
-from osweb import export, linter, __version__
+from osweb import export, __version__
 from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
 _ = translation_context(u'oswebext', category=u'extension')
@@ -41,7 +41,7 @@ class oswebext_widget(base_widget):
 		Controls for interacting with OSWeb
 	"""
 
-	def __init__(self, main_window):
+	def __init__(self, main_window, oswebext):
 
 		"""
 		desc:
@@ -55,6 +55,7 @@ class oswebext_widget(base_widget):
 			main_window,
 			ui=u'extensions.oswebext.oswebext'
 		)
+		self._oswebext = oswebext
 		self.ui.button_test.clicked.connect(self._test)
 		self.ui.button_jatos.clicked.connect(self._export_jatos)
 		self.ui.label_version.setText(__version__)
@@ -71,12 +72,13 @@ class oswebext_widget(base_widget):
 		self._run_linter()
 		self._check_filesize()
 
+	def set_error(self, error_report):
+
+		self.ui.label_linter.setText(error_report)
+
 	def _run_linter(self):
 
-		error_report = linter.check_compatibility(self.experiment)
-		if not error_report:
-			error_report = u'No problems detected'
-		self.ui.label_linter.setText(error_report)
+		self._oswebext.run_linter()
 
 	def _check_filesize(self):
 

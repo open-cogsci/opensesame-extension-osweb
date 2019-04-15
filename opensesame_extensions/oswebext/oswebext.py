@@ -20,6 +20,7 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 from libopensesame.py3compat import *
 from libqtopensesame.extensions import base_extension
 from libqtopensesame.misc.translate import translation_context
+from osweb import linter
 _ = translation_context(u'oswebext', category=u'extension')
 
 
@@ -50,6 +51,29 @@ class oswebext(base_extension):
 
 		self.widget()._test()
 
+	def event_new_item(self, name, _type):
+
+		self.run_linter()
+
+	def event_delete_item(self, name):
+
+		self.run_linter()
+
+	def event_purge_unused_items(self):
+
+		self.run_linter()
+
+	def run_linter(self):
+
+		error_report = linter.check_compatibility(self.experiment)
+		if not error_report:
+			error_report = u'No problems detected'
+			self.action.setEnabled(True)
+		else:
+			self.action.setEnabled(False)
+		if self._widget is not None:
+			self._widget.set_error(error_report)
+
 	def _show_controls(self):
 
 		"""
@@ -70,6 +94,6 @@ class oswebext(base_extension):
 		if self._widget is None:
 			self.set_busy()
 			from oswebext_widget import oswebext_widget
-			self._widget = oswebext_widget(self.main_window)
+			self._widget = oswebext_widget(self.main_window, self)
 			self.set_busy(False)
 		return self._widget
