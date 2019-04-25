@@ -58,6 +58,7 @@ class oswebext_widget(base_widget):
 		self._oswebext = oswebext
 		self.ui.button_test.clicked.connect(self._test)
 		self.ui.button_jatos.clicked.connect(self._export_jatos)
+		self.ui.button_convert.clicked.connect(self._convert_results)
 		self.ui.label_version.setText(__version__)
 		self.ui.linedit_subject.setValidator(
 			QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
@@ -137,7 +138,6 @@ class oswebext_widget(base_widget):
 		osexp = self._tmp_osexp()
 		poss_subject_nrs = self.ui.linedit_subject.text()
 		fullscreen = self.ui.fs_checkBox.isChecked()
-
 		export.jatos(
 			osexp,
 			path,
@@ -153,6 +153,39 @@ class oswebext_widget(base_widget):
 			category='success',
 			always_show=True
 		)
+
+	def _convert_results(self):
+
+		from osweb import data
+		from datamatrix import io
+
+		jatos_results_path = QFileDialog.getOpenFileName(
+			self.main_window,
+			_(u'Select JATOS results file…'),
+			filter=u'JATOS results (*.txt)'
+		)
+		if isinstance(jatos_results_path, tuple):
+			jatos_results_path = jatos_results_path[0]
+		if not jatos_results_path:
+			return
+		self.main_window.set_busy(True)
+		try:
+			dm = data.parse_jatos_results(jatos_results_path)
+		finally:
+			self.main_window.set_busy(False)
+		export_path = QFileDialog.getSaveFileName(
+			self.main_window,
+			_(u'Save as…'),
+			filter=u'Excel (*.xlsx);;CSV (*.csv)'
+		)
+		if isinstance(export_path, tuple):
+			export_path = export_path[0]
+		if not export_path:
+			return
+		if export_path.lower().endswith(u'.xlsx'):
+			io.writexlsx(dm, export_path)
+		else:
+			io.writetxt(dm, export_path)
 
 	def _tmp_osexp(self):
 
