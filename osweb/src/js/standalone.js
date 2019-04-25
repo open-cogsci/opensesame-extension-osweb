@@ -37,6 +37,7 @@ const context = {
     mimetype: '',
     name: 'osweb',
     onFinished: onFinishedHandler,
+    onLog: onLogHandler,
     onError: errorHandler,
     prompt: prompt,
     scaleMode: 'exactFit',
@@ -121,6 +122,17 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
             onCancel();
         }.bind(this)
     ).showModal();
+}
+
+/**
+ * Callback function for processing log data
+ * @param {Object} data - The result data.
+ */
+function onLogHandler(data) {
+    if (data === null) {
+        return;
+    }
+    console.log(JSON.stringify(data));
 }
 
 /**
