@@ -22,15 +22,19 @@ from datamatrix import DataMatrix
 from datamatrix.py3compat import *
 
 
+STEPS = 100
+
+
 def parse_jatos_results(jatos_path):
 
 	if hasattr(json.decoder, 'JSONDecodeError'):
 		jsonerror = json.decoder.JSONDecodeError
 	else:
 		jsonerror = ValueError
-	dm = DataMatrix(length=0)
+	dm = DataMatrix(length=STEPS)
 	invalid_lines = 0
 	total_lines = 0
+	row = 0
 	with open(jatos_path) as fd:
 		for line in fd:
 			line = line.strip()
@@ -43,11 +47,18 @@ def parse_jatos_results(jatos_path):
 				d = json.loads(line)
 			except jsonerror:
 				invalid_lines += 1
+				continue
 			else:
-				if d:
-					dm <<= DataMatrix(length=1)._fromdict(
-						{key: [safe_decode(val)] for key, val in d.items()}
-					)
+				if not d:
+					continue
+			if row >= len(dm):
+				dm.length += STEPS
+			for key, val in d.items():
+				if key not in dm:
+					dm[key] = u''
+				dm[key][row] = safe_decode(val)
+			row += 1
+	dm.length = row
 	if invalid_lines:
 		warn('Failed to parse {} of {} lines'.format(
 			invalid_lines,
@@ -55,9 +66,9 @@ def parse_jatos_results(jatos_path):
 		))
 	return dm
 
+
 if __name__ == '__main__':
 
 	import sys
-
 	dm = parse_jatos_results(sys.argv[-1])
 	print(dm)

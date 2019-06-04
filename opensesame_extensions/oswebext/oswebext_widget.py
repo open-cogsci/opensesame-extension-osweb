@@ -168,6 +168,7 @@ class oswebext_widget(base_widget):
 			jatos_results_path = jatos_results_path[0]
 		if not jatos_results_path:
 			return
+
 		self.main_window.set_busy(True)
 		try:
 			dm = data.parse_jatos_results(jatos_results_path)
