@@ -72,7 +72,9 @@ class inline_javascript(inline_script):
 class qtinline_javascript(qtinline_script):
 
 	description = _(u'Executes JavaScript code (ECMA 5.1)')
-	language = u'JavaScript'
+	language = u'JavaScript'  # For OpenSesame 3.2
+	ext = u'.js'  # For OpenSesame 3.3
+	mime_type = u'application/javascript'  # For OpenSesame 3.3
 
 	def __init__(self, name, experiment, string=None):
 
