@@ -2,6 +2,7 @@ let context;
 let runner;
 let abortedByUser = false;
 let errorsOccured = false;
+let jatosResultData = "";
 
 /**
  * Is called on page load to launch the experiment
@@ -68,7 +69,7 @@ function loadExperiment() {
     runner = osweb.getRunner('osweb_div');
     runner.run(context);
     // Open JSON data array
-    send('[');
+    jatosResultData += '[';
 }
 
 // Callback function to handle errors
@@ -93,12 +94,12 @@ function onLogHandler(data) {
         jatos.addJatosIds(data);
     }
 
-    send(JSON.stringify(data) + ',\n');
+    jatosResultData += JSON.stringify(data) + ',\n';
 }
 
 function send (data) {
     // Send this log entry to the server
-    jatos.appendResultData(
+    return jatos.submitResultData(
         data,
         function(){return {};},
         function(err){
@@ -115,15 +116,18 @@ function send (data) {
  */
 function onFinishedHandler(data, sessionData) {
     // Close JSON data array
-    send(JSON.stringify(sessionData) + ']');
-    if (abortedByUser) {
-        jatos.endStudy(false, 'Experiment aborted by user');
-    } else if (errorsOccured) {
-        jatos.endStudy(false, 'Errors occurred during the experiment');
-    } else {
-        jatos.endStudy('Study completed successfully');
-    }
-    document.getElementById('osweb_div').style.display = 'none';
+    jatosResultData += JSON.stringify(sessionData) + ']';
+    send(jatosResultData).done(() => {
+        // Show the confirmation code to the worker
+        if (abortedByUser) {
+            jatos.endStudy(false, 'Experiment aborted by user');
+        } else if (errorsOccured) {
+            jatos.endStudy(false, 'Errors occurred during the experiment');
+        } else {
+            jatos.endStudy('Study completed successfully');
+        }
+        document.getElementById('osweb_div').style.display = 'none';
+    });;
 }
 
 /**
