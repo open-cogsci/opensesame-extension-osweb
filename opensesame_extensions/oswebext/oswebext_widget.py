@@ -190,13 +190,13 @@ class oswebext_widget(base_widget):
 
 	def _tmp_osexp(self):
 
-		with tempfile.NamedTemporaryFile(suffix=u'.osexp', delete=False) as fd:
+		with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
 			pass
 		osexpwriter(self.experiment, fd.name)
 		return fd.name
 
 	def _tmp_html(self):
 
-		with tempfile.NamedTemporaryFile(suffix=u'.html', delete=False) as fd:
+		with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as fd:
 			pass
 		return fd.name
