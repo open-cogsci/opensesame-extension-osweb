@@ -89,17 +89,17 @@ def jatos(
             'comments': 'Experiment exported by OpenSesame',
             'jsonData': None,
             'componentList': [{
-                        'title': 'OSWeb experiment',
-                        'htmlFilePath': 'index.html',
-                        'reloadable': False,
-                        'active': True,
-                        'comments': """The following variables can be passed to the OSWeb runner with the JSON Input field:
+                'title': 'OSWeb experiment',
+                'htmlFilePath': 'index.html',
+                'reloadable': False,
+                'active': True,
+                'comments': """The following variables can be passed to the OSWeb runner with the JSON Input field:
 - subject (string): the allowed range of subject numbers. If empty or ommitted, the current jatos component result id will be used for the subject number.
 The value can be a range ('1-10'), a comma-separated list of numbers ('1,2,3,6,7,8') or a combination of the two ('1,2,3,5-10,25')
 - fullscreen (bool): indicates whether the experiment should be run fullscreen
 - omitJatosIds (bool): If set to true, Jatos specific data will not be appended to the results
 				""",
-                        'jsonData': json.dumps(params),
+                'jsonData': json.dumps(params),
             }],
             'batchList': []
         }
@@ -186,11 +186,17 @@ def _compose_for_standalone(osexp, dom, assets, params=None):
         dom.head.append(params_tag)
     script_tag = dom.new_tag(u'script', type=u"text/javascript")
     for js_file in assets['js']:
+        print(js_file)
+        if os.path.splitext(js_file['src'])[1] != '.js':
+            continue
         script_tag.append(_read(js_file['src']) + '\n')
     dom.head.append(script_tag)
 
     css_tag = dom.new_tag(u'style')
     for css_file in assets['css']:
+        print(css_file)
+        if os.path.splitext(css_file['src'])[1] != '.css':
+            continue
         css_tag.append(_read(css_file['src']) + '\n')
     dom.head.append(css_tag)
 
@@ -220,13 +226,19 @@ def _compose_for_jatos(osexp, dom, assets, params=None):
 
     # Add script nodes referencing the sources of all other required javascript files.
     for js_file in assets['js']:
+        print(js_file)
+        if os.path.splitext(js_file['src'])[1] != '.js':
+            continue
         scriptTag = dom.new_tag(
             'script', src=js_file['dest'], type="text/javascript")
         dom.head.append(scriptTag)
 
-    for cssFile in assets['css']:
+    for css_file in assets['css']:
+        print(css_file)
+        if os.path.splitext(css_file['src'])[1] != '.css':
+            continue
         styleTag = dom.new_tag(
-            'link', href=cssFile['dest'], type="text/css", rel="stylesheet", media="all")
+            'link', href=css_file['dest'], type="text/css", rel="stylesheet", media="all")
         dom.head.append(styleTag)
 
 
