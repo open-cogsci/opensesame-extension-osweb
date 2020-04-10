@@ -1,0 +1,30 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "semi": [2, "never"],
+    "quotes": ["error", "single"],
+    "camelcase": "off",
+    "indent": [
+      "error",
+      4,
+      {
+        "ignoredNodes": [
+          "TemplateLiteral"
+        ]
+      }
+    ]
+  },
+  "globals": {
+    "jatos": "writable",
+    "osweb": "readonly",
+    "alertify": "readonly"
+  }
+}
