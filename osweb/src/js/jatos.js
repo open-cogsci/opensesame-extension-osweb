@@ -126,14 +126,21 @@ function onFinishedHandler(data, context) {
     } else {
         submitData({data, context}, true)
     }
-    document.getElementById('osweb_div').style.display = 'none'
 }
 
 function submitData(data, retryOnFailure = true) {
     let failFunc
     if (retryOnFailure) {
         failFunc = function () {
-            alertify.notify('Transferring data. Please wait', 'success', 3, function(){  submitData(data, false) })
+            alertify.set('notifier','position', 'top-center')
+            alertify.notify(
+                'Transferring your data to the server. Please wait',
+                'success',                  // status
+                3,                          // delay
+                function(){                 // function to call after delay
+                    submitData(data, false)
+                }
+            )
         }
     } else {
         failFunc = function() { jatos.endStudy('Failed to send data to server') }
