@@ -239,6 +239,7 @@ def _compose_for_jatos(osexp, dom, assets, params=None):
             styleTag = dom.new_tag('link', href=css_file['dest'], type="text/css", rel="stylesheet", media="all")
             dom.head.append(styleTag)
 
+
 def _read(path):
 
     with io.open(path, encoding='utf-8') as fd:
