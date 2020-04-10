@@ -72,7 +72,7 @@ function loadExperiment() {
 }
 
 // Callback function to handle errors
-function errorHandler (msg, url, line, col, error) {
+function errorHandler (msg, url, _, _, _) {
     let text = '<p><b>' + msg + '</b></p>';
     text += '<p>See ' + (url && url.includes('osdoc')
         ? '<a href="'+url+'" target="_BLANK">the OSWeb documentation</a>'
@@ -113,15 +113,11 @@ function send (data) {
  * @param {Object} data - The result data.
  * @param {Object} sessionData - The session data.
  */
-function onFinishedHandler(data, sessionData) {
-    // Close JSON data array
-    send(JSON.stringify(sessionData) + ']');
+function onFinishedHandler(data, context) {
     if (abortedByUser) {
         jatos.endStudy(false, 'Experiment aborted by user');
-    } else if (errorsOccured) {
-        jatos.endStudy(false, 'Errors occurred during the experiment');
     } else {
-        jatos.endStudy('Study completed successfully');
+        jatos.submitResultData({data, context}, jatos.startNextComponent);
     }
     document.getElementById('osweb_div').style.display = 'none';
 }
@@ -156,12 +152,12 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
  * @param {Object} onConfirm - The confirm event.
  * @param {Object} onCancel - The cancel event.
  */
-function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
+function prompt(title, message, defaultValue, _, onConfirm, onCancel) {
     alertify.prompt(
         title,
         message,
         defaultValue,
-        function (evt, value) {
+        function (_, value) {
             onConfirm(value);
         },
         function () {
