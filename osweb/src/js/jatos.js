@@ -2,6 +2,39 @@ let context
 let runner
 let abortedByUser = false
 
+
+class TransferModal {
+    constructor() {
+        this.status = 'closed'
+        this.modal = document.querySelector('#modal')
+        this.iconTransfer = document.querySelector('#modal .icon .lds-ripple')
+        this.iconWarning = document.querySelector('#modal .icon .error')
+        this.title = document.querySelector('#modal .text .title')
+        this.message = document.querySelector('#modal .text .message')
+    }
+    open(title, message='', mode='transfer') {
+        if(this.status == 'open') this.close()
+        this.status = 'open'
+        this.modal.style.display = 'flex'
+        this.title.textContent = title
+        this.message.textContent = message
+        if (mode == 'transfer') {
+            this.iconTransfer.style.display = 'inline-block'
+        } else if (mode == 'error'){
+            this.iconWarning.style.display = 'inline-block'
+        }
+    }
+    close() {
+        this.status = 'closed'
+        this.modal.style.display = 'none'
+        this.title.textContent = ''
+        this.message.textContent = ''
+        this.iconTransfer.style.display = 'none'
+        this.iconWarning.style.display = 'none'
+    }
+}
+
+
 /**
  * Is called on page load to launch the experiment
  */
@@ -81,9 +114,10 @@ function errorHandler (msg, url, _line, _col, _error) {
         text += '<p>See ' + (url && url.includes('osdoc')
             ? '<a href="'+url+'" target="_BLANK">the OSWeb documentation</a>'
             : 'the console') + ' for further details</p>'
-        alertify.errorAlert(text)
+        alertify.errorAlert(text, () => jatos.endStudy(false, 'Errors occurred. See log for details.'))
     }
     send(']')
+    jatos.log('ERROR: ' + msg)
 }
 
 /**
@@ -94,11 +128,6 @@ function onLogHandler(data) {
     if (data === null) {
         return
     }
-    // Add Jatos parameters to this log entry
-    if (jatos.componentJsonInput && jatos.componentJsonInput.omitJatosIds !== true) {
-        jatos.addJatosIds(data)
-    }
-
     send(JSON.stringify(data) + ',\n')
 }
 
@@ -114,6 +143,36 @@ function send (data) {
     )
 }
 
+/**
+ * Returns a function to submit the data with. Since this function is a closure, it keeps track
+ * of the number of retries that have taken place, and will automatically try to resend the data again
+ * after a failure, up to the specified number of maximum attempts.
+ *
+ * @param {int} maxAttempts Maximum number of retries for sending the data.
+ * @param {int} timeout The period to wait in milliseconds before the next retry.
+ */
+function submitFunc(maxAttempts = 3, timeout=3000) {
+    if (maxAttempts < 1) {
+        throw new Error('maxAttempts cannot be smaller than 1')
+    }
+    let attempt = 1
+    const submit = function(data, onSuccess, onFail) {
+        if( attempt <= maxAttempts ){
+            console.log('Sending data; attempt ' + attempt.toString())
+            jatos.submitResultData(
+                data,
+                onSuccess,
+                () => setTimeout(function(){ submit(data, onSuccess, onFail)}, timeout)
+            )
+        } else {
+            console.log('Maximum attempts reached. Data transfer failed.')
+            onFail()
+        }
+        attempt += 1
+    }
+    return submit
+}
+
 /** Callback function for processing after an experiment is finished.
  * @param {Object} data - The result data.
  * @param {Object} sessionData - The session data.
@@ -121,36 +180,33 @@ function send (data) {
 function onFinishedHandler(data, context) {
     context.jatosVersion = jatos.version
     context.queryParams = jatos.urlQueryParameters
+
+    const transferModal = new TransferModal()
+    // Closure, so attempt counts are contained in the function.
+    const submit = submitFunc()
+    let onSuccess, onFail
     if (abortedByUser) {
-        jatos.endStudy({data, context}, false, 'Experiment aborted by user', true)
-    } else {
-        submitData({data, context}, true)
-    }
-}
-
-function submitData(data, retryOnFailure = true) {
-    let failFunc
-    if (retryOnFailure) {
-        failFunc = function () {
-            alertify.set('notifier','position', 'top-center')
-            alertify.notify(
-                'Transferring your data to the server. Please wait',
-                'success',                  // status
-                3,                          // delay
-                function(){                 // function to call after delay
-                    submitData(data, false)
-                }
-            )
+        onSuccess = () => {
+            transferModal.close()
+            jatos.endStudy(false, 'Experiment aborted by user')
         }
+        onFail = () => {
+            transferModal.open('Failed to gracefully abort','You can close this browser tab or window.', 'error')
+        }
+        transferModal.open('Aborting experiment', 'Please wait a few moments.')
     } else {
-        failFunc = function() { jatos.endStudy('Failed to send data to server') }
-    }
+        onSuccess = () => {
+            transferModal.close()
+            jatos.startNextComponent()
+        }
+        onFail = () => {
+            transferModal.open('Errors occurred', 'Failed to transfer your data.', 'error')
+            jatos.endStudy(false, 'Failed to transfer data.')
+        }
+        transferModal.open('Transferring you data','Please wait a few moments.')
 
-    jatos.submitResultData(
-        {data, context},
-        jatos.startNextComponent,
-        failFunc
-    )
+    }
+    submit({data, context}, onSuccess, onFail)
 }
 
 /**
@@ -204,7 +260,6 @@ function prompt(title, message, defaultValue, _, onConfirm, onCancel) {
 function onPageLoad() {
     // Starts the experiment when the page is fully loaded.
     window.onerror = errorHandler
-    jatos.onError(errorHandler)
     jatos.onLoad(loadExperiment)
     if (!alertify.errorAlert) {
         //define a new errorAlert based on alert

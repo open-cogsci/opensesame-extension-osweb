@@ -1,0 +1,95 @@
+* {
+  outline: none;
+  font-size: 105%;
+  font-family: Helvetica, Arial, sans-serif
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 50, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+#modal .box {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  flex-basis: 500px;
+  max-width: 100vw;
+  min-height: 200px;
+  max-height: 100vh;
+  border-radius: 10px;
+}
+
+#modal .content{
+  margin: 25px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+#modal .content .icon{
+  padding-left: 0px;
+  padding-right: 20px;
+}
+
+#modal .content .icon .error {
+  display: none;
+  padding-left: 20px;
+}
+
+#modal .content .text .title {
+  font-size: 110%;
+}
+
+#modal .content .text .message {
+  font-size: 80%;
+}
+
+.lds-ripple {
+  display: none;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #00F;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}

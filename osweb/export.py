@@ -126,30 +126,38 @@ The value can be a range ('1-10'), a comma-separated list of numbers ('1,2,3,6,7
 def _get_os_assets(type):
 
     return [{
-        'src': os.path.join(srcPaths[type], basename),
-        'dest': os.path.join(type, basename)} for basename in os.listdir(srcPaths[type])
-        if basename.startswith(u'osweb') or basename.startswith(u'vendors~osweb')
-    ]
-
-
-def _js(mode):
-
-    # The osweb js source and vendor bundles.
-    files = _get_os_assets(u'js')
-    envJs = u'{}.js'.format(mode)
-    files.append({
-        'src': os.path.join(srcPaths[u'js'], envJs),
-        'dest': os.path.join(u'js', envJs)
-    })
-    return files
+            'src': os.path.join(srcPaths[type], basename),
+            'dest': type + '/' + basename
+            } for basename in os.listdir(srcPaths[type])
+            if basename.startswith((u'osweb', u'vendors~osweb'))
+            ]
 
 
 def _html(osexp, dst, mode, params=None):
 
     assets = {
-        'js': _js(mode),
+        'js': _get_os_assets(u'js'),
         'css': _get_os_assets(u'css')
     }
+
+    # Add potentially present platform js file.
+    env_js = u'{}.js'.format(mode)
+    env_js_src = os.path.join(srcPaths[u'js'], env_js)
+    if os.path.exists(env_js_src):
+        assets['js'].append({
+            'src': env_js_src,
+            'dest': (u'js/' + env_js)
+        })
+
+    # Add potentially present platform css file.
+    # Not very DRY code....
+    env_css = u'{}.css'.format(mode)
+    env_css_src = os.path.join(srcPaths[u'css'], env_css)
+    if os.path.exists(env_css_src):
+        assets['css'].append({
+            'src': env_css_src,
+            'dest': (u'css/' + env_css)
+        })
 
     tmpl = os.path.join(srcPaths['html'], u'{}.html'.format(mode))
 
@@ -186,18 +194,14 @@ def _compose_for_standalone(osexp, dom, assets, params=None):
         dom.head.append(params_tag)
     script_tag = dom.new_tag(u'script', type=u"text/javascript")
     for js_file in assets['js']:
-        print(js_file)
-        if os.path.splitext(js_file['src'])[1] != '.js':
-            continue
-        script_tag.append(_read(js_file['src']) + '\n')
+        if os.path.splitext(js_file['src'])[1] == '.js':
+            script_tag.append(_read(js_file['src']) + '\n')
     dom.head.append(script_tag)
 
     css_tag = dom.new_tag(u'style')
     for css_file in assets['css']:
-        print(css_file)
-        if os.path.splitext(css_file['src'])[1] != '.css':
-            continue
-        css_tag.append(_read(css_file['src']) + '\n')
+        if os.path.splitext(css_file['src'])[1] == '.css':
+            css_tag.append(_read(css_file['src']) + '\n')
     dom.head.append(css_tag)
 
     # Add experiment as base64 encoded string
@@ -226,21 +230,14 @@ def _compose_for_jatos(osexp, dom, assets, params=None):
 
     # Add script nodes referencing the sources of all other required javascript files.
     for js_file in assets['js']:
-        print(js_file)
-        if os.path.splitext(js_file['src'])[1] != '.js':
-            continue
-        scriptTag = dom.new_tag(
-            'script', src=js_file['dest'], type="text/javascript")
-        dom.head.append(scriptTag)
+        if os.path.splitext(js_file['src'])[1] == '.js':
+            scriptTag = dom.new_tag('script', src=js_file['dest'], type="text/javascript")
+            dom.head.append(scriptTag)
 
     for css_file in assets['css']:
-        print(css_file)
-        if os.path.splitext(css_file['src'])[1] != '.css':
-            continue
-        styleTag = dom.new_tag(
-            'link', href=css_file['dest'], type="text/css", rel="stylesheet", media="all")
-        dom.head.append(styleTag)
-
+        if os.path.splitext(css_file['src'])[1] == '.css':
+            styleTag = dom.new_tag('link', href=css_file['dest'], type="text/css", rel="stylesheet", media="all")
+            dom.head.append(styleTag)
 
 def _read(path):
 

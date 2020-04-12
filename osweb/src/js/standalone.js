@@ -1,31 +1,31 @@
-let subject_nr = 0;
+let subject_nr = 0
 if (params.subject) {
     // Check if last character is a , or - and remove it.
     if (params.subject.endsWith(',') || params.subject.endsWith('-')) {
-        params.subject = params.subject.slice(0,-1);
+        params.subject = params.subject.slice(0,-1)
     }
-    const splitted = params.subject.split(/\s*,\s*/);
-    const possible_subject_nrs = [];
+    const splitted = params.subject.split(/\s*,\s*/)
+    const possible_subject_nrs = []
     for (let item of splitted) {
         if (item.includes('-')) {
-            const operands = item.split('-').map(no => parseInt(no));
+            const operands = item.split('-').map(no => parseInt(no))
             for (let i = operands[0]; i <= operands[1]; i++) {
                 if (!possible_subject_nrs.includes(i)){
-                    possible_subject_nrs.push(i);
+                    possible_subject_nrs.push(i)
                 }
             }
         } else {
-            const curr_nr = parseInt(item);
+            const curr_nr = parseInt(item)
             if (!Number.isInteger(curr_nr)) {
-                throw new Error('Invalid character among possible subject numbers');
+                throw new Error('Invalid character among possible subject numbers')
             }
             if (!possible_subject_nrs.includes(curr_nr)) {
-                possible_subject_nrs.push(curr_nr);
+                possible_subject_nrs.push(curr_nr)
             }
         }
     }
-    subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)];
-    console.log('The used subject number is', subject_nr);
+    subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)]
+    console.log('The used subject number is', subject_nr)
 }
 
 const context = {
@@ -44,56 +44,56 @@ const context = {
     source: null,
     subject: parseInt(subject_nr),
     target: null
-};
+}
 
-let runner = null;
+let runner = null
 
 if (!alertify.errorAlert) {
     //define a new errorAlert base on alert
     alertify.dialog('errorAlert', function factory() {
         return {
             build: function () {
-                this.setHeader('Application Error');
+                this.setHeader('Application Error')
             }
-        };
-    }, true, 'alert');
+        }
+    }, true, 'alert')
 }
 
 // Callback function to handle errors
 function errorHandler (msg, url, line, col, error) {
-    let text = '<b>' + msg + '</b><br>';
-    text += 'See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details';
-    alertify.errorAlert(text);
+    let text = '<b>' + msg + '</b><br>'
+    text += 'See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details'
+    alertify.errorAlert(text)
 }
-window.onerror = errorHandler;
+window.onerror = errorHandler
 
 /**
  * Converts base-64-encoded data to a File object, which can be passed to
  * osweb as an experiment file
  **/
 function URItoFile(uri) {
-    let byteCharacters = atob(uri.split(',')[1]);
-    let byteArrays = [];
+    let byteCharacters = atob(uri.split(',')[1])
+    let byteArrays = []
     for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        let slice = byteCharacters.slice(offset, offset + 512);
-        let byteNumbers = new Array(slice.length);
+        let slice = byteCharacters.slice(offset, offset + 512)
+        let byteNumbers = new Array(slice.length)
         for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
+            byteNumbers[i] = slice.charCodeAt(i)
         }
-        let byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
+        let byteArray = new Uint8Array(byteNumbers)
+        byteArrays.push(byteArray)
     }
-    let blob = new Blob(byteArrays);
-    return new File([blob], 'osexp_src');
+    let blob = new Blob(byteArrays)
+    return new File([blob], 'osexp_src')
 }
 
 /**
  * Is called on page load to launch the experiment
  */
 function runExperiment() {
-    context.source = URItoFile(document.getElementById('osexp_src').src);
-    runner = osweb.getRunner('osweb_div');
-    runner.run(context);
+    context.source = URItoFile(document.getElementById('osexp_src').src)
+    runner = osweb.getRunner('osweb_div')
+    runner.run(context)
 }
 
 /** Callback function for processing after an experiment is finished.
@@ -101,7 +101,7 @@ function runExperiment() {
  * @param {Object} sessionData - The session data.
  */
 function onFinishedHandler(data, sessionData) {
-    document.getElementById('osweb_div').style.display = 'none';
+    document.getElementById('osweb_div').style.display = 'none'
 }
 
 /**
@@ -116,12 +116,12 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
         title,
         message,
         function () {
-            onConfirm();
+            onConfirm()
         },
         function () {
-            onCancel();
+            onCancel()
         }.bind(this)
-    ).showModal();
+    ).showModal()
 }
 
 /**
@@ -130,9 +130,9 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
  */
 function onLogHandler(data) {
     if (data === null) {
-        return;
+        return
     }
-    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(data))
 }
 
 /**
@@ -150,10 +150,10 @@ function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
         message,
         defaultValue,
         function (evt, value) {
-            onConfirm(value);
+            onConfirm(value)
         },
         function () {
-            onCancel();
+            onCancel()
         }.bind(this)
-    ).showModal();
+    ).showModal()
 }
