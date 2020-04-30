@@ -36,7 +36,7 @@ def parse_jatos_results(jatos_path):
 	incomplete_lines = 0
 	total_lines = 0
 	row = 0
-	with open(jatos_path) as fd:
+	with safe_open(jatos_path) as fd:
 		for line in fd:
 			# Strip the lines so that they are valid json
 			line = line.strip()
