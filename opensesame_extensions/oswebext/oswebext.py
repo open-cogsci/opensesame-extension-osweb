@@ -50,6 +50,10 @@ class oswebext(base_extension):
 	def activate(self):
 
 		self.widget()._test()
+		
+	def event_open_experiment(self, path):
+		
+		self.run_linter()
 
 	def event_new_item(self, name, _type):
 
