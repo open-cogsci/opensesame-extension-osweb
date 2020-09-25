@@ -162,7 +162,7 @@ class oswebext_widget(base_widget):
 		jatos_results_path = QFileDialog.getOpenFileName(
 			self.main_window,
 			_(u'Select JATOS results file…'),
-			filter=u'JATOS results (*.txt)'
+			filter=u'JATOS results (*.*)'
 		)
 		if isinstance(jatos_results_path, tuple):
 			jatos_results_path = jatos_results_path[0]
