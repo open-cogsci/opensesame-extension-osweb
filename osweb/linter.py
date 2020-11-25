@@ -18,27 +18,27 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 SUPPORTED_ITEMS = [
-	u'sequence',
-	u'loop',
-	u'sketchpad',
-	u'feedback',
-	u'mouse_response',
-	u'sampler',
-	u'keyboard_response',
-	u'logger',
-	u'touch_response',
-	u'notepad',
-	u'reset_feedback',
-	u'repeat_cycle',
-	u'advanced_delay',
-	u'inline_javascript'
+    u'sequence',
+    u'loop',
+    u'sketchpad',
+    u'feedback',
+    u'mouse_response',
+    u'sampler',
+    u'keyboard_response',
+    u'logger',
+    u'touch_response',
+    u'notepad',
+    u'reset_feedback',
+    u'repeat_cycle',
+    u'advanced_delay',
+    u'inline_javascript'
 ]
 
 
 def check_compatibility(exp):
 
-	return u'\n'.join([
-		u'Item {} is not supported'.format(item.item_type)
-		for item in exp.items.values()
-		if item.item_type not in SUPPORTED_ITEMS
-	])
+    return u'\n'.join([
+        u'Item {} is not supported'.format(item.item_type)
+        for item in exp.items.values()
+        if item.item_type not in SUPPORTED_ITEMS
+    ])

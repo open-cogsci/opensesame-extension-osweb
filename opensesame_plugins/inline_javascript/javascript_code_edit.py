@@ -26,26 +26,26 @@ from pyqode_extras.widgets import FallbackCodeEdit
 
 class JavaScriptCodeEdit(FallbackCodeEdit):
 
-	mimetypes = [
-		'text/x-javascript',
-		'text/javascript',
-		'application/javascript'
-	]
+    mimetypes = [
+        'text/x-javascript',
+        'text/javascript',
+        'application/javascript'
+    ]
 
-	def _start_backend(self):
-		
-		self.backend.start(
-			server.__file__,
-			sys.executable,
-			reuse=True,
-			share_id='javascript'
-		)
+    def _start_backend(self):
+        
+        self.backend.start(
+            server.__file__,
+            sys.executable,
+            reuse=True,
+            share_id='javascript'
+        )
 
-	@property
-	def language(self):
+    @property
+    def language(self):
 
-		return 'javascript'
+        return 'javascript'
 
-	def __repr__(self):
+    def __repr__(self):
 
-		return 'JavaScriptCodeEdit(path={})'.format(self.file.path)
+        return 'JavaScriptCodeEdit(path={})'.format(self.file.path)

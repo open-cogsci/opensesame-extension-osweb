@@ -26,78 +26,78 @@ _ = translation_context(u'oswebext', category=u'extension')
 
 class oswebext(base_extension):
 
-	"""
-	desc:
-		An example extension that lists all available events.
-	"""
+    """
+    desc:
+        An example extension that lists all available events.
+    """
 
-	def event_startup(self):
+    def event_startup(self):
 
-		self._widget = None
-		self._show_controls_action = self.qaction(
-			u'applications-internet',
-			u'OSWeb',
-			self._show_controls,
-		)
-		self.add_action(
-			self.get_submenu(u'tools'),
-			self._show_controls_action,
-			3,
-			False,
-			False
-		)
+        self._widget = None
+        self._show_controls_action = self.qaction(
+            u'applications-internet',
+            u'OSWeb',
+            self._show_controls,
+        )
+        self.add_action(
+            self.get_submenu(u'tools'),
+            self._show_controls_action,
+            3,
+            False,
+            False
+        )
 
-	def activate(self):
+    def activate(self):
 
-		self.widget()._test()
-		
-	def event_open_experiment(self, path):
-		
-		self.run_linter()
+        self.widget()._test()
+        
+    def event_open_experiment(self, path):
+        
+        self.run_linter()
 
-	def event_new_item(self, name, _type):
+    def event_new_item(self, name, _type):
 
-		self.run_linter()
+        self.run_linter()
 
-	def event_delete_item(self, name):
+    def event_delete_item(self, name):
 
-		self.run_linter()
+        self.run_linter()
 
-	def event_purge_unused_items(self):
+    def event_purge_unused_items(self):
 
-		self.run_linter()
+        self.run_linter()
 
-	def run_linter(self):
+    def run_linter(self):
 
-		error_report = linter.check_compatibility(self.experiment)
-		if not error_report:
-			error_report = u'No problems detected'
-			self.action.setEnabled(True)
-		else:
-			self.action.setEnabled(False)
-		if self._widget is not None:
-			self._widget.set_error(error_report)
+        error_report = linter.check_compatibility(self.experiment)
+        if not error_report:
+            error_report = u'No problems detected'
+            self.action.setEnabled(True)
+        else:
+            self.action.setEnabled(False)
+        if self._widget is not None:
+            self._widget.set_error(error_report)
 
-	def _show_controls(self):
+    def _show_controls(self):
 
-		"""
-		desc:
-			Open the plug-in manager tab, or switch to it if already open.
-		"""
+        """
+        desc:
+            Open the plug-in manager tab, or switch to it if already open.
+        """
 
-		self.tabwidget.add(self.widget(), self.icon(), self.label())
+        self.tabwidget.add(self.widget(), self.icon(), self.label())
 
-	def widget(self):
+    def widget(self):
 
-		"""
-		returns:
-			desc:	The widget to be used in the tab widget.
-			type:	QWidget
-		"""
+        """
+        returns:
+            desc:	The widget to be used in the tab widget.
+            type:	QWidget
+        """
 
-		if self._widget is None:
-			self.set_busy()
-			from oswebext_widget import oswebext_widget
-			self._widget = oswebext_widget(self.main_window, self)
-			self.set_busy(False)
-		return self._widget
+        if self._widget is None:
+            self.set_busy()
+            from oswebext_widget import oswebext_widget
+            self._widget = oswebext_widget(self.main_window, self)
+            self.set_busy(False)
+        return self._widget
