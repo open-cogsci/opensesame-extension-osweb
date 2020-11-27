@@ -179,6 +179,7 @@ function submitFunc(maxAttempts = 3, timeout=3000) {
  */
 function onFinishedHandler(data, context) {
     context.jatosVersion = jatos.version
+    context.jatosStudyResultId = jatos.studyResultId
     context.queryParams = jatos.urlQueryParameters
 
     const transferModal = new TransferModal()
