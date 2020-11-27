@@ -25,7 +25,12 @@ from datamatrix.py3compat import *
 STEPS = 100
 
 
-def parse_jatos_results(jatos_path):
+def parse_jatos_results(jatos_path, include_context=False):
+    
+    """Converts a results file, as exported by JATOS, and returns it as a
+    DataMatrix. If the context is included, columns are created for each of the
+    context variables.
+    """
 
     if hasattr(json.decoder, 'JSONDecodeError'):
         jsonerror = json.decoder.JSONDecodeError
@@ -63,13 +68,16 @@ def parse_jatos_results(jatos_path):
             # successfully finished.
             if len(d) == 2 and 'data' in d and 'context' in d:
                 trials = d['data']
+                context = d['context']
             # Incomplete data is stored as a single json line corresponding to
             # a single logger call. This kind of data should only happen when
             # the experiment is not finished, so that data is only partially
             # logged, one trial at a time.
             else:
                 trials = [d]
+                context = {}
                 incomplete_lines += 1
+            first_row = row
             for trial in trials:
                 if row >= len(dm):
                     dm.length += STEPS
@@ -78,6 +86,11 @@ def parse_jatos_results(jatos_path):
                         dm[key] = u''
                     dm[key][row] = safe_decode(val)
                 row += 1
+            if include_context:
+                for key, value in _flatten_dict(context).items():
+                    if key not in dm:
+                        dm[key] = u''
+                    dm[key][first_row:row] = safe_decode(value)
     dm.length = row
     if invalid_lines:
         warn('Failed to parse {} of {} lines'.format(
@@ -90,6 +103,18 @@ def parse_jatos_results(jatos_path):
             total_lines
         ))
     return dm
+
+
+def _flatten_dict(d):
+    
+    flat_dict = {}
+    for key, value in d.items():
+        if isinstance(value, dict):
+            for subkey, subvalue in _flatten_dict(value).items():
+                flat_dict['{}_{}'.format(key, subkey)] = subvalue
+        else:
+            flat_dict[key] = value
+    return flat_dict
 
 
 if __name__ == '__main__':

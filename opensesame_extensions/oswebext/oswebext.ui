@@ -81,7 +81,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="QLabel" name="label_linter">
      <property name="font">
       <font>
@@ -95,21 +95,21 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Compatibility check</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Version</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QLabel" name="label_version">
      <property name="font">
       <font>
@@ -121,14 +121,14 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="icon_expsize_warning">
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="QLabel" name="label_expsize_warning">
      <property name="text">
       <string>Size warning</string>
@@ -141,7 +141,15 @@
       <string>Convert JATOS results to csv/ xlsx</string>
      </property>
      <property name="icon">
-      <iconset theme="x-office-spreadsheet"/>
+      <iconset theme="x-office-spreadsheet">
+       <normaloff>.</normaloff>.</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="cfg_oswebext_include_context">
+     <property name="text">
+      <string>Include JATOS context information</string>
      </property>
     </widget>
    </item>

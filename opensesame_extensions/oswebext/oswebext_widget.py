@@ -24,7 +24,7 @@ import webbrowser
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtCore import QRegExp
 from qtpy.QtGui import QRegExpValidator, QIcon
-from libqtopensesame.widgets.base_widget import base_widget
+from libqtopensesame.widgets.base_preferences_widget import BasePreferencesWidget
 from libopensesame.osexpfile import osexpwriter
 from osweb import export, __version__
 from libqtopensesame.misc.translate import translation_context
@@ -34,7 +34,7 @@ _ = translation_context(u'oswebext', category=u'extension')
 MEGABYTE = 1024 ** 2
 
 
-class oswebext_widget(base_widget):
+class oswebext_widget(BasePreferencesWidget):
 
     """
     desc:
@@ -51,10 +51,7 @@ class oswebext_widget(base_widget):
             main_window:	The main-window object.
         """
 
-        super(oswebext_widget, self).__init__(
-            main_window,
-            ui=u'extensions.oswebext.oswebext'
-        )
+        super().__init__(main_window, ui=u'extensions.oswebext.oswebext')
         self._oswebext = oswebext
         self.ui.button_test.clicked.connect(self._test)
         self.ui.button_jatos.clicked.connect(self._export_jatos)
@@ -66,6 +63,7 @@ class oswebext_widget(base_widget):
         self.ui.icon_expsize_warning.setPixmap(
             QIcon.fromTheme('emblem-important').pixmap(32, 32)
         )
+        self._init_widgets()
         self._run_linter()
 
     def on_activate(self):
@@ -171,7 +169,10 @@ class oswebext_widget(base_widget):
 
         self.main_window.set_busy(True)
         try:
-            dm = data.parse_jatos_results(jatos_results_path)
+            dm = data.parse_jatos_results(
+                jatos_results_path,
+                include_context=cfg.oswebext_include_context
+            )
         except UnicodeDecodeError:
             self.extension_manager.fire(
                 'notify',
