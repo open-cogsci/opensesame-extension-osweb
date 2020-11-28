@@ -34,11 +34,65 @@ SUPPORTED_ITEMS = [
     u'inline_javascript'
 ]
 
+STRUCTURE_CHECK_ITEMS = [
+    u'logger',
+    u'repeat_cycle',
+    u'reset_feedback',
+    u'loop',
+    u'sequence'
+]
+
 
 def check_compatibility(exp):
 
-    return u'\n'.join([
+    return u'\n'.join(check_supported_items(exp) + check_structure(exp))
+
+
+def check_supported_items(exp):
+
+    return [
         u'Item {} is not supported'.format(item.item_type)
         for item in exp.items.values()
         if item.item_type not in SUPPORTED_ITEMS
-    ])
+    ]
+
+
+def check_structure(exp):
+    
+    errors = []
+    states = {}
+    
+    def set_state(item_name, state):
+        
+        if item_name not in exp.items:
+            return
+        item = exp.items[item_name]
+        if (
+            states.get(item_name, None) == state and
+            item.item_type in STRUCTURE_CHECK_ITEMS
+        ):
+            errors.append(
+                u'The {} phase for item {} is called multiple times in a row'.format(
+                    state,
+                    item_name
+                )
+            )
+        states[item_name] = state
+        if item.item_type == 'sequence':
+            for sub_item_name, _ in item.items:
+                set_state(sub_item_name, state)
+        elif item.item_type == 'loop':
+            set_state(item._item, 'prepare')
+            set_state(item._item, 'run')
+        
+    set_state(exp.var.start, 'prepare')
+    set_state(exp.var.start, 'run')
+    return errors
+
+
+# from libopensesame.experiment import experiment
+# exp = experiment(
+#     name = 'Dummy',
+#     string = '/home/sebastiaan/Downloads/Sentences-and-Letters-with-textEW_2.osexp'
+# )
+# print(check_structure(exp))

@@ -58,12 +58,20 @@ class oswebext(base_extension):
     def event_new_item(self, name, _type):
 
         self.run_linter()
+    
+    def event_new_linked_copy(self, name):
+
+        self.run_linter()
 
     def event_delete_item(self, name):
 
         self.run_linter()
 
     def event_purge_unused_items(self):
+
+        self.run_linter()
+
+    def event_regenerate(self):
 
         self.run_linter()
 

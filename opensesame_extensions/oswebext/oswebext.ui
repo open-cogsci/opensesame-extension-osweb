@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>530</width>
-    <height>280</height>
+    <width>514</width>
+    <height>287</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,6 +59,17 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="button_test">
+     <property name="text">
+      <string>Test experiment in external browser</string>
+     </property>
+     <property name="icon">
+      <iconset theme="os-run-browser">
+       <normaloff>.</normaloff>.</iconset>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="1">
     <widget class="QPushButton" name="button_jatos">
      <property name="text">
@@ -70,14 +81,34 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="button_test">
+   <item row="4" column="1">
+    <widget class="QPushButton" name="button_convert">
      <property name="text">
-      <string>Test experiment in external browser</string>
+      <string>Convert JATOS results to csv/ xlsx</string>
      </property>
      <property name="icon">
-      <iconset theme="os-run-browser">
+      <iconset theme="x-office-spreadsheet">
        <normaloff>.</normaloff>.</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="cfg_oswebext_include_context">
+     <property name="text">
+      <string>Include JATOS context information</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Compatibility check&lt;br /&gt;&lt;a href=&quot;https://osdoc.cogsci.nl/manual/osweb/osweb/#supported-functionality&quot;&gt;More information&lt;/a&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="openExternalLinks">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -92,13 +123,6 @@
      </property>
      <property name="text">
       <string>Error report</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Compatibility check</string>
      </property>
     </widget>
    </item>
@@ -132,24 +156,6 @@
     <widget class="QLabel" name="label_expsize_warning">
      <property name="text">
       <string>Size warning</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QPushButton" name="button_convert">
-     <property name="text">
-      <string>Convert JATOS results to csv/ xlsx</string>
-     </property>
-     <property name="icon">
-      <iconset theme="x-office-spreadsheet">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QCheckBox" name="cfg_oswebext_include_context">
-     <property name="text">
-      <string>Include JATOS context information</string>
      </property>
     </widget>
    </item>
