@@ -62,7 +62,7 @@ setup(
                 'opensesame_extensions/oswebext/oswebext.py',
                 'opensesame_extensions/oswebext/oswebext.ui',
                 'opensesame_extensions/oswebext/oswebext_widget.py',
-                'opensesame_extensions/oswebext/info.yaml',
+                'opensesame_extensions/oswebext/info.json',
             ]
         ),
         (
