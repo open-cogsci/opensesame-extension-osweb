@@ -49,42 +49,27 @@ class oswebext(base_extension):
 
     def activate(self):
 
-        self.widget()._test()
-        
-    def event_open_experiment(self, path):
-        
-        self.run_linter()
-
-    def event_new_item(self, name, _type):
-
-        self.run_linter()
-    
-    def event_new_linked_copy(self, name):
-
-        self.run_linter()
-
-    def event_delete_item(self, name):
-
-        self.run_linter()
-
-    def event_purge_unused_items(self):
-
-        self.run_linter()
-
-    def event_regenerate(self):
-
-        self.run_linter()
+        if self.run_linter():
+            self.widget()._test()
+        else:
+            self._show_controls()
 
     def run_linter(self):
 
         error_report = linter.check_compatibility(self.experiment)
         if not error_report:
             error_report = u'No problems detected'
-            self.action.setEnabled(True)
+            ok = True
         else:
-            self.action.setEnabled(False)
+            self.extension_manager.fire(
+                'notify',
+                message = _('Compatibility check failed'),
+                category = 'warning'
+            )
+            ok = False
         if self._widget is not None:
             self._widget.set_error(error_report)
+        return ok
 
     def _show_controls(self):
 
