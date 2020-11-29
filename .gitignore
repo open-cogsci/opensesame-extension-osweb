@@ -5,3 +5,5 @@ build
 .gitignore
 dist
 *.egg-info/
+deb_dist
+
