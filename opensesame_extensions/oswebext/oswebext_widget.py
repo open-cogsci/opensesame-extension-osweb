@@ -51,7 +51,10 @@ class oswebext_widget(BasePreferencesWidget):
             main_window:	The main-window object.
         """
 
-        super().__init__(main_window, ui=u'extensions.oswebext.oswebext')
+        super(oswebext_widget, self).__init__(
+            main_window,
+            ui=u'extensions.oswebext.oswebext'
+        )
         self._oswebext = oswebext
         self.ui.button_test.clicked.connect(self._test)
         self.ui.button_jatos.clicked.connect(self._export_jatos)
