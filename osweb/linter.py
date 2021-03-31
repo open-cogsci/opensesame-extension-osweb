@@ -23,9 +23,6 @@ import itertools as it
 # These items are supported but don't have a specific linter function
 SUPPORTED_ITEMS = [
     u'sequence',
-    u'sampler',
-    u'keyboard_response',
-    u'logger',
     u'touch_response',
     u'notepad',
     u'reset_feedback',
@@ -172,4 +169,14 @@ def check_item_sampler(item):
         w.append(item_warning(item, 'Stop after not supported'))
     if item.var.fade_in != 0:
         w.append(item_warning(item, 'Fade in not supported'))
+    return w
+
+
+def check_item_logger(item):
+    w = []
+    if item.var.auto_log == 'yes':
+        w.append(item_warning(
+            item,
+            'To save bandwidth, select only relevant variables instead of logging all variables'
+        ))
     return w
