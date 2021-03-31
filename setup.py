@@ -18,9 +18,17 @@ You should have received a copy of the GNU General Public License
 along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
+import os
 from setuptools import setup
 from osweb import __version__
+
+
+def readme():
+    if os.path.exists('readme.md'):
+        with open('readme.md') as fd:
+            return fd.read()
+    return ''
+
 
 setup(
     # Some general metadata. By convention, a extension is named:
@@ -28,6 +36,8 @@ setup(
     name='opensesame-extension-osweb',
     version=__version__,
     description='OSWeb extension for OpenSesame',
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     author='Sebastiaan Mathot',
     author_email='s.mathot@cogsci.nl',
     url='https://github.com/smathot/opensesame-extentsion-osweb',
