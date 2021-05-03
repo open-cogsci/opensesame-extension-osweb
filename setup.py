@@ -40,7 +40,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Sebastiaan Mathot',
     author_email='s.mathot@cogsci.nl',
-    url='https://github.com/smathot/opensesame-extentsion-osweb',
+    url='https://github.com/smathot/opensesame-extension-osweb',
     classifiers=[
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering',
