@@ -5,7 +5,6 @@ from js2py.translators import translate_js
 from libopensesame.inline_script import inline_script
 from libqtopensesame.items.inline_script import inline_script as qtinline_script
 from libqtopensesame.items.qtplugin import qtplugin
-from javascript_code_edit import JavaScriptCodeEdit
 from pyqode.core.widgets import SplittableCodeEditTabWidget
 from libqtopensesame.misc.translate import translation_context
 _ = translation_context(u'inline_javascript', category=u'plugin')
@@ -80,6 +79,10 @@ class qtinline_javascript(qtinline_script):
 
     def __init__(self, name, experiment, string=None):
 
+        # This requires pyqode_extras, which is not available in opensesamerun
+        # and therefore we import it only here.
+        from javascript_code_edit import JavaScriptCodeEdit
+        
         if self.mime_type not in SplittableCodeEditTabWidget.editors:
             SplittableCodeEditTabWidget.register_code_edit(JavaScriptCodeEdit)
         inline_script.__init__(self, name, experiment, string)
