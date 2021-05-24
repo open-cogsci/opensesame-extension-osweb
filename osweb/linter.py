@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from libopensesame.py3compat import *
 import itertools as it
 
 
@@ -132,7 +133,9 @@ def check_item_sketchpad(item):
     for e in item.elements:
         if e.properties.get('rotation', 0) != 0:
             w.append(item_warning(item, 'Rotation not supported'))
-        if e.properties.get('color', '').lower()[:3] in ('hsv', 'hsl', 'lab'):
+        if safe_decode(e.properties.get('color', '')).lower()[:3] in (
+            'hsv', 'hsl', 'lab'
+        ):
             w.append(item_warning(
                 item, 'hsv, hsl, and lab colorspaces not supported')
             )
