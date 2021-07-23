@@ -46,9 +46,13 @@ def safe_decode(s):
     return s
 
 
-def standalone(osexp, dst, subject='0', fullscreen=False):
+def standalone(osexp, dst, subject='0', fullscreen=False, welcome_text=''):
 
-    params = {'subject': subject, 'fullscreen': fullscreen}
+    params = {
+        'subject': subject,
+        'fullscreen': fullscreen,
+        'welcomeText': welcome_text.replace('\n', '\\n')
+    }
     _html(osexp, dst, u'standalone', params)
 
 
@@ -58,7 +62,8 @@ def jatos(
         title='My OpenSesame experiment',
         description='No description',
         subject='0',
-        fullscreen=False
+        fullscreen=False,
+        welcome_text=''
 ):
 
     uuid = _unique_hash()
@@ -69,7 +74,8 @@ def jatos(
 
     params = {
         'subject': subject,
-        'fullscreen': fullscreen
+        'fullscreen': fullscreen,
+        'welcomeText': welcome_text
     }
 
     assets = _html(

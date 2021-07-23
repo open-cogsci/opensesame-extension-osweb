@@ -98,7 +98,8 @@ function loadExperiment() {
         confirm: onConfirmHandler,
         onLog: onLogHandler,
         onFinished: onFinishedHandler,
-        onError: errorHandler
+        onError: errorHandler,
+        welcomeText: params.welcomeText
     }
     runner = osweb.getRunner('osweb_div')
     runner.run(context)

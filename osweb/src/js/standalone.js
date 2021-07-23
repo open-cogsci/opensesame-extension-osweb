@@ -43,7 +43,8 @@ const context = {
     scaleMode: 'exactFit',
     source: null,
     subject: parseInt(subject_nr),
-    target: null
+    target: null,
+    welcomeText: params.welcomeText
 }
 
 let runner = null

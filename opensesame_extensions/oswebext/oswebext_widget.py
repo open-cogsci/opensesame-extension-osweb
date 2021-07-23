@@ -115,7 +115,8 @@ class oswebext_widget(BasePreferencesWidget):
             osexp,
             html,
             subject=poss_subject_nrs,
-            fullscreen=fullscreen
+            fullscreen=fullscreen,
+            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText()
         )
         webbrowser.open('file://{}'.format(html))
         os.remove(osexp)
@@ -145,7 +146,8 @@ class oswebext_widget(BasePreferencesWidget):
             title=self.experiment.title,
             description=self.experiment.description,
             subject=poss_subject_nrs,
-            fullscreen=fullscreen
+            fullscreen=fullscreen,
+            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText()
         )
         os.remove(osexp)
         self.extension_manager.fire(
