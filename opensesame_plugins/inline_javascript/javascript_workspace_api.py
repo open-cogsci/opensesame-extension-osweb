@@ -9,7 +9,48 @@ class Canvas(object):
     
     def __init__(self, kwargs={}):
         self._canvas = py_api.Canvas(**_cnv(kwargs))
-        
+    
+    @property
+    def color(self): return self._canvas.color
+    @color.setter
+    def color(self, val): self._canvas.color = val
+    @property
+    def background_color(self): return self._canvas.background_color
+    @background_color.setter
+    def background_color(self, val): self._canvas.background_color = val
+    @property
+    def fill(self): return self._canvas.fill
+    @fill.setter
+    def fill(self, val): self._canvas.fill = val
+    @property
+    def penwidth(self): return self._canvas.penwidth
+    @penwidth.setter
+    def penwidth(self, val): self._canvas.penwidth = val
+    @property
+    def html(self): return self._canvas.html
+    @html.setter
+    def html(self, val): self._canvas.html = val
+    @property
+    def font_family(self): return self._canvas.font_family
+    @font_family.setter
+    def font_family(self, val): self._canvas.font_family = val
+    @property
+    def font_size(self): return self._canvas.font_size
+    @font_size.setter
+    def font_size(self, val): self._canvas.font_size = val
+    @property
+    def font_italic(self): return self._canvas.font_italic
+    @font_italic.setter
+    def font_italic(self, val): self._canvas.font_italic = val
+    @property
+    def font_bold(self): return self._canvas.font_bold
+    @font_bold.setter
+    def font_bold(self, val): self._canvas.font_bold = val
+    @property
+    def font_underline(self): return self._canvas.font_underline
+    @font_underline.setter
+    def font_underline(self, val): self._canvas.font_underline = val
+    
     def arrow(self, kwargs={}):
         self._canvas.arrow(**_args(kwargs, sx=0, sy=0, ex=50, ey=0))
         
