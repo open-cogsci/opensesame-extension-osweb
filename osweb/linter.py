@@ -29,7 +29,12 @@ SUPPORTED_ITEMS = [
     u'reset_feedback',
     u'repeat_cycle',
     u'advanced_delay',
-    u'inline_javascript'
+    u'inline_javascript',
+    u'inline_html',
+    u'form_text_display',
+    u'form_text_input',
+    u'form_multiple_choice',
+    u'form_consent'
 ]
 
 STRUCTURE_CHECK_ITEMS = [
