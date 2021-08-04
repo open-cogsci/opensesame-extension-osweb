@@ -1,0 +1,11 @@
+category: OSWeb
+description: Embeds custom HTML
+controls:
+-
+    type: editor
+    var: html
+    label: HTML editor
+    syntax: true
+    language: html
+    name: editor_widget
+    tooltip: An HTML editor widget
