@@ -126,8 +126,6 @@ def check_item_loop(item):
                 'Disabling evaluate on first cycle not supported'
             )
         )
-    if item.var.source != 'table':
-        w.append(item_warning(item, 'File source not supported'))
     if item._constraints:
         w.append(item_warning(item, 'Constraints not supported'))
     return w
@@ -136,8 +134,6 @@ def check_item_loop(item):
 def check_item_sketchpad(item):
     w = []
     for e in item.elements:
-        if e.properties.get('rotation', 0) != 0:
-            w.append(item_warning(item, 'Rotation not supported'))
         if safe_decode(e.properties.get('color', '')).lower()[:3] in (
             'hsv', 'hsl', 'lab'
         ):
