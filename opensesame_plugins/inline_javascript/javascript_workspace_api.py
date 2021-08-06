@@ -105,28 +105,27 @@ class Canvas(object):
         
         
 def xy_from_polar(rho, phi, pole=(0, 0)):
-    return py_api.xy_from_polar(_cnv(rho), _cnv(phi), _cnv(pole))
+    return py_api.xy_from_polar(*_cnv_args(rho, phi, pole))
     
     
 def xy_to_polar(x, y, pole=(0, 0)):
-    return py_api.xy_to_polar(_cnv(x), _cnv(y), _cnv(pole))
+    return py_api.xy_to_polar(*_cnv_args(x, y, pole))
     
     
 def xy_circle(n, rho, phi0=0, pole=(0, 0)):
-    return py_api.xy_circle(_cnv(n), _cnv(rho), _cnv(phi0), _cnv(pole))
+    return py_api.xy_circle(*_cnv_args(n, rho, phi0, pole))
     
     
 def xy_distance(x1, y1, x2, y2):
-    return py_api.xy_distance(_cnv(x1), _cnv(y1), _cnv(x2), _cnv(y2))
+    return py_api.xy_distance(*_cnv_args(x1, y1, x2, y2))
 
 
 def xy_grid(n, spacing, pole=(0, 0)):
-    return py_api.xy_grid(_cnv(n), _cnv(spacing), _cnv(pole))
+    return py_api.xy_grid(*_cnv_args(n, spacing, pole))
     
     
 def xy_random(n, width, height, min_dist=0, pole=(0, 0)):
-    return py_api.xy_random(
-        _cnv(n), _cnv(width), _cnv(height), _cnv(min_dist), _cnv(pole))
+    return py_api.xy_random(*_cnv_args(n, width, height, min_dist, pole))
 
 
 def reset_feedback():
@@ -147,6 +146,14 @@ def _args(obj, **defaults):
         if key not in obj:
             obj[key] = val
     return obj
+
+
+def _cnv_args(*args):
+    
+    return [
+        _cnv(arg) for arg in args
+        if not isinstance(arg, js2py.base.PyJsUndefined)
+    ]
 
 
 def _cnv(obj):
