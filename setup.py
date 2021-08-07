@@ -84,12 +84,12 @@ setup(
                 'opensesame_plugins/inline_javascript/inline_javascript.png',
                 'opensesame_plugins/inline_javascript/inline_javascript_large.png',
             ]
-        )
+        ),
         (
             'share/opensesame_plugins/inline_html',
             [
                 'opensesame_plugins/inline_html/info.yaml',
-                'opensesame_plugins/inline_html/inline_javascript.py',
+                'opensesame_plugins/inline_html/inline_html.py',
                 'opensesame_plugins/inline_html/inline_html.png',
                 'opensesame_plugins/inline_html/inline_html_large.png',
             ]
