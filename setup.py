@@ -81,6 +81,7 @@ setup(
                 'opensesame_plugins/inline_javascript/info.yaml',
                 'opensesame_plugins/inline_javascript/inline_javascript.py',
                 'opensesame_plugins/inline_javascript/javascript_code_edit.py',
+                'opensesame_plugins/inline_javascript/javascript_workspace_api.py',
                 'opensesame_plugins/inline_javascript/inline_javascript.png',
                 'opensesame_plugins/inline_javascript/inline_javascript_large.png',
             ]
