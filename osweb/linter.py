@@ -34,7 +34,8 @@ SUPPORTED_ITEMS = [
     u'form_text_display',
     u'form_text_input',
     u'form_multiple_choice',
-    u'form_consent'
+    u'form_consent',
+    u'sketchpad'
 ]
 
 STRUCTURE_CHECK_ITEMS = [
@@ -128,18 +129,6 @@ def check_item_loop(item):
         )
     if item._constraints:
         w.append(item_warning(item, 'Constraints not supported'))
-    return w
-
-
-def check_item_sketchpad(item):
-    w = []
-    for e in item.elements:
-        if safe_decode(e.properties.get('color', '')).lower()[:3] in (
-            'hsv', 'hsl', 'lab'
-        ):
-            w.append(item_warning(
-                item, 'hsv, hsl, and lab colorspaces not supported')
-            )
     return w
 
 
