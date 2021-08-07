@@ -118,6 +118,7 @@ class oswebext_widget(BasePreferencesWidget):
             Tests the experiment by running it in an external browser.
         """
 
+        self.main_window.get_ready()
         osexp = self._tmp_osexp()
         html = self._tmp_html()
         poss_subject_nrs = self.ui.linedit_subject.text()
