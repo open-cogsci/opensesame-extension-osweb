@@ -400,19 +400,8 @@ var Canvas = /*#__PURE__*/function () {
       if (typeof styleArgs === 'undefined') {
         return this._styles;
       } else {
-        var styles = new _styles_js__WEBPACK_IMPORTED_MODULE_24__["default"](); // Shorter notation: (but keeping old code in comments if this does not work as expected)
-
-        Object.assign(styles, styleArgs); // styles._background_color = (typeof (styleArgs._background_color) !== 'undefined') ? styleArgs._background_color : 0x000000
-        // styles._bidi = (typeof (styleArgs._bidi) !== 'undefined') ? styleArgs._bidi : false
-        // styles._color = (typeof (styleArgs._color) !== 'undefined') ? styleArgs._color : 0xffffff
-        // styles._fill = (typeof (styleArgs._fill) !== 'undefined') ? styleArgs._fill : false
-        // styles._font_bold = (typeof (styleArgs._font_bold) !== 'undefined') ? styleArgs._font_bold : true
-        // styles._font_family = (typeof (styleArgs._font_family) !== 'undefined') ? styleArgs._font_family : 'Arial'
-        // styles._font_italic = (typeof (styleArgs._font_italic) !== 'undefined') ? styleArgs._font_italic : false
-        // styles._font_size = (typeof (styleArgs._font_size) !== 'undefined') ? styleArgs._font_size : 24
-        // styles._font_underline = (typeof (styleArgs._font_underline) !== 'undefined') ? styleArgs._font_underline : false
-        // styles._penwidth = (typeof (styleArgs._penwidth) !== 'undefined') ? styleArgs._penwidth : 1
-
+        var styles = new _styles_js__WEBPACK_IMPORTED_MODULE_24__["default"]();
+        Object.assign(styles, styleArgs);
         return styles;
       }
     }
@@ -891,9 +880,9 @@ var Canvas = /*#__PURE__*/function () {
 
 
           var color = {
-            r: color1.r * amp + color2.r * (1.0 - amp),
-            g: color1.g * amp + color2.g * (1.0 - amp),
-            b: color1.b * amp + color2.b * (1.0 - amp)
+            r: color1[0] * amp + color2[0] * (1.0 - amp),
+            g: color1[1] * amp + color2[1] * (1.0 - amp),
+            b: color1[2] * amp + color2[2] * (1.0 - amp)
           }; // Set the color values at pixel level.
 
           var position = rx * 4 + ry * size * 4;
@@ -1086,9 +1075,9 @@ var Canvas = /*#__PURE__*/function () {
 
 
           var color = {
-            r: color1.r * amp + color2.r * (1.0 - amp),
-            g: color1.g * amp + color2.g * (1.0 - amp),
-            b: color1.b * amp + color2.b * (1.0 - amp)
+            r: color1[0] * amp + color2[0] * (1.0 - amp),
+            g: color1[1] * amp + color2[1] * (1.0 - amp),
+            b: color1[2] * amp + color2[2] * (1.0 - amp)
           }; // Set the color values at pixel level.
 
           var position = rx * 4 + ry * size * 4;
@@ -2136,28 +2125,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_array_fill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_fill__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.index-of */ "./node_modules/core-js/modules/es.array.index-of.js");
 /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.array.join */ "./node_modules/core-js/modules/es.array.join.js");
-/* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.array.map */ "./node_modules/core-js/modules/es.array.map.js");
-/* harmony import */ var core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.slice */ "./node_modules/core-js/modules/es.array.slice.js");
-/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.number.constructor */ "./node_modules/core-js/modules/es.number.constructor.js");
-/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.object.to-string */ "./node_modules/core-js/modules/es.object.to-string.js");
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
-/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es.regexp.to-string */ "./node_modules/core-js/modules/es.regexp.to-string.js");
-/* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es.string.split */ "./node_modules/core-js/modules/es.string.split.js");
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var lodash_isInteger__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lodash/isInteger */ "./node_modules/lodash/isInteger.js");
-/* harmony import */ var lodash_isInteger__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lodash_isInteger__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.array.map */ "./node_modules/core-js/modules/es.array.map.js");
+/* harmony import */ var core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.array.slice */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.number.constructor */ "./node_modules/core-js/modules/es.number.constructor.js");
+/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_string_match__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.string.match */ "./node_modules/core-js/modules/es.string.match.js");
+/* harmony import */ var core_js_modules_es_string_match__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_match__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var lodash_isInteger__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! lodash/isInteger */ "./node_modules/lodash/isInteger.js");
+/* harmony import */ var lodash_isInteger__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lodash_isInteger__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lodash/isArray */ "./node_modules/lodash/isArray.js");
+/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lodash_isArray__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! color-convert */ "./node_modules/color-convert/index.js");
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(color_convert__WEBPACK_IMPORTED_MODULE_13__);
 
 
 
@@ -2171,12 +2162,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+var colorHex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+var colorRGB255 = /rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i;
+var colorRGBPerc = /rgb\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i;
+var colorHSV = /hsv\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i;
+var colorHSL = /hsl\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i;
+var colorLAB = /lab\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*\)/i;
 /** Class representing a style container. */
 
 var Styles = /*#__PURE__*/function () {
   /** Styles is a simple class that holds information about the style. */
   function Styles(item) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default()(this, Styles);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9___default()(this, Styles);
 
     this._initConstants(); // Set class private properties.
 
@@ -2208,75 +2206,59 @@ var Styles = /*#__PURE__*/function () {
     }
   }
   /**
-   * Converts a color value (string, number of rgb to a numeric value for use in PIXI.
+   * Converts a color value to a numeric value for use in PIXI. This should
+   * accept all color specifications as described here:
+   * - https://osdoc.cogsci.nl/3.3/manual/python/canvas/#colors
    * @param {String|Number|Object} color - The color to convert.
    * @return {Number} - The color value.
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default()(Styles, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10___default()(Styles, [{
     key: "_convertColorValue",
     value: function _convertColorValue(color) {
-      var convertedColor = 0; // Check if the color definition is a number or a string value.
+      var _this$_convertColorVa = this._convertColorValueToRGB(color).map(Math.round),
+          _this$_convertColorVa2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_8___default()(_this$_convertColorVa, 3),
+          r = _this$_convertColorVa2[0],
+          g = _this$_convertColorVa2[1],
+          b = _this$_convertColorVa2[2];
 
-      if (typeof color === 'string') {
-        // Check if the string is a hex string.
-        if (/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(color) === true) {
-          // Check if hex string is 3 of 6 character based.
-          if (color.length === 4) {
-            // Expand the color to 6 characters.
-            convertedColor = parseInt('0x' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3], 16);
-          } else {
-            convertedColor = parseInt('0x' + color[1] + color[2] + color[3] + color[4] + color[5] + color[6], 16);
-          }
-        } else if (typeof this._DEFAULT_COLOURS[color.toLowerCase()] !== 'undefined') {
-          // Value is a constant color name, convert it.
-          convertedColor = parseInt(this._DEFAULT_COLOURS[color.toLowerCase()], 16);
-        } else if (color.slice(0, 3).toLowerCase() === 'rgb') {
-          // Value is a rgb string number, convert it.
-          var a = color.split('(')[1].split(')')[0];
-          a = a.split(',');
-          var b = a.map(function (x) {
-            // For each array element
-            if (/^\d+(\.\d+)?%$/.test(x)) {
-              // pass
-              x = x.slice(0, -1);
-              x = Math.round(parseInt(x) / 100 * 255);
-              x = x.toString(16);
-            } else {
-              // fail
-              x = parseInt(x).toString(16); // Convert to a base16 string
-            }
+      return 65536 * r + 256 * g + b;
+    }
+    /**
+     * Extracts three float numbers from a color based on a regular expression
+     * that matches three float numbers.
+     * @param {String} color
+     * @return {Array<Number>}
+     **/
 
-            return x.length === 1 ? '0' + x : x; // Add zero if we get only one character
-          });
-          convertedColor = parseInt('0x' + b.join(''));
-        }
-      } else if (this._isInt(color) === true) {
-        if (color < 256) {
-          // Luminant value, so convert it to gray scale.
-          convertedColor = 256 * 256 * color + 256 * color + color;
-        } else {
-          // Luminant values above 255 are not supported, return white.
-          convertedColor = 16843008;
-        }
-      } // Return the converted color as nubmer value.
-
-
-      return convertedColor;
+  }, {
+    key: "_matchFloats",
+    value: function _matchFloats(color, re) {
+      var m = color.match(re);
+      return [m[1], m[4], m[7]].map(Number);
     }
   }, {
     key: "_convertColorValueToRGB",
     value: function _convertColorValueToRGB(color) {
-      // Convert the color to numeric values.
-      var convertedColor = this._convertColorValue(color); // Convert colors to rgb format.
+      if (typeof color === 'string') {
+        var rgb = color_convert__WEBPACK_IMPORTED_MODULE_13___default.a.keyword.rgb(color);
+        if (typeof rgb !== 'undefined') return rgb;
+        if (colorHex.test(color) === true) return color_convert__WEBPACK_IMPORTED_MODULE_13___default.a.hex.rgb(color);
+        if (colorRGB255.test(color) === true) return color.match(colorRGB255).slice(1, 4).map(Number);
+        if (colorRGBPerc.test(color) === true) return this._matchFloats(color, colorRGBPerc).map(function (perc) {
+          return perc * 2.55;
+        });
+        if (colorHSV.test(color) === true) return color_convert__WEBPACK_IMPORTED_MODULE_13___default.a.hsv.rgb(this._matchFloats(color, colorHSV));
+        if (colorHSL.test(color) === true) return color_convert__WEBPACK_IMPORTED_MODULE_13___default.a.hsl.rgb(this._matchFloats(color, colorHSL));
+        if (colorLAB.test(color) === true) return color_convert__WEBPACK_IMPORTED_MODULE_13___default.a.lab.rgb(this._matchFloats(color, colorLAB));
+        if (!isNaN(Number(color))) // For single numbers a strings
+          color = Number(color);
+      }
 
-
-      return {
-        r: convertedColor >> 16,
-        g: convertedColor >> 8 & 0xFF,
-        b: convertedColor & 0xFF
-      };
+      if (lodash_isInteger__WEBPACK_IMPORTED_MODULE_11___default()(color)) return [color, color, color];
+      if (lodash_isArray__WEBPACK_IMPORTED_MODULE_12___default()(color) && color.length == 3) return color.map(Number);
+      throw 'Invalid color specification: ' + color + ' (' + _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_7___default()(color) + ')';
     }
   }, {
     key: "_isInt",
@@ -2287,7 +2269,7 @@ var Styles = /*#__PURE__*/function () {
      * @return {Boolean} - True if passed value is an integer.
      */
     value: function _isInt(value) {
-      return lodash_isInteger__WEBPACK_IMPORTED_MODULE_12___default()(value);
+      return lodash_isInteger__WEBPACK_IMPORTED_MODULE_11___default()(value);
     }
     /**
      * Checks if value is possibly specified as 'yes'/'no' or 1/0 instead of
@@ -2474,11 +2456,7 @@ var Styles = /*#__PURE__*/function () {
   }, {
     key: "rgb",
     get: function get() {
-      return {
-        r: this._background_color >> 16,
-        g: this._background_color >> 8 & 0xFF,
-        b: this._background_color & 0xFF
-      };
+      return this._convertColorValue(this._background_color);
     },
     set: function set(val) {}
   }, {
@@ -18071,4 +18049,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.03d1ff8654791b72ef9f.bundle.js.map
+//# sourceMappingURL=osweb.83bf33de9fc0d4d550fe.bundle.js.map
