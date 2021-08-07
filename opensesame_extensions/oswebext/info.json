@@ -2,11 +2,12 @@
   "description": "Create online experiments",
   "icon": "os-run-browser",
   "label": "Run in browser",
-  "version": "1.4.0.0",
+  "version": "1.4.0.0a1",
   "shortcut": "Ctrl+Alt+W",
   "priority": -10000,
   "settings": {
-    "oswebext_include_context": true
+    "oswebext_include_context": true,
+    "oswebext_welcome_text": ""
   },
   "menu": {
     "index": -1,
