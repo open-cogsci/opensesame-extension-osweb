@@ -4016,8 +4016,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _classes_javascript_workspace_api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../classes/javascript_workspace_api */ "./src/js/osweb/classes/javascript_workspace_api.js");
 /* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! random-ext */ "./node_modules/random-ext/index.js");
 /* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(random_ext__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! pythonic */ "./node_modules/pythonic/index.js");
-/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(pythonic__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! color-convert */ "./node_modules/color-convert/index.js");
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(color_convert__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! csv-parse/lib/sync */ "./node_modules/csv-parse/lib/sync.js");
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! pythonic */ "./node_modules/pythonic/index.js");
+/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(pythonic__WEBPACK_IMPORTED_MODULE_7__);
+
+
 
 
 
@@ -4081,6 +4087,7 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
     value: function _eval(js) {
       var _this = this;
 
+      // OSWeb objects
       var vars = this.vars_proxy;
 
       var Canvas = function Canvas() {
@@ -4088,7 +4095,6 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
         return new _classes_canvas_handler__WEBPACK_IMPORTED_MODULE_2__["default"](_this.experiment, styleArgs);
       };
 
-      var random = random_ext__WEBPACK_IMPORTED_MODULE_4___default.a;
       var pool = this.experiment.pool;
       var persistent = this._persistent; // Expose common functions. Binding is necessary to provide the correct
       // scope for the functions.
@@ -4101,13 +4107,17 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
       var xy_distance = this.api.xy_distance.bind(this.api);
       var xy_circle = this.api.xy_circle.bind(this.api);
       var xy_grid = this.api.xy_grid.bind(this.api);
-      var xy_random = this.api.xy_random.bind(this.api); // Expose the pythonic functions
+      var xy_random = this.api.xy_random.bind(this.api); // Expose useful libraries
 
-      var range = pythonic__WEBPACK_IMPORTED_MODULE_5__["range"];
-      var zip = pythonic__WEBPACK_IMPORTED_MODULE_5__["zip"];
-      var zipLongest = pythonic__WEBPACK_IMPORTED_MODULE_5__["zipLongest"];
-      var enumerate = pythonic__WEBPACK_IMPORTED_MODULE_5__["enumerate"];
-      var items = pythonic__WEBPACK_IMPORTED_MODULE_5__["items"];
+      var random = random_ext__WEBPACK_IMPORTED_MODULE_4___default.a;
+      var convert = color_convert__WEBPACK_IMPORTED_MODULE_5___default.a;
+      var csvParse = csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_6___default.a; // Expose the pythonic functions
+
+      var range = pythonic__WEBPACK_IMPORTED_MODULE_7__["range"];
+      var zip = pythonic__WEBPACK_IMPORTED_MODULE_7__["zip"];
+      var zipLongest = pythonic__WEBPACK_IMPORTED_MODULE_7__["zipLongest"];
+      var enumerate = pythonic__WEBPACK_IMPORTED_MODULE_7__["enumerate"];
+      var items = pythonic__WEBPACK_IMPORTED_MODULE_7__["items"];
       eval(js);
     }
   }]);
@@ -17187,7 +17197,6 @@ var Transfer = /*#__PURE__*/function () {
                       item.data = _ado;
                       item.type = 'video';
                     } else if (['csv', 'txt', 'md'].includes(ext.toLowerCase())) {
-                      console.log('.csv');
                       item.type = 'text';
                       currentFile.blob.text().then(function (text) {
                         return item.data = text;
@@ -18049,4 +18058,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.83bf33de9fc0d4d550fe.bundle.js.map
+//# sourceMappingURL=osweb.d386954a323858dd41d9.bundle.js.map
