@@ -19,6 +19,7 @@ class JavaScriptWorkspace(js2py.EvalJs):
 
         self.__dict__[u'experiment'] = experiment
         self.__dict__[u'_globals'] = {}
+        self.__dict__[u'_persistent'] = {}
         self.init_globals()
         js2py.EvalJs.__init__(self, self._globals)
 
@@ -33,6 +34,7 @@ class JavaScriptWorkspace(js2py.EvalJs):
         self._globals.update({
             u'__name__': u'javascript_workspace',
             u'vars': self.experiment.var,
+            u'persistent': self._persistent
         })
         for name, obj in api.__dict__.items():
             if name.startswith('_'):
