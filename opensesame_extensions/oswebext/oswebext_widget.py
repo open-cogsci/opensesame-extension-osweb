@@ -24,7 +24,8 @@ import webbrowser
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtCore import QRegExp
 from qtpy.QtGui import QRegExpValidator, QIcon
-from libqtopensesame.widgets.base_preferences_widget import BasePreferencesWidget
+from libqtopensesame.widgets.base_preferences_widget \
+    import BasePreferencesWidget
 from libopensesame.osexpfile import osexpwriter
 from osweb import export, __version__
 from libqtopensesame.misc.translate import translation_context
@@ -59,6 +60,16 @@ class oswebext_widget(BasePreferencesWidget):
         self.ui.button_test.clicked.connect(self._test)
         self.ui.button_jatos.clicked.connect(self._export_jatos)
         self.ui.button_convert.clicked.connect(self._convert_results)
+        self.ui.plaintextedit_welcome_text.setPlainText(
+            safe_decode(cfg.oswebext_welcome_text)
+        )
+        self.ui.plaintextedit_welcome_text.textChanged.connect(
+            lambda: setattr(
+                cfg,
+                'oswebext_welcome_text',
+                self.ui.plaintextedit_welcome_text.toPlainText()
+            )
+        )
         self.ui.label_version.setText(__version__)
         self.ui.linedit_subject.setValidator(
             QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
