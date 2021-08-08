@@ -7343,30 +7343,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.regexp.to-string */ "./node_modules/core-js/modules/es.regexp.to-string.js");
 /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.string.split */ "./node_modules/core-js/modules/es.string.split.js");
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ "./node_modules/@babel/runtime/helpers/assertThisInitialized.js");
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/get.js");
-/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _item_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./item.js */ "./src/js/osweb/items/item.js");
-/* harmony import */ var _classes_javascript_workspace_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../classes/javascript_workspace.js */ "./src/js/osweb/classes/javascript_workspace.js");
-/* harmony import */ var _backends_canvas_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../backends/canvas.js */ "./src/js/osweb/backends/canvas.js");
-/* harmony import */ var _backends_log__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../backends/log */ "./src/js/osweb/backends/log.js");
-/* harmony import */ var _system_constants_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../system/constants.js */ "./src/js/osweb/system/constants.js");
-/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.string.replace */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.string.split */ "./node_modules/core-js/modules/es.string.split.js");
+/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ "./node_modules/@babel/runtime/helpers/assertThisInitialized.js");
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/get.js");
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _item_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./item.js */ "./src/js/osweb/items/item.js");
+/* harmony import */ var _classes_javascript_workspace_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../classes/javascript_workspace.js */ "./src/js/osweb/classes/javascript_workspace.js");
+/* harmony import */ var _backends_canvas_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../backends/canvas.js */ "./src/js/osweb/backends/canvas.js");
+/* harmony import */ var _backends_log__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../backends/log */ "./src/js/osweb/backends/log.js");
+/* harmony import */ var _system_constants_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../system/constants.js */ "./src/js/osweb/system/constants.js");
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
 
 
 
@@ -7381,7 +7383,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_11___default()(this, result); }; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12___default()(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -7397,7 +7400,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
  */
 
 var Experiment = /*#__PURE__*/function (_Item) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_10___default()(Experiment, _Item);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_11___default()(Experiment, _Item);
 
   var _super = _createSuper(Experiment);
 
@@ -7405,19 +7408,19 @@ var Experiment = /*#__PURE__*/function (_Item) {
   function Experiment(experiment, name, script) {
     var _this;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default()(this, Experiment);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default()(this, Experiment);
 
     // Inherited.
     _this = _super.call(this, experiment, name, script); // Create and set private properties.
 
-    _this._canvas = new _backends_canvas_js__WEBPACK_IMPORTED_MODULE_15__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8___default()(_this));
+    _this._canvas = new _backends_canvas_js__WEBPACK_IMPORTED_MODULE_16__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9___default()(_this));
     _this._currentCanvas = _this._canvas;
-    _this._log = new _backends_log__WEBPACK_IMPORTED_MODULE_16__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8___default()(_this));
+    _this._log = new _backends_log__WEBPACK_IMPORTED_MODULE_17__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9___default()(_this));
     _this._scale_x = 1; // Scaling of the canvas for fullscreen mode.
 
     _this._scale_y = 1; // Scaling of the canvas for fullscreen mode.
 
-    _this._javascriptWorkspace = new _classes_javascript_workspace_js__WEBPACK_IMPORTED_MODULE_14__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_8___default()(_this)); // Create and set public properties.
+    _this._javascriptWorkspace = new _classes_javascript_workspace_js__WEBPACK_IMPORTED_MODULE_15__["default"](_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_9___default()(_this)); // Create and set public properties.
 
     _this.debug = _this._runner._debugger.enabled;
     _this.items = _this._runner._itemStore;
@@ -7454,7 +7457,7 @@ var Experiment = /*#__PURE__*/function (_Item) {
   /** Resets the feedback variables (acc, avg_rt, etc.). */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default()(Experiment, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default()(Experiment, [{
     key: "reset_feedback",
     value: function reset_feedback() {
       this.vars.total_responses = 0;
@@ -7512,6 +7515,8 @@ var Experiment = /*#__PURE__*/function (_Item) {
     value: function from_string(script) {
       // Split the string into an array of lines.
       if (script !== null) {
+        script = script.replace(/\r\n|\r|\n/g, '\n'); // convert line endings
+
         this._source = script.split('\n');
 
         var l = this._source.shift();
@@ -7528,7 +7533,7 @@ var Experiment = /*#__PURE__*/function (_Item) {
             // Split the single line into a set of tokens.
             var _this$_runner$_syntax = this._runner._syntax.parse_cmd(l);
 
-            var _this$_runner$_syntax2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_5___default()(_this$_runner$_syntax, 3);
+            var _this$_runner$_syntax2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_6___default()(_this$_runner$_syntax, 3);
 
             cmd = _this$_runner$_syntax2[0];
             args = _this$_runner$_syntax2[1];
@@ -7592,17 +7597,17 @@ var Experiment = /*#__PURE__*/function (_Item) {
     key: "run",
     value: function run() {
       // Inherited.
-      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(Experiment.prototype), "run", this).call(this); // Runs the experiment.
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_10___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(Experiment.prototype), "run", this).call(this); // Runs the experiment.
 
 
       switch (this._status) {
-        case _system_constants_js__WEBPACK_IMPORTED_MODULE_17__["constants"].STATUS_INITIALIZE:
+        case _system_constants_js__WEBPACK_IMPORTED_MODULE_18__["constants"].STATUS_INITIALIZE:
           // Adjust the status of the item.
-          this._status = _system_constants_js__WEBPACK_IMPORTED_MODULE_17__["constants"].STATUS_FINALIZE; // Save the date and time, and the version of OpenSesame
+          this._status = _system_constants_js__WEBPACK_IMPORTED_MODULE_18__["constants"].STATUS_FINALIZE; // Save the date and time, and the version of OpenSesame
 
           this.vars.datetime = new Date().toString();
-          this.vars.opensesame_version = _index_js__WEBPACK_IMPORTED_MODULE_18__["VERSION_NUMBER"];
-          this.vars.opensesame_codename = _index_js__WEBPACK_IMPORTED_MODULE_18__["VERSION_NAME"];
+          this.vars.opensesame_version = _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NUMBER"];
+          this.vars.opensesame_codename = _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NAME"];
           this.init_clock();
           this.init_display();
           this.reset_feedback(); // Add closing message to debug system.
@@ -7619,7 +7624,7 @@ var Experiment = /*#__PURE__*/function (_Item) {
 
           break;
 
-        case _system_constants_js__WEBPACK_IMPORTED_MODULE_17__["constants"].STATUS_FINALIZE:
+        case _system_constants_js__WEBPACK_IMPORTED_MODULE_18__["constants"].STATUS_FINALIZE:
           // Add closing message to debug system.
           this._runner._debugger.addMessage('experiment.run(): experiment finished at ' + new Date().toUTCString()); // Complete the run process.
 
@@ -7638,7 +7643,7 @@ var Experiment = /*#__PURE__*/function (_Item) {
   }]);
 
   return Experiment;
-}(_item_js__WEBPACK_IMPORTED_MODULE_13__["default"]);
+}(_item_js__WEBPACK_IMPORTED_MODULE_14__["default"]);
 
 
 
@@ -17907,4 +17912,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.8b1f063e8f498d35fa63.bundle.js.map
+//# sourceMappingURL=osweb.cfbaf89dcc74ccd4e342.bundle.js.map
