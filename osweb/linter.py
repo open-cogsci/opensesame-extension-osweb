@@ -31,6 +31,7 @@ SUPPORTED_ITEMS = [
     u'advanced_delay',
     u'inline_javascript',
     u'inline_html',
+    u'feedback',
     u'form_text_display',
     u'form_text_input',
     u'form_multiple_choice',
@@ -131,10 +132,6 @@ def check_item_loop(item):
         w.append(item_warning(item, 'Constraints not supported'))
     return w
 
-
-def check_item_feedback(item):
-    return check_item_sketchpad(item)
-    
     
 def check_item_mouse_response(item):
     w = []
