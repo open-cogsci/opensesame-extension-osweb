@@ -16005,14 +16005,20 @@ var Runner = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Screen; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/isFunction */ "./node_modules/lodash/isFunction.js");
-/* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_isFunction__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
-/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/isFunction */ "./node_modules/lodash/isFunction.js");
+/* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash_isFunction__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
+
+
 
 
 
@@ -16026,7 +16032,7 @@ var Screen = /*#__PURE__*/function () {
    * @param {Object} runner - The runner class to which the screen belongs.
    */
   function Screen(runner) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, Screen);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, Screen);
 
     // Set class parameter properties.
     this._runner = runner; // Parent runner attached to the screen object.
@@ -16041,7 +16047,7 @@ var Screen = /*#__PURE__*/function () {
     this._exit = false; // Exit toggle to prevent dialog when closing experiment.
   }
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(Screen, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(Screen, [{
     key: "screenCenter",
     value: function screenCenter() {
       return {
@@ -16204,7 +16210,7 @@ var Screen = /*#__PURE__*/function () {
           this._runner._renderer.render(this._runner._experiment._currentCanvas._container); // Open Sesame is running, request subject to continue of to stop.
 
 
-          if (lodash_isFunction__WEBPACK_IMPORTED_MODULE_2___default()(this._runner._confirm)) {
+          if (lodash_isFunction__WEBPACK_IMPORTED_MODULE_4___default()(this._runner._confirm)) {
             this._runner._confirm('Leaving full-screen mode, pausing experiment.', 'Please press ok the resume the experiment otherwise cancel to stop.', this._onFullScreenConfirm.bind(this), this._onFullScreenCancel.bind(this));
           }
         }
@@ -16252,21 +16258,21 @@ var Screen = /*#__PURE__*/function () {
       // Check if introscreen is used.
       if (this._active === true) {
         // Define introscreen elements.
-        this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Container"]();
+        this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Container"]();
         var center = this.screenCenter();
         var logoPath = typeof logoSrc === 'undefined' ? 'img/opensesame.png' : logoSrc;
-        var oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_3__["Sprite"].from(logoPath);
-        var oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('OSWeb', {
+        var oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_5__["Sprite"].from(logoPath);
+        var oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Text"]('OSWeb', {
           fontFamily: 'Arial',
           fontSize: 26,
           fill: '#FFFFFF'
         });
-        var versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_4__["VERSION_NUMBER"], {
+        var versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_6__["VERSION_NUMBER"], {
           fontFamily: 'Arial',
           fontSize: 16,
           fill: '#FFFFFF'
         });
-        var copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
+        var copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
           fontFamily: 'Arial',
           fontSize: 12,
           fill: '#FFFFFF'
@@ -16276,7 +16282,7 @@ var Screen = /*#__PURE__*/function () {
         oswebTitle.position.set(center.x - oswebTitle.width / 2, 215);
         versionInfo.position.set(center.x - versionInfo.width / 2, 250);
         copyrightText.position.set(center.x - copyrightText.width / 2, center.y * 2 - copyrightText.height * 2);
-        this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('', {
+        this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Text"]('', {
           fontFamily: 'Arial',
           fontSize: 18,
           fill: '#FFFFFF'
@@ -16363,7 +16369,7 @@ var Screen = /*#__PURE__*/function () {
         // Select the stage.
         switch (percentage) {
           case -1:
-            this._progressBarOuter = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Graphics"]();
+            this._progressBarOuter = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Graphics"]();
 
             this._progressBarOuter.lineStyle(1, 0xFFFFFF, 1);
 
@@ -16371,7 +16377,7 @@ var Screen = /*#__PURE__*/function () {
 
             this._progressBarOuter.x = 0;
             this._progressBarOuter.y = 0;
-            this._progressBarInner = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Graphics"]();
+            this._progressBarInner = new pixi_js__WEBPACK_IMPORTED_MODULE_5__["Graphics"]();
 
             this._progressBarInner.lineStyle(1, 0xFFFFFF, 1);
 
@@ -16420,7 +16426,7 @@ var Screen = /*#__PURE__*/function () {
       // Update the introscreen elements.
       if (this._active === true) {
         var center = this.screenCenter();
-        this._statusText.text = text;
+        this._statusText.text = text.replace(/<br \/>/g, '\n');
 
         this._statusText.position.set(center.x - this._statusText.width / 2, center.y);
 
@@ -16433,7 +16439,7 @@ var Screen = /*#__PURE__*/function () {
     key: "_showPauseScreen",
     value: function _showPauseScreen() {
       // Open Sesame is running, request subject to continue of to stop.
-      if (lodash_isFunction__WEBPACK_IMPORTED_MODULE_2___default()(this._runner._confirm)) {
+      if (lodash_isFunction__WEBPACK_IMPORTED_MODULE_4___default()(this._runner._confirm)) {
         this._runner._confirm('Esc key pressed, pausing experiment.', 'Please press ok the resume the experiment otherwise cancel to stop.', this._onPauseScreenConfirm.bind(this), this._onPauseScreenCancel.bind(this));
       }
     }
@@ -17912,4 +17918,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.cfbaf89dcc74ccd4e342.bundle.js.map
+//# sourceMappingURL=osweb.5184d382f4624b0e1eec.bundle.js.map
