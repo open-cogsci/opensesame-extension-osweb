@@ -51,7 +51,7 @@ def standalone(osexp, dst, subject='0', fullscreen=False, welcome_text=''):
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': welcome_text.replace('\n', '\\n')
+        'welcomeText': welcome_text.replace('\n', '<br />')
     }
     _html(osexp, dst, u'standalone', params)
 
@@ -75,7 +75,7 @@ def jatos(
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': welcome_text
+        'welcomeText': welcome_text.replace('\n', '<br />')
     }
 
     assets = _html(
