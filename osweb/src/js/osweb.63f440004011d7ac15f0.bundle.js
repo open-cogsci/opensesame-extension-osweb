@@ -8036,8 +8036,9 @@ var FormHTML = /*#__PURE__*/function (_Item) {
   }, {
     key: "resumeOSWeb",
     value: function resumeOSWeb() {
-      this._formContainer.style.display = 'none';
-      this._osweb.style.display = 'block';
+      this._formContainer.remove();
+
+      this._osweb.style.display = 'flex';
       window.addEventListener('keydown', runner._events._keyDownHandler);
       window.addEventListener('keyup', runner._events._keyUpHandler);
 
@@ -8129,6 +8130,7 @@ var FormHTML = /*#__PURE__*/function (_Item) {
       // The main container that contains the form elements
       this._customForm = document.createElement('div');
       this._customForm.style.color = this.vars.get('foreground');
+      this._customForm.style.backgroundColor = this.vars.get('background');
       this._customForm.style.fontSize = this.vars.get('font_size') + 'px';
       this._customForm.style.fontFamily = this._fontFamily;
       if (this.vars.get('font_bold') === 'yes') this._customForm.style.fontWeight = 'bold';
@@ -8159,7 +8161,6 @@ var FormHTML = /*#__PURE__*/function (_Item) {
       if (html !== null) this._customForm.innerHTML = html; // A container that centers the form
 
       this._formContainer = document.createElement('div');
-      this._formContainer.style.backgroundColor = this.vars.get('background');
       this._formContainer.style.justifyContent = 'center';
       this._formContainer.style.alignItems = 'center';
       this._formContainer.style.display = 'flex';
@@ -8542,13 +8543,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _form_html_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./form_html.js */ "./src/js/osweb/items/form_html.js");
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/get.js");
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _form_html_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./form_html.js */ "./src/js/osweb/items/form_html.js");
 
 
 
@@ -8558,7 +8561,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default()(this, result); }; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7___default()(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -8569,7 +8573,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
  */
 
 var FormTextInput = /*#__PURE__*/function (_FormHTML) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(FormTextInput, _FormHTML);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6___default()(FormTextInput, _FormHTML);
 
   var _super = _createSuper(FormTextInput);
 
@@ -8600,13 +8604,28 @@ var FormTextInput = /*#__PURE__*/function (_FormHTML) {
       question.style.textAlign = 'left';
       this._textArea = this.element('textarea', null, 6 / 8);
       this.applyTheme(this._textArea, false);
-      this._textArea.onkeypress = this.checkReturnPress.bind(this);
       return [title, question, this._textArea];
+    }
+  }, {
+    key: "_activateTextArea",
+    value: function _activateTextArea() {
+      this._textArea.focus();
+
+      this._textArea.onkeypress = this.checkReturnPress.bind(this);
+    }
+  }, {
+    key: "run",
+    value: function run() {
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_5___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default()(FormTextInput.prototype), "run", this).call(this); // The textarea is activate after a very short timeout. This avoid previous
+      // keypress from being entered as text immediately.
+
+
+      setTimeout(this._activateTextArea.bind(this), 10);
     }
   }]);
 
   return FormTextInput;
-}(_form_html_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
+}(_form_html_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
 
 
 
@@ -17918,4 +17937,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.5184d382f4624b0e1eec.bundle.js.map
+//# sourceMappingURL=osweb.63f440004011d7ac15f0.bundle.js.map

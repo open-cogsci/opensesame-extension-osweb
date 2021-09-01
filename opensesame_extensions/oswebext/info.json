@@ -2,7 +2,7 @@
   "description": "Create online experiments",
   "icon": "os-run-browser",
   "label": "Run in browser",
-  "version": "1.4.0.0a5",
+  "version": "1.4.0.0a6",
   "shortcut": "Ctrl+Alt+W",
   "priority": -10000,
   "settings": {
