@@ -46,12 +46,18 @@ def safe_decode(s):
     return s
 
 
+def _safe_welcome_text(s):
+
+    return s.replace('\n', '<br />'). \
+        replace('"', '&#34;').replace("'", '&#39;')
+
+
 def standalone(osexp, dst, subject='0', fullscreen=False, welcome_text=''):
 
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': welcome_text.replace('\n', '<br />')
+        'welcomeText': _safe_welcome_text(welcome_text)
     }
     _html(osexp, dst, u'standalone', params)
 
@@ -75,7 +81,7 @@ def jatos(
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': welcome_text.replace('\n', '<br />')
+        'welcomeText': _safe_welcome_text(welcome_text)
     }
 
     assets = _html(
