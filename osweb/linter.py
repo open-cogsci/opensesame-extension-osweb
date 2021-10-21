@@ -33,7 +33,6 @@ SUPPORTED_ITEMS = [
     u'inline_html',
     u'feedback',
     u'form_text_display',
-    u'form_text_input',
     u'form_multiple_choice',
     u'form_consent',
     u'sketchpad'
@@ -48,15 +47,18 @@ STRUCTURE_CHECK_ITEMS = [
 ]
 
 
-def check_compatibility(exp):
+def check_compatibility(exp, fullscreen):
     """Checks the compatibility of an experiment and returns all warnings as a
     list of text strings. An empty list indicates that the experiment is
     compatible.
     """
-    return u'\n'.join(check_supported_items(exp) + check_structure(exp))
+    return u'\n'.join(
+        check_supported_items(exp, fullscreen) + 
+        check_structure(exp, fullscreen)
+    )
 
 
-def check_item(item):
+def check_item(item, fullscreen):
     """Checks whether an item is compatible and returns all warnings as a list
     of text strings. An empty list indicates that the experiment is
     compatible. If an item specific linter function is available (with the 
@@ -69,15 +71,17 @@ def check_item(item):
         if item.item_type not in SUPPORTED_ITEMS:
             return [u'Item {} is not supported'.format(item.item_type)]
         return []
-    return linter_fnc(item)
+    return linter_fnc(item, fullscreen)
 
 
-def check_supported_items(exp):
+def check_supported_items(exp, fullscreen):
     """Checks all items and returns a list of warnings."""
-    return list(it.chain(*[check_item(item) for item in exp.items.values()]))
+    return list(it.chain(
+        *[check_item(item, fullscreen) for item in exp.items.values()]
+    ))
 
 
-def check_structure(exp):
+def check_structure(exp, fullscreen):
     """Checks the structure of the experiment for a specific issue with OSWeb
     in which for certain items the prepare and run phases need to be called
     in alternation, i.e. it is not allowed to call the prepare phase (or the
@@ -117,7 +121,7 @@ def item_warning(item, msg):
     return '{} ({}): {}'.format(item.name, item.item_type, msg)
 
 
-def check_item_loop(item):
+def check_item_loop(item, fullscreen):
     w = []
     if item.var.continuous != 'no':
         w.append(item_warning(item, 'Resume after break not supported'))
@@ -133,7 +137,7 @@ def check_item_loop(item):
     return w
 
     
-def check_item_mouse_response(item):
+def check_item_mouse_response(item, fullscreen):
     w = []
     if item.var.linked_sketchpad:
         w.append(item_warning(item, 'Linked sketchpad not supported'))
@@ -142,14 +146,14 @@ def check_item_mouse_response(item):
     return w
 
 
-def check_item_keyboard_response(item):
+def check_item_keyboard_response(item, fullscreen):
     w = []
     if item.var.event_type == 'keyrelease':
         w.append(item_warning(item, 'Key release not supported'))
     return w
 
 
-def check_item_sampler(item):
+def check_item_sampler(item, fullscreen):
     w = []
     if item.var.pitch != 1:
         w.append(item_warning(item, 'Changing pitch not supported'))
@@ -162,7 +166,7 @@ def check_item_sampler(item):
     return w
 
 
-def check_item_logger(item):
+def check_item_logger(item, fullscreen):
     w = []
     if item.var.auto_log == 'yes':
         w.append(item_warning(
@@ -170,3 +174,12 @@ def check_item_logger(item):
             'To save bandwidth, select only relevant variables instead of logging all variables'
         ))
     return w
+
+
+def check_item_form_text_input(item, fullscreen):
+    if not fullscreen:
+        return []
+    return [item_warning(
+        item,
+        'Some browsers disable text input in fullscreen for security reasons'
+    )]

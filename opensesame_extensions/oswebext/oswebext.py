@@ -56,7 +56,13 @@ class oswebext(base_extension):
 
     def run_linter(self):
 
-        error_report = linter.check_compatibility(self.experiment)
+        error_report = linter.check_compatibility(
+            self.experiment,
+            fullscreen=(
+                False if self._widget is None
+                else self._widget.ui.fs_checkBox.isChecked()
+            )
+        )
         if not error_report:
             error_report = u'No problems detected'
             ok = True

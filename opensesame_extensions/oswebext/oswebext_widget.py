@@ -58,6 +58,7 @@ class oswebext_widget(BasePreferencesWidget):
         )
         self._oswebext = oswebext
         self.ui.button_test.clicked.connect(self._test)
+        self.ui.fs_checkBox.toggled.connect(self._run_linter)
         self.ui.button_jatos.clicked.connect(self._export_jatos)
         self.ui.button_convert.clicked.connect(self._convert_results)
         self.ui.plaintextedit_welcome_text.setPlainText(
