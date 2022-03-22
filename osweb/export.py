@@ -52,25 +52,21 @@ def _safe_welcome_text(s):
         replace('"', '&#34;').replace("'", '&#39;')
 
 
-def standalone(osexp, dst, subject='0', fullscreen=False, welcome_text=''):
+def standalone(osexp, dst, subject='0', fullscreen=False, welcome_text='',
+               external_js=[]):
 
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': _safe_welcome_text(welcome_text)
+        'welcomeText': _safe_welcome_text(welcome_text),
+        'externalJS': external_js
     }
     _html(osexp, dst, u'standalone', params)
 
 
-def jatos(
-        osexp,
-        dst,
-        title='My OpenSesame experiment',
-        description='No description',
-        subject='0',
-        fullscreen=False,
-        welcome_text=''
-):
+def jatos(osexp, dst, title='My OpenSesame experiment',
+          description='No description', subject='0', fullscreen=False,
+          welcome_text='', external_js=[]):
 
     uuid = _unique_hash()
     dirname = tempfile.mkdtemp(suffix=u'.jatos')
@@ -81,7 +77,8 @@ def jatos(
     params = {
         'subject': subject,
         'fullscreen': fullscreen,
-        'welcomeText': _safe_welcome_text(welcome_text)
+        'welcomeText': _safe_welcome_text(welcome_text),
+        'externalJS': external_js
     }
 
     assets = _html(
@@ -200,6 +197,11 @@ def _compose_for_standalone(osexp, dom, assets, params=None):
     dom.head.append(logo_tag)
 
     if params:
+        # Embed links to external JavaScript pacakages
+        for url in params['externalJS']:
+            params_tag = dom.new_tag(u'script', type=u"text/javascript",
+                                     src=url.strip())
+            dom.head.append(params_tag)
         params_tag = dom.new_tag(u'script', type=u"text/javascript")
         params_tag.append(
             u'const params = JSON.parse(\'{}\')\n'.format(json.dumps(params)))
@@ -232,6 +234,11 @@ def _compose_for_jatos(osexp, dom, assets, params=None):
 
     scriptTag = dom.new_tag('script', id="parameters", type="text/javascript")
     if params:
+        # Embed links to external JavaScript pacakages
+        for url in params['externalJS']:
+            params_tag = dom.new_tag(u'script', type=u"text/javascript",
+                                     src=url)
+            dom.head.append(params_tag)        
         # Create a script node that exposes the experiment's parameters
         scriptTag.append(
             u'const params = JSON.parse(\'{}\')'.format(json.dumps(params)))

@@ -71,6 +71,16 @@ class oswebext_widget(BasePreferencesWidget):
                 self.ui.plaintextedit_welcome_text.toPlainText()
             )
         )
+        self.ui.plaintextedit_external_js.setPlainText(
+            safe_decode(cfg.oswebext_external_js)
+        )
+        self.ui.plaintextedit_external_js.textChanged.connect(
+            lambda: setattr(
+                cfg,
+                'oswebext_external_js',
+                self.ui.plaintextedit_external_js.toPlainText()
+            )
+        )
         self.ui.label_version.setText(__version__)
         self.ui.linedit_subject.setValidator(
             QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
@@ -111,6 +121,11 @@ class oswebext_widget(BasePreferencesWidget):
         else:
             self.ui.icon_expsize_warning.setVisible(False)
             self.ui.label_expsize_warning.setVisible(False)
+            
+    def _external_js(self):
+        
+        return [url.strip() for url in
+                self.ui.plaintextedit_external_js.toPlainText().splitlines()]
 
     def _test(self):
 
@@ -129,8 +144,8 @@ class oswebext_widget(BasePreferencesWidget):
             html,
             subject=poss_subject_nrs,
             fullscreen=fullscreen,
-            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText()
-        )
+            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
+            external_js=self._external_js())
         webbrowser.open('file://{}'.format(html))
         os.remove(osexp)
 
@@ -160,8 +175,8 @@ class oswebext_widget(BasePreferencesWidget):
             description=self.experiment.description,
             subject=poss_subject_nrs,
             fullscreen=fullscreen,
-            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText()
-        )
+            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
+            external_js=self._external_js())
         os.remove(osexp)
         self.extension_manager.fire(
             'notify',
