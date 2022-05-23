@@ -1,12 +1,13 @@
 # OSWeb extension for OpenSesame
 
-Copyright 2018 - 2021 Sebastiaan Mathôt (@smathot)
+Copyright 2018 - 2022 Sebastiaan Mathôt (@smathot)
 
 
 ## About
 
 This OpenSesame extension allows you to run OpenSesame experiments in a browser using OSWeb, a JavaScript implementation of OpenSesame.
 
+- <https://osdoc.cogsci.nl/manual/osweb/osweb/>
 - <https://github.com/smathot/OpenSesame/>
 - <https://github.com/open-cogsci/osweb/>
 
