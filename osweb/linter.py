@@ -155,14 +155,8 @@ def check_item_keyboard_response(item, fullscreen):
 
 def check_item_sampler(item, fullscreen):
     w = []
-    if item.var.pitch != 1:
-        w.append(item_warning(item, 'Changing pitch not supported'))
-    if item.var.pan != 0:
-        w.append(item_warning(item, 'Panning not supported'))
     if item.var.stop_after != 0:
         w.append(item_warning(item, 'Stop after not supported'))
-    if item.var.fade_in != 0:
-        w.append(item_warning(item, 'Fade in not supported'))
     return w
 
 
