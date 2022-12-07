@@ -28,6 +28,7 @@ from libqtopensesame.widgets.base_preferences_widget \
     import BasePreferencesWidget
 from libopensesame.osexpfile import osexpwriter
 from osweb import export, __version__
+from libopensesame.oslogging import oslogger
 from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
 _ = translation_context(u'oswebext', category=u'extension')
@@ -147,7 +148,11 @@ class oswebext_widget(BasePreferencesWidget):
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js())
         webbrowser.open('file://{}'.format(html))
-        os.remove(osexp)
+        try:
+            os.remove(osexp)
+        except PermissionError as e:
+            oslogger.warning(
+                'failed to remove temporary experiment file ({})'.format(e))
 
     def _export_jatos(self):
 
