@@ -22,8 +22,8 @@ import os
 import tempfile
 import webbrowser
 from qtpy.QtWidgets import QFileDialog
-from qtpy.QtCore import QRegExp
-from qtpy.QtGui import QRegExpValidator, QIcon
+from qtpy.QtCore import QRegularExpression
+from qtpy.QtGui import QRegularExpressionValidator, QIcon
 from libqtopensesame.widgets.base_preferences_widget \
     import BasePreferencesWidget
 from libopensesame.osexpfile import osexpwriter
@@ -84,7 +84,7 @@ class oswebext_widget(BasePreferencesWidget):
         )
         self.ui.label_version.setText(__version__)
         self.ui.linedit_subject.setValidator(
-            QRegExpValidator(QRegExp("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
+            QRegularExpressionValidator(QRegularExpression("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
         )
         self.ui.icon_expsize_warning.setPixmap(
             QIcon.fromTheme('emblem-important').pixmap(32, 32)
