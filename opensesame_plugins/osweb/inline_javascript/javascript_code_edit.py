@@ -21,7 +21,7 @@ from libopensesame.py3compat import *
 import sys
 from libopensesame.oslogging import oslogger
 from pyqode.python.backend import server
-from pyqode_extras.widgets import FallbackCodeEdit
+from libqtopensesame.pyqode_extras.widgets import FallbackCodeEdit
 
 
 class JavaScriptCodeEdit(FallbackCodeEdit):

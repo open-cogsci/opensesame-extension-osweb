@@ -26,8 +26,9 @@ from qtpy.QtCore import QRegularExpression
 from qtpy.QtGui import QRegularExpressionValidator, QIcon
 from libqtopensesame.widgets.base_preferences_widget \
     import BasePreferencesWidget
-from libopensesame.osexpfile import osexpwriter
-from osweb import export, __version__
+from libopensesame.osexpfile import OSExpWriter
+from .osweb import export
+from .. import __version__
 from libopensesame.oslogging import oslogger
 from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
@@ -36,7 +37,7 @@ _ = translation_context(u'oswebext', category=u'extension')
 MEGABYTE = 1024 ** 2
 
 
-class oswebext_widget(BasePreferencesWidget):
+class OSWebExtWidget(BasePreferencesWidget):
 
     """
     desc:
@@ -44,19 +45,7 @@ class oswebext_widget(BasePreferencesWidget):
     """
 
     def __init__(self, main_window, oswebext):
-
-        """
-        desc:
-            Constructor.
-
-        arguments:
-            main_window:	The main-window object.
-        """
-
-        super(oswebext_widget, self).__init__(
-            main_window,
-            ui=u'extensions.oswebext.oswebext'
-        )
+        super().__init__(main_window, ui=u'extensions.oswebext.oswebext')
         self._oswebext = oswebext
         self.ui.button_test.clicked.connect(self._test)
         self.ui.fs_checkBox.toggled.connect(self._run_linter)
@@ -84,7 +73,8 @@ class oswebext_widget(BasePreferencesWidget):
         )
         self.ui.label_version.setText(__version__)
         self.ui.linedit_subject.setValidator(
-            QRegularExpressionValidator(QRegularExpression("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
+            QRegularExpressionValidator(
+                QRegularExpression("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
         )
         self.ui.icon_expsize_warning.setPixmap(
             QIcon.fromTheme('emblem-important').pixmap(32, 32)
@@ -128,7 +118,7 @@ class oswebext_widget(BasePreferencesWidget):
         return [url.strip() for url in
                 self.ui.plaintextedit_external_js.toPlainText().splitlines()]
 
-    def _test(self):
+    def _test(self, fullscreen=None, subject_nr=None, logfile=None):
 
         """
         desc:
@@ -138,12 +128,14 @@ class oswebext_widget(BasePreferencesWidget):
         self.main_window.get_ready()
         osexp = self._tmp_osexp()
         html = self._tmp_html()
-        poss_subject_nrs = self.ui.linedit_subject.text()
-        fullscreen = self.ui.fs_checkBox.isChecked()
+        if subject_nr is None:
+            subject_nr = self.ui.linedit_subject.text()
+        if fullscreen is None:
+            fullscreen = self.ui.fs_checkBox.isChecked()
         export.standalone(
             osexp,
             html,
-            subject=poss_subject_nrs,
+            subject=subject_nr,
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js())
@@ -238,7 +230,7 @@ class oswebext_widget(BasePreferencesWidget):
 
         with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
             pass
-        osexpwriter(self.experiment, fd.name)
+        OSExpWriter(self.experiment, fd.name)
         return fd.name
 
     def _tmp_html(self):
