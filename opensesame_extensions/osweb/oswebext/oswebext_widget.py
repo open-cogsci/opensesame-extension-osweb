@@ -28,6 +28,7 @@ from libqtopensesame.widgets.base_preferences_widget \
     import BasePreferencesWidget
 from libopensesame.osexpfile import OSExpWriter
 from .osweb import export
+from .oswebwriter import OSWebWriter
 from .. import __version__
 from libopensesame.oslogging import oslogger
 from libqtopensesame.misc.translate import translation_context
@@ -135,7 +136,7 @@ class OSWebExtWidget(BasePreferencesWidget):
         export.standalone(
             osexp,
             html,
-            subject=subject_nr,
+            subject=str(subject_nr),
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js())
@@ -230,7 +231,7 @@ class OSWebExtWidget(BasePreferencesWidget):
 
         with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
             pass
-        OSExpWriter(self.experiment, fd.name)
+        OSWebWriter(self.experiment, fd.name)
         return fd.name
 
     def _tmp_html(self):
