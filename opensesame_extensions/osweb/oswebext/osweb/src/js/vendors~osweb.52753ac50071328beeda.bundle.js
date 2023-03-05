@@ -52731,6 +52731,36 @@ $({ target: 'Array', proto: true, forced: !STRICT_METHOD || !USES_TO_LENGTH }, {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es.array.reverse.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.reverse.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var isArray = __webpack_require__(/*! ../internals/is-array */ "./node_modules/core-js/internals/is-array.js");
+
+var nativeReverse = [].reverse;
+var test = [1, 2];
+
+// `Array.prototype.reverse` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.reverse
+// fix for Safari 12.0 bug
+// https://bugs.webkit.org/show_bug.cgi?id=188794
+$({ target: 'Array', proto: true, forced: String(test) === String(test.reverse()) }, {
+  reverse: function reverse() {
+    // eslint-disable-next-line no-self-assign
+    if (isArray(this)) this.length = this.length;
+    return nativeReverse.call(this);
+  }
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es.array.slice.js":
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.slice.js ***!
@@ -87735,4 +87765,4 @@ module.exports = function(module) {
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors~osweb.3a810d2ed42cbd1f0296.bundle.js.map
+//# sourceMappingURL=vendors~osweb.52753ac50071328beeda.bundle.js.map
