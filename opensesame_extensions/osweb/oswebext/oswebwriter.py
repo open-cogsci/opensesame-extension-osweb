@@ -27,7 +27,8 @@ RE_SET_COND = re.compile(r'^\t(?P<cmd>set (break_if|condition) .*)$',
                          re.MULTILINE)
 RE_DRAW = re.compile(r'^\t(?P<cmd>draw .*)$', re.MULTILINE)
 RE_FSTRING = re.compile(r'(?<!{){(?!{)(?P<expr>.*?)}')
-RE_RUN_SCRIPT = re.compile('___run__.*?__end__\n', re.MULTILINE | re.DOTALL)
+RE_IGNORE_RUN = re.compile('___run__.*?__end__\n', re.MULTILINE | re.DOTALL)
+RE_IGNORE_SCRIPT = re.compile('<script>.*?</script>', re.MULTILINE | re.DOTALL)
 
 
 class OSWebWriter(OSExpWriter):
@@ -38,7 +39,7 @@ class OSWebWriter(OSExpWriter):
     
     def transform(self, cond):
         # The last two characters are ;\n, which are not valid in some
-        # contexts
+        # contexts and we therefore strip them off
         return py2js(self._exp.syntax.compile_cond(cond, bytecode=False))[:-2]
             
     @property
@@ -73,18 +74,27 @@ class OSWebWriter(OSExpWriter):
             oslogger.debug(f'rewriting {m.group("cmd")} to {cmd}')
             script = script.replace(m.group('cmd'), cmd)
         # We transform all Python f-strings into JavaScript template literals.
-        # However, we ignore multiline _run variables, because those can
-        # contain code that looks like f-strings but should not be converted.
+        # However, we ignore multiline _run and html variables, because those
+        # can contain code that looks like f-strings but should not be
+        # converted.
         ignore_spans = []
-        for m in RE_RUN_SCRIPT.finditer(script):
+        for m in RE_IGNORE_RUN.finditer(script):
             ignore_spans.append(m.span())
-        for m in RE_FSTRING.finditer(script):
-            start, end = m.span()
-            if any(ignore_start <= start and ignore_end >= end
-                   for ignore_start, ignore_end in ignore_spans):
-                continue
-            template_literal = f'${{{self.transform(m.group("expr"))}}}'
-            oslogger.debug(f'converting f-string {m.group()} to template '
-                           f'literal {template_literal}')
-            script = script.replace(m.group(), template_literal )
+        for m in RE_IGNORE_SCRIPT.finditer(script):
+            ignore_spans.append(m.span())
+        start_pos = 0
+        while True:
+            for m in RE_FSTRING.finditer(script, start_pos):
+                start, end = m.span()
+                if any(ignore_start <= start and ignore_end >= end
+                       for ignore_start, ignore_end in ignore_spans):
+                    continue
+                template_literal = f'${{{self.transform(m.group("expr"))}}}'
+                oslogger.debug(f'converting f-string {m.group()} to template '
+                               f'literal {template_literal}')
+                script = script[:start] + template_literal + script[end:]
+                start_pos = end
+                break
+            else:
+                break
         return script
