@@ -2,11 +2,16 @@
 from libopensesame.py3compat import *
 import js2py
 from js2py.translators import translate_js
+import esprima
+from esprima.nodes import FunctionDeclaration, VariableDeclaration, \
+    ExpressionStatement, AssignmentExpression, StaticMemberExpression, \
+    BlockStatement
 from libopensesame.inline_script import InlineScript
 from libqtopensesame.items.inline_script import InlineScript as QtInlineScript
 from libqtopensesame.items.qtplugin import QtPlugin
 from pyqode.core.widgets import SplittableCodeEditTabWidget
 from libqtopensesame.misc.translate import translation_context
+from libopensesame.oslogging import oslogger
 from . import javascript_workspace_api as api
 _ = translation_context(u'inline_javascript', category=u'plugin')
 
@@ -84,7 +89,8 @@ class QtInlineJavascript(QtInlineScript):
         # This requires pyqode_extras, which is not available in opensesamerun
         # and therefore we import it only here.
         from .javascript_code_edit import JavaScriptCodeEdit
-        
+
+        self._var_cache = None
         if self.mime_type not in SplittableCodeEditTabWidget.editors:
             SplittableCodeEditTabWidget.register_code_edit(JavaScriptCodeEdit)
         InlineScript.__init__(self, name, experiment, string)
@@ -93,3 +99,45 @@ class QtInlineJavascript(QtInlineScript):
     def item_icon(self):
 
         return self.qicon
+
+    @staticmethod
+    def _extract_assignments(script):
+    
+        def inner(body, only_globals=False):
+            if hasattr(body, 'body') and body.body is not None:
+                return inner(body.body,
+                    only_globals=only_globals or 
+                        isinstance(body, FunctionDeclaration))
+            if not isinstance(body, list):
+                body = [body]
+            assignments = []
+            for element in body:
+                if isinstance(element, VariableDeclaration) and \
+                        not only_globals:
+                    # Only var results in assignments
+                    if element.kind == 'var':
+                        for declaration in element.declarations:
+                            assignments.append(declaration.id.name)
+                elif isinstance(element, ExpressionStatement) \
+                        and isinstance(element.expression,
+                                       AssignmentExpression) \
+                        and isinstance(element.expression.left,
+                                       StaticMemberExpression):
+                    if element.expression.left.object.name \
+                            in ['vars','window']:
+                        assignments.append(
+                            element.expression.left.property.name)
+                elif isinstance(element, list):
+                    assignments += inner(body, only_globals=only_globals)
+                elif hasattr(element, 'body') and element.body is not None:
+                    assignments += inner(element.body,
+                        only_globals=only_globals or 
+                            isinstance(element, FunctionDeclaration))
+            return assignments
+        
+        try:
+            return inner(esprima.parse(script).body)
+        except Exception as e:
+            oslogger.debug(f'failed to extract assignments: {e}')
+            return []
+    
