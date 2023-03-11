@@ -68,6 +68,10 @@ function errorHandler (msg, url, line, col, error) {
 }
 window.onerror = errorHandler
 
+// An array that will contain all logged data to be downloaded as a JSON text
+// file at the end
+window._logdata = []
+
 /**
  * Converts base-64-encoded data to a File object, which can be passed to
  * osweb as an experiment file
@@ -103,6 +107,16 @@ function runExperiment() {
  */
 function onFinishedHandler(data, sessionData) {
     document.getElementById('osweb_div').style.display = 'none'
+    // The data is downloaded by creating a link and programmatically clicking
+    // it
+    const logdata = JSON.stringify(window._logdata)
+    const element = document.createElement('a')
+    element.setAttribute(
+        'href', `data:text/plain;charset=utf-8,${encodeURIComponent(logdata)}`)
+    element.setAttribute('download', 'osweb-data.json')
+    element.style.display = 'none'
+    document.body.appendChild(element)
+    element.click()
 }
 
 /**
@@ -133,6 +147,7 @@ function onLogHandler(data) {
     if (data === null) {
         return
     }
+    window._logdata.push(data)
     console.log(JSON.stringify(data))
 }
 
