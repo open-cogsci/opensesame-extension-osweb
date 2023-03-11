@@ -23,27 +23,27 @@ import itertools as it
 
 # These items are supported but don't have a specific linter function
 SUPPORTED_ITEMS = [
-    u'sequence',
-    u'touch_response',
-    u'notepad',
-    u'reset_feedback',
-    u'repeat_cycle',
-    u'advanced_delay',
-    u'inline_javascript',
-    u'inline_html',
-    u'feedback',
-    u'form_text_display',
-    u'form_multiple_choice',
-    u'form_consent',
-    u'sketchpad'
+    'sequence',
+    'touch_response',
+    'notepad',
+    'reset_feedback',
+    'repeat_cycle',
+    'advanced_delay',
+    'inline_javascript',
+    'inline_html',
+    'feedback',
+    'form_text_display',
+    'form_multiple_choice',
+    'form_consent',
+    'logger',
+    'sketchpad'
 ]
 
 STRUCTURE_CHECK_ITEMS = [
-    u'logger',
-    u'repeat_cycle',
-    u'reset_feedback',
-    u'loop',
-    u'sequence'
+    'repeat_cycle',
+    'reset_feedback',
+    'loop',
+    'sequence'
 ]
 
 
@@ -52,7 +52,7 @@ def check_compatibility(exp, fullscreen):
     list of text strings. An empty list indicates that the experiment is
     compatible.
     """
-    return u'\n'.join(
+    return '\n'.join(
         check_supported_items(exp, fullscreen) + 
         check_structure(exp, fullscreen)
     )
@@ -69,7 +69,7 @@ def check_item(item, fullscreen):
         linter_fnc = eval('check_item_{}'.format(item.item_type))
     except NameError:
         if item.item_type not in SUPPORTED_ITEMS:
-            return [u'Item {} is not supported'.format(item.item_type)]
+            return ['Item {} is not supported'.format(item.item_type)]
         return []
     return linter_fnc(item, fullscreen)
 
@@ -97,7 +97,7 @@ def check_structure(exp, fullscreen):
             item.item_type in STRUCTURE_CHECK_ITEMS
         ):
             errors.append(
-                u'The {} phase for item {} is called multiple times in a row'.format(
+                'The {} phase for item {} is called multiple times in a row'.format(
                     state,
                     item_name
                 )
@@ -158,17 +158,6 @@ def check_item_sampler(item, fullscreen):
     if item.var.stop_after != 0:
         w.append(item_warning(item, 'Stop after not supported'))
     return w
-
-
-def check_item_logger(item, fullscreen):
-    w = []
-    if item.var.auto_log == 'yes':
-        w.append(item_warning(
-            item,
-            'To save bandwidth, select only relevant variables instead of logging all variables'
-        ))
-    return w
-
 
 def check_item_form_text_input(item, fullscreen):
     if not fullscreen:
