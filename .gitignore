@@ -7,3 +7,9 @@ dist
 *.egg-info/
 deb_dist
 *.tar.gz
+.rapunzel.yaml
+tests/data/tmp.osexp
+tests/data/quickrun.csv
+test.*
+tmp.*
+run_unittest.sh

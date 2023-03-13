@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "opensesame-extension-osweb"
+version = "2.0.0.0a1"
+description = "Extensions and plugins for OpenSesame to run experiments in a browser using OSWeb"
+authors = ["Sebastiaan Mathôt <s.mathot@cogsci.nl>"]
+readme = "readme.md"
+license = "COPYING"
+packages = [
+    {include = "opensesame_extensions"},
+    {include = "opensesame_plugins"}
+]
+
+[tool.poetry.dependencies]
+opensesame-ide = ">= 4.0.0a1"
+beautifulsoup4 = "*"
+js2py = "*"
+javascripthon = "*"
+esprima = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
