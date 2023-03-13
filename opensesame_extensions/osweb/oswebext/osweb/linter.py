@@ -47,6 +47,17 @@ STRUCTURE_CHECK_ITEMS = [
 ]
 
 
+def item_type_supported(item_type):
+    """Checks whether an item_type is supported. Items are supported if they
+    have a custom linter function or if they are in the SUPPORTED_ITEMS list.
+    """
+    try:
+        eval('check_item_{}'.format(item_type))
+    except NameError:
+        return item_type in SUPPORTED_ITEMS
+    return True
+
+
 def check_compatibility(exp, fullscreen):
     """Checks the compatibility of an experiment and returns all warnings as a
     list of text strings. An empty list indicates that the experiment is

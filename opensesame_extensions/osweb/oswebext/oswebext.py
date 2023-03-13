@@ -53,6 +53,11 @@ class Oswebext(BaseExtension):
         if self.experiment.var.canvas_backend == 'osweb':
             return OSWebRunner
         
+    def provide_item_supported(self, experiment, item_type):
+        if self.experiment.var.canvas_backend != 'osweb':
+            return None
+        return linter.item_type_supported(item_type)
+        
     def event_osweb_run(self, fullscreen=False, subject_nr=0,
                         logfile='quickrun.csv'):
         if self.run_linter():
