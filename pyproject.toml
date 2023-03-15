@@ -9,9 +9,11 @@ packages = [
     {include = "opensesame_extensions"},
     {include = "opensesame_plugins"}
 ]
+homepage = "https://osdoc.cogsci.nl"
+repository = "https://github.com/open-cogsci/opensesame-extension-osweb/"
 
 [tool.poetry.dependencies]
-opensesame-ide = ">= 4.0.0a1"
+opensesame-core = ">= 4.0.0a1"
 beautifulsoup4 = "*"
 js2py = "*"
 javascripthon = "*"
