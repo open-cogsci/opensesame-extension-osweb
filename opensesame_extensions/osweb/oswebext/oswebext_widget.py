@@ -169,8 +169,8 @@ class OSWebExtWidget(BasePreferencesWidget):
         export.jatos(
             osexp,
             path,
-            title=self.experiment.title,
-            description=self.experiment.description,
+            title=self.experiment.var.title,
+            description=self.experiment.var.description,
             subject=poss_subject_nrs,
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
