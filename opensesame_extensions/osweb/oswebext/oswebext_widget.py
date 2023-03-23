@@ -115,17 +115,17 @@ class OSWebExtWidget(BasePreferencesWidget):
             self.ui.label_expsize_warning.setVisible(False)
             
     def _external_js(self):
-        
         return [url.strip() for url in
                 self.ui.plaintextedit_external_js.toPlainText().splitlines()]
+        
+    def _uuid(self):
+        uuid = self.experiment.var.get('jatos_uuid', False)
+        if uuid:
+            return uuit
+        return None
 
     def _test(self, fullscreen=None, subject_nr=None, logfile=None):
-
-        """
-        desc:
-            Tests the experiment by running it in an external browser.
-        """
-
+        """Tests the experiment by running it in an external browser"""
         self.main_window.get_ready()
         osexp = self._tmp_osexp()
         html = self._tmp_html()
@@ -148,7 +148,6 @@ class OSWebExtWidget(BasePreferencesWidget):
                 'failed to remove temporary experiment file ({})'.format(e))
 
     def _export_jatos(self):
-
         if self.main_window.current_path:
             suggested_path = self.main_window.current_path + u'.zip'
         else:
@@ -157,16 +156,17 @@ class OSWebExtWidget(BasePreferencesWidget):
             self.main_window,
             _(u'Export JATOS study…'),
             directory=suggested_path,
-            filter=u'JATOS study (*.zip)'
-        )
+            filter=u'JATOS study (*.jzip)')
         if isinstance(path, tuple):
             path = path[0]
         if not path:
             return
+        if not path.lower().endswith('.jzip'):
+            path += '.jzip'
         osexp = self._tmp_osexp()
         poss_subject_nrs = self.ui.linedit_subject.text()
         fullscreen = self.ui.fs_checkBox.isChecked()
-        export.jatos(
+        self.experiment.var.jatos_uuid = export.jatos(
             osexp,
             path,
             title=self.experiment.var.title,
@@ -174,14 +174,14 @@ class OSWebExtWidget(BasePreferencesWidget):
             subject=poss_subject_nrs,
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
-            external_js=self._external_js())
+            external_js=self._external_js(),
+            uuid=self._uuid())
         os.remove(osexp)
         self.extension_manager.fire(
             'notify',
             message='Experiment succesfully exported',
             category='success',
-            always_show=True
-        )
+            always_show=True)
 
     def _convert_results(self):
 
@@ -207,8 +207,8 @@ class OSWebExtWidget(BasePreferencesWidget):
         except UnicodeDecodeError:
             self.extension_manager.fire(
                 'notify',
-                message = _('File is not utf-8 encoded'),
-                category = 'warning'
+                message=_('File is not utf-8 encoded'),
+                category='warning'
             )
             return
         finally:
