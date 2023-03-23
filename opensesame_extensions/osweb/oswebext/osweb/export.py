@@ -62,7 +62,7 @@ def standalone(osexp_path, index_path, subject='0', fullscreen=False,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js}
     _compose_html_and_get_assets(Path(osexp_path), Path(index_path),
-                                 'standalone', params)
+                                 'standalone', params=params)
 
 
 def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
@@ -101,6 +101,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     if uuid is None:
         uuid = unique_uuid()
     osexp_path = Path(osexp_path)
+    component_hash = hashlib.md5(osexp_path.read_bytes()).hexdigest()
     jzip_path = Path(jzip_path)
     # We create a temporary directory that will contain all the files that will
     # go into the jzip archive.
@@ -108,9 +109,9 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     # The folder structure is as follows:
     #
     #     info.jas
-    #     assets/
-    #        index.html
-    #        experiment.osexp
+    #     {uuid}/
+    #        {component_hash}.html
+    #        {component_hash}.osexp
     #        css/
     #            vendors-osweb*.css.map
     #            vendors-osweb*.css
@@ -130,14 +131,15 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
         tmp_dir = Path(tmp_dir)
         assets_dir = tmp_dir / uuid
         assets_dir.mkdir()
-        index_path = assets_dir / 'index.html'
+        index_path = assets_dir / f'{component_hash}.html'
         jas_path = tmp_dir / 'info.jas'
         params = {'subject': subject,
                   'fullscreen': fullscreen,
                   'welcomeText': _safe_welcome_text(welcome_text),
                   'externalJS': external_js}
-        assets = _compose_html_and_get_assets(osexp_path, index_path, 'jatos',
-                                              params)
+        assets = _compose_html_and_get_assets(
+            osexp_path, index_path, 'jatos', params=params,
+            component_hash=component_hash)
         info = {
             'version': '3',  # This refers to the JATOS version
             'data': {
@@ -150,7 +152,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
                 'jsonData': None,
                 'componentList': [{
                     'title': 'OSWeb experiment',
-                    'htmlFilePath': 'index.html',
+                    'htmlFilePath': f'{component_hash}.html',
                     'reloadable': False,
                     'active': True,
                     'jsonData': json.dumps(params),
@@ -161,10 +163,10 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
         jas_path.write_text(json.dumps(info))
         with zipfile.ZipFile(jzip_path, 'w') as fd:
             fd.write(jas_path, 'info.jas')
-            fd.write(index_path, f'{uuid}/index.html')
+            fd.write(index_path, f'{uuid}/{component_hash}.html')
             for img in ['opensesame.png', 'warning.png']:
                 fd.write(src_paths['img'] / img, f'{uuid}/img/{img}')
-            fd.write(osexp_path, f'{uuid}/experiment.osexp')
+            fd.write(osexp_path, f'{uuid}/{component_hash}.osexp')
             for js in assets['js']:
                 fd.write(js['src'], f'{uuid}/{js["dest"]}')
             for css in assets['css']:
@@ -179,7 +181,8 @@ def _get_os_assets(sub_dir):
             for path in src_paths[sub_dir].glob('*osweb*')]
 
 
-def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None):
+def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
+                                 component_hash=None):
     """Generates an index.html and returns asset information.
     
     Parameters
@@ -216,7 +219,7 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None):
     if mode == 'standalone':
         _compose_for_standalone(osexp_path, dom, assets, params)
     elif mode == 'jatos':
-        _compose_for_jatos(dom, assets, params)
+        _compose_for_jatos(component_hash, dom, assets, params)
     html = dom.prettify()
     index_path.write_text(html)
     return assets
@@ -269,12 +272,13 @@ def _compose_for_standalone(osexp_path, dom, assets, params=None):
     dom.body.append(exp_tag)
 
 
-def _compose_for_jatos(dom, assets, params=None):
+def _compose_for_jatos(component_hash, dom, assets, params=None):
     """Builds on top of the base HTML template to create a structure that is 
     appropriate for integration in JATOS.
     
     Parameters
     ----------
+    component_hash: str
     dom: Tag
         A BeautifulSoup Tag corresponding to the full HTML file
     assets: dict
@@ -293,7 +297,7 @@ def _compose_for_jatos(dom, assets, params=None):
             f'const params = JSON.parse(\'{json.dumps(params)}\')')
     # Get the OpenSesame experiment file name, and add a JS variable to its
     # location
-    script_tag.append('const osexpFile = "experiment.osexp"')
+    script_tag.append(f'const osexpFile = "{component_hash}.osexp"')
     dom.head.append(script_tag)
     # Add script nodes referencing the sources of all other required javascript
     # files.
