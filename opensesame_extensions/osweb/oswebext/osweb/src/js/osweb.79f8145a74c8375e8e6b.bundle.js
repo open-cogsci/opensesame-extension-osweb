@@ -956,15 +956,17 @@ var Canvas = /*#__PURE__*/function () {
     key: "init_display",
     value: function init_display(experiment) {
       // Set the dimension properties.
-      this._height = experiment.vars.height;
-      this._width = experiment.vars.width; // Set the renderer dimensions.
+      this._height = experiment.vars.get('height');
+      this._width = experiment.vars.get('width'); // Set the renderer dimensions.
 
       experiment._runner._renderer.resize(this._width, this._height); // Set the renderer background color.
 
 
-      experiment._runner._renderer.clear(this._styles._convertColorValue(experiment.vars.background, 'number'));
+      var background = experiment.vars.get('background');
 
-      experiment._runner._renderer.backgroundColor = this._styles._convertColorValue(experiment.vars.background, 'number'); // PIXU: Set the cursor visibility to none (default).
+      experiment._runner._renderer.clear(this._styles._convertColorValue(background, 'number'));
+
+      experiment._runner._renderer.backgroundColor = this._styles._convertColorValue(background, 'number'); // PIXU: Set the cursor visibility to none (default).
 
       experiment._runner._renderer.view.style.cursor = 'none'; // Start the fullscreen mode (if enabled).
 
@@ -2879,8 +2881,8 @@ var CanvasHandler = /*#__PURE__*/function () {
      *
      * @example
      * var myCanvas = Canvas()
-     * var w = vars.width / 2
-     * var h = vars.height / 2
+     * var w = width / 2
+     * var h = height / 2
      * // Important: parameters are passed as an Object
      * myCanvas.arrow({sx: 0, sy: 0, w: w, h: h, head_width:100, body_length:0.5})
      *
@@ -3154,8 +3156,8 @@ var CanvasHandler = /*#__PURE__*/function () {
      *
      * @example
      * var myCanvas = Canvas()
-     * var ex = vars.width / 2
-     * var ey = vars.height / 2
+     * var ex = width / 2
+     * var ey = height / 2
      * myCanvas.line({sx: 0, sy: 0, ex: ex, ey: ey})
      * 
      * @param {Object} obj
@@ -3966,14 +3968,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _classes_javascript_workspace_api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../classes/javascript_workspace_api */ "./src/js/osweb/classes/javascript_workspace_api.js");
 /* harmony import */ var _classes_canvas_handler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../classes/canvas_handler */ "./src/js/osweb/classes/canvas_handler.js");
-/* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! random-ext */ "./node_modules/random-ext/index.js");
-/* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(random_ext__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! color-convert */ "./node_modules/color-convert/index.js");
-/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(color_convert__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! csv-parse/lib/sync */ "./node_modules/csv-parse/lib/sync.js");
-/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! pythonic */ "./node_modules/pythonic/index.js");
-/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(pythonic__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _classes_var_store_handler__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../classes/var_store_handler */ "./src/js/osweb/classes/var_store_handler.js");
+/* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! random-ext */ "./node_modules/random-ext/index.js");
+/* harmony import */ var random_ext__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(random_ext__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! color-convert */ "./node_modules/color-convert/index.js");
+/* harmony import */ var color_convert__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(color_convert__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! csv-parse/lib/sync */ "./node_modules/csv-parse/lib/sync.js");
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! pythonic */ "./node_modules/pythonic/index.js");
+/* harmony import */ var pythonic__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(pythonic__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -3983,44 +3986,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-/**
- * A proxy handler for the VarStore that maps properties onto calls to
- * VarStore.get(), so that variables are automatically evaluated, just like
- * in the OpenSesame `var` API.
- */
 
-var VarStoreHandler = /*#__PURE__*/function () {
-  function VarStoreHandler() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, VarStoreHandler);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(VarStoreHandler, [{
-    key: "get",
-    value: function get(target, prop) {
-      // The VarStore sets a property on itself to bypass this proxy. This
-      // avoids feedback loops when the VarStore tries to get a variable without
-      // evaluating it.
-      if (target._bypass_proxy === true) {
-        return target[prop];
-      }
-
-      return typeof target[prop] === 'string' ? target.get(prop, null, true, null, false) : target[prop];
-    }
-  }, {
-    key: "set",
-    value: function set(target, key, value) {
-      // Use the set method to make sure that variables are registered.
-      target.set(key, value);
-    }
-  }]);
-
-  return VarStoreHandler;
-}();
 /**
  * A workspace for executing inline JavaScript code. For now, the workspace is
  * not persistent, and only exposes the vars object.
  */
-
 
 var JavaScriptWorkspace = /*#__PURE__*/function () {
   /**
@@ -4047,15 +4017,15 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
     key: "_init",
     value: function _init() {
       this._initialized = true;
-      window.vars = new Proxy(this.experiment.vars, new VarStoreHandler());
-      window.range = pythonic__WEBPACK_IMPORTED_MODULE_8__["range"];
-      window.enumerate = pythonic__WEBPACK_IMPORTED_MODULE_8__["enumerate"];
-      window.items = pythonic__WEBPACK_IMPORTED_MODULE_8__["items"];
-      window.zip = pythonic__WEBPACK_IMPORTED_MODULE_8__["zip"];
-      window.zipLongest = pythonic__WEBPACK_IMPORTED_MODULE_8__["zipLongest"];
-      window.random = random_ext__WEBPACK_IMPORTED_MODULE_5___default.a;
-      window.convert = color_convert__WEBPACK_IMPORTED_MODULE_6___default.a;
-      window.csvParse = csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_7___default.a;
+      window.vars = new Proxy(this.experiment.vars, new _classes_var_store_handler__WEBPACK_IMPORTED_MODULE_5__["default"]());
+      window.range = pythonic__WEBPACK_IMPORTED_MODULE_9__["range"];
+      window.enumerate = pythonic__WEBPACK_IMPORTED_MODULE_9__["enumerate"];
+      window.items = pythonic__WEBPACK_IMPORTED_MODULE_9__["items"];
+      window.zip = pythonic__WEBPACK_IMPORTED_MODULE_9__["zip"];
+      window.zipLongest = pythonic__WEBPACK_IMPORTED_MODULE_9__["zipLongest"];
+      window.random = random_ext__WEBPACK_IMPORTED_MODULE_6___default.a;
+      window.convert = color_convert__WEBPACK_IMPORTED_MODULE_7___default.a;
+      window.csvParse = csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_8___default.a;
 
       window.Canvas = function () {
         var styleArgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -4230,8 +4200,8 @@ var JavaScriptWorkspaceAPI = /*#__PURE__*/function () {
      *
      * @example
      * set_subject_nr(1)
-     * console.log('Subject nr = ' + vars.subject_nr)
-     * console.log('Subject parity = ' + vars.subject_parity)
+     * console.log('Subject nr = ' + subject_nr)
+     * console.log('Subject parity = ' + subject_parity)
      **/
 
   }, {
@@ -4960,9 +4930,9 @@ var Syntax = /*#__PURE__*/function () {
 
           try {
             if (typeof vars === 'undefined' || vars === null || typeof vars[content] === 'undefined') {
-              value = _this._runner._experiment.vars[content];
+              value = _this._runner._experiment.vars.get(content, null, false);
             } else {
-              value = vars[content];
+              value = vars.get(content, null, false);
             } // Value could still be an expression, so evaluate again
 
 
@@ -5388,7 +5358,7 @@ var VarStore = /*#__PURE__*/function () {
       if (variable in this._scope) {
         this._bypass_proxy = true; // Avoid Proxy feedback loop
 
-        if (typeof this[variable] === 'string' && evaluate === true) {
+        if (typeof this._scope[variable] === 'string' && evaluate === true) {
           value = this._item.syntax.eval_text(this._scope[variable], null, addQuotes);
         } else {
           value = this._scope[variable];
@@ -5536,6 +5506,51 @@ var VarStore = /*#__PURE__*/function () {
   }]);
 
   return VarStore;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/js/osweb/classes/var_store_handler.js":
+/*!***************************************************!*\
+  !*** ./src/js/osweb/classes/var_store_handler.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VarStoreHandler; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+/**
+ * A proxy handler for the VarStore that maps properties onto calls to
+ * VarStore.get() and VarStore.set().
+ */
+var VarStoreHandler = /*#__PURE__*/function () {
+  function VarStoreHandler() {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, VarStoreHandler);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(VarStoreHandler, [{
+    key: "get",
+    value: function get(target, prop) {
+      return target.get(prop, false, null);
+    }
+  }, {
+    key: "set",
+    value: function set(target, key, value) {
+      target.set(key, value);
+    }
+  }]);
+
+  return VarStoreHandler;
 }();
 
 
@@ -5818,8 +5833,8 @@ var BaseElement = /*#__PURE__*/function () {
       var _this = this;
 
       // Evaluates all properties and return them.
-      var xc = this.experiment.vars.width / 2;
-      var yc = this.experiment.vars.height / 2;
+      var xc = this.experiment.vars.get('width') / 2;
+      var yc = this.experiment.vars.get('height') / 2;
       this._properties = Object.entries(this.properties).reduce(function (result, _ref) {
         var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_5___default()(_ref, 2),
             prop = _ref2[0],
@@ -6988,9 +7003,9 @@ var AdvancedDelay = /*#__PURE__*/function (_Item) {
   }, {
     key: "reset",
     value: function reset() {
-      this.vars.duration = 1000;
-      this.vars.jitter = 0;
-      this.vars.jitter_mode = 'Uniform';
+      this.vars.set("duration", 1000);
+      this.vars.set("jitter", 0);
+      this.vars.set('jitter_mode', 'Uniform');
     }
     /** Implements the prepare phase of an item. */
 
@@ -7209,7 +7224,7 @@ var Coroutines = /*#__PURE__*/function (_Item) {
                 variable = _arglist[0],
                 value = _arglist[1];
 
-            this.vars[variable] = value;
+            this.vars.set(variable, value);
           }
 
           if (cmd === 'run' && arglist.length) {
@@ -7588,22 +7603,36 @@ var Experiment = /*#__PURE__*/function (_Item) {
     _this.items = _this._runner._itemStore;
     _this.pool = _this._runner._pool; // Set default variables
 
-    _this.vars.start = 'experiment';
-    _this.vars.round_decimals = 2;
-    _this.vars.form_clicks = 'no';
-    _this.vars.sessionid = new Date().valueOf() + Math.floor(Math.random() * 100000); // Display parameters.
+    _this.vars.set('start', 'experiment');
 
-    _this.vars.width = 1024;
-    _this.vars.height = 768;
-    _this.vars.background = 0x000000;
-    _this.vars.foreground = 0xFFFFFF;
-    _this.vars.penwidth = 1; // Font parameters.
+    _this.vars.set('round_decimals', 2);
 
-    _this.vars.font_size = 18;
-    _this.vars.font_family = 'mono';
-    _this.vars.font_italic = 'no';
-    _this.vars.font_bold = 'no';
-    _this.vars.font_underline = 'no';
+    _this.vars.set('form_clicks', 'no');
+
+    _this.vars.set('sessionid', new Date().valueOf() + Math.floor(Math.random() * 100000)); // Display parameters.
+
+
+    _this.vars.set('width', 1024);
+
+    _this.vars.set('height', 768);
+
+    _this.vars.set('background', 0x000000);
+
+    _this.vars.set('foreground', 0xFFFFFF);
+
+    _this.vars.set('penwidth', 1); // Font parameters.
+
+
+    _this.vars.set('font_size', 18);
+
+    _this.vars.set('font_family', 'mono');
+
+    _this.vars.set('font_italic', 'no');
+
+    _this.vars.set('font_bold', 'no');
+
+    _this.vars.set('font_underline', 'no');
+
     return _this;
   }
   /** Resets the feedback variables (acc, avg_rt, etc.). */
@@ -7612,13 +7641,13 @@ var Experiment = /*#__PURE__*/function (_Item) {
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default()(Experiment, [{
     key: "reset_feedback",
     value: function reset_feedback() {
-      this.vars.total_responses = 0;
-      this.vars.total_correct = 0;
-      this.vars.total_response_time = 0;
-      this.vars.avg_rt = 'undefined';
-      this.vars.average_response_time = 'undefined';
-      this.vars.accuracy = 'undefined';
-      this.vars.acc = 'undefined';
+      this.vars.set('total_responses', 0);
+      this.vars.set('total_correct', 0);
+      this.vars.set('total_response_time', 0);
+      this.vars.set('avg_rt', 'undefined');
+      this.vars.set('average_response_time', 'undefined');
+      this.vars.set('accuracy', 'undefined');
+      this.vars.set('acc', 'undefined');
     }
     /**
       * Sets the subject number and parity (even/ odd).
@@ -7629,12 +7658,12 @@ var Experiment = /*#__PURE__*/function (_Item) {
     key: "set_subject",
     value: function set_subject(pNr) {
       // Sets the subject number and parity (even/ odd).
-      this.vars.subject_nr = pNr;
+      this.vars.set('subject_nr', pNr);
 
       if (pNr % 2 === 0) {
-        this.vars.subject_parity = 'even';
+        this.vars.set('subject_parity', 'even');
       } else {
-        this.vars.subject_parity = 'odd';
+        this.vars.set('subject_parity', 'odd');
       }
     }
     /**
@@ -7757,19 +7786,21 @@ var Experiment = /*#__PURE__*/function (_Item) {
           // Adjust the status of the item.
           this._status = _system_constants_js__WEBPACK_IMPORTED_MODULE_18__["constants"].STATUS_FINALIZE; // Save the date and time, and the version of OpenSesame
 
-          this.vars.datetime = new Date().toString();
-          this.vars.opensesame_version = _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NUMBER"];
-          this.vars.opensesame_codename = _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NAME"];
+          this.vars.set('datetime', new Date().toString());
+          this.vars.set('opensesame_version', _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NUMBER"]);
+          this.vars.set('opensesame_codename', _index_js__WEBPACK_IMPORTED_MODULE_19__["VERSION_NAME"]);
           this.init_clock();
           this.init_display();
           this.reset_feedback(); // Add closing message to debug system.
 
           this._runner._debugger.addMessage('experiment.run(): experiment started at ' + new Date().toUTCString());
 
-          if (this._runner._itemStore._items[this.vars.start] !== null) {
+          var start = this.vars.get('start');
+
+          if (this._runner._itemStore._items[start] !== null) {
             this._runner._itemStack.clear();
 
-            this._runner._itemStore.prepare(this.vars.start, this);
+            this._runner._itemStore.prepare(start, this);
           } else {
             this._runner._debugger.addError('Could not find the item that is the entry point of the experiment: ' + this.vars.start);
           }
@@ -7888,7 +7919,7 @@ var Feedback = /*#__PURE__*/function (_Sketchpad) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(Feedback.prototype), "_complete", this).call(this); // Reset feedback variables.
 
 
-      if (this.vars.reset_variables === 'yes') {
+      if (this.vars.get('reset_variables') === 'yes') {
         this.experiment.reset_feedback();
       }
     }
@@ -7901,7 +7932,7 @@ var Feedback = /*#__PURE__*/function (_Sketchpad) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(Feedback.prototype), "reset", this).call(this); // Reset the variables.
 
 
-      this.vars.reset_variables = 'yes';
+      this.vars.set('reset_variables', 'yes');
     }
     /** Implements the prepare phase of an item. */
 
@@ -8169,7 +8200,7 @@ var FormHTML = /*#__PURE__*/function (_Item) {
     value: function reset() {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_21___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_24___default()(FormHTML.prototype), "reset", this).call(this);
 
-      this.vars.margins = '50;50;50;50';
+      this.vars.set('margins', '50;50;50;50');
     }
     /**
      * Generates an array of HTML elements that are appended to the form. Should
@@ -8562,7 +8593,7 @@ var FormMultipleChoice = /*#__PURE__*/function (_FormHTML) {
         _iterator.f();
       }
 
-      this.experiment.vars.set(this.vars.form_var, values.length > 0 ? values.join(';') : 'no');
+      this.experiment.vars.set(this.vars.get('form_var'), values.length > 0 ? values.join(';') : 'no');
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_20___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_23___default()(FormMultipleChoice.prototype), "resumeOSWeb", this).call(this);
     }
@@ -8783,7 +8814,7 @@ var FormTextInput = /*#__PURE__*/function (_FormHTML) {
      **/
     value: function checkReturnPress(event) {
       if (event.keyCode !== 13) return;
-      this.experiment.vars.set(this.vars.form_var, this._textArea.value);
+      this.experiment.vars.set(this.vars.get('form_var'), this._textArea.value);
       this.resumeOSWeb();
     }
   }, {
@@ -9009,10 +9040,11 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
         return typeof item === 'string' ? item.replace(/^"(.*)"$/g, '$1').trim() : item;
       }).filter(Boolean);
       if (response_array.length === 0) return null;
+      var duration = this.vars.get('duration');
 
-      if (this.vars.duration === 'keypress') {
+      if (duration === 'keypress') {
         response_array = this._keyboard._get_default_from_synonym(response_array);
-      } else if (this.vars.duration === 'mouseclick') {
+      } else if (duration === 'mouseclick') {
         response_array = this._mouse._get_default_from_synonym(response_array);
       }
 
@@ -9049,16 +9081,17 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
 
       if (this._duration === 'keypress' || this._duration === 'mouseclick' || this._duration === 'sound' || this._duration === 'video') {
         this._duration = -1;
+        var duration = this.vars.get('duration');
 
-        if (this.vars.duration === 'keypress') {
+        if (duration === 'keypress') {
           this.prepare_duration_keypress();
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_KEYBOARD;
-        } else if (this.vars.duration === 'mouseclick') {
+        } else if (duration === 'mouseclick') {
           this.prepare_duration_mouseclick();
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_MOUSE;
-        } else if (this.vars.duration === 'sound') {
+        } else if (duration === 'sound') {
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_SOUND;
-        } else if (this.vars.duration === 'video') {
+        } else if (duration === 'video') {
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_VIDEO;
         }
 
@@ -9106,9 +9139,11 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "configure_response_objects",
     value: function configure_response_objects() {
-      if (this.vars.duration === 'keypress') {
+      var duration = this.vars.get('duration');
+
+      if (duration === 'keypress') {
         this._keyboard._set_config(this._final_duration, this._allowed_responses);
-      } else if (this.vars.duration === 'mouseclick') {
+      } else if (duration === 'mouseclick') {
         this._mouse._set_config(this._final_duration, this._allowed_responses, false);
       }
     }
@@ -9163,11 +9198,13 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
       // the same size in cursor coordinates, even if it's scaled down.
       var rect = this._runner._renderer.view.getBoundingClientRect();
 
-      var scale = Math.min((rect.right - rect.left) / this.experiment.vars.width, (rect.bottom - rect.top) / this.experiment.vars.height);
-      var center_x = scale * this.experiment.vars.width / 2;
-      var center_y = scale * this.experiment.vars.height / 2;
-      this.experiment.vars.cursor_x = (clientX - center_x - rect.left) / scale;
-      this.experiment.vars.cursor_y = (clientY - center_y - rect.top) / scale;
+      var width = this.experiment.vars.get('width');
+      var height = this.experiment.vars.get('height');
+      var scale = Math.min((rect.right - rect.left) / width, (rect.bottom - rect.top) / height);
+      var center_x = scale * width / 2;
+      var center_y = scale * height / 2;
+      this.experiment.vars.set('cursor_x', (clientX - center_x - rect.left) / scale);
+      this.experiment.vars.set('cursor_y', (clientY - center_y - rect.top) / scale);
     }
     /** Process a keyboard response. */
 
@@ -9176,8 +9213,9 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     value: function process_response_keypress(retval) {
       this.experiment._start_response_interval = this.sri;
       this.experiment._end_response_interval = retval.rtTime;
-      this.experiment.vars.response = this.syntax.sanitize(retval.resp);
-      this.synonyms = this._keyboard._synonyms(this.experiment.vars.response);
+      var response = this.syntax.sanitize(retval.resp);
+      this.experiment.vars.set('response', response);
+      this.synonyms = this._keyboard._synonyms(response);
       this.response_bookkeeping();
     }
     /** Process a mouse click response. */
@@ -9199,7 +9237,7 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     value: function process_response_timeout() {
       this.experiment._start_response_interval = this.sri;
       this.experiment._end_response_interval = this.experiment._runner._events._timeStamp;
-      this.experiment.vars.response = 'None';
+      this.experiment.vars.set('response', 'None');
       this.synonyms = ['None', 'none'];
       this.response_bookkeeping();
     }
@@ -9219,11 +9257,11 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
       if (this.process_feedback !== true) return;
 
       if (this._correct_responses === null) {
-        this.experiment.vars.correct = 'undefined';
+        this.experiment.vars.set('correct', 'undefined');
         return;
       }
 
-      this.experiment.vars.correct = 0;
+      this.experiment.vars.set('correct', 0);
 
       var _iterator = _createForOfIteratorHelper(this._correct_responses),
           _step;
@@ -9233,8 +9271,8 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
           var cr = _step.value;
 
           if (this.synonyms.includes(cr)) {
-            this.experiment.vars.correct = 1;
-            this.experiment.vars.total_correct = this.experiment.vars.total_correct + 1;
+            this.experiment.vars.set('correct', 1);
+            this.experiment.vars.set('total_correct', this.experiment.vars.get('total_correct') + 1);
             break;
           }
         }
@@ -9244,13 +9282,13 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
         _iterator.f();
       }
 
-      this.experiment.vars.total_response_time = this.experiment.vars.total_response_time + this.experiment.vars.response_time;
-      this.experiment.vars.total_responses = this.experiment.vars.total_responses + 1;
-      this.experiment.vars.accuracy = Math.round(100.0 * this.experiment.vars.total_correct / this.experiment.vars.total_responses);
-      this.experiment.vars.acc = this.experiment.vars.accuracy;
-      this.experiment.vars.average_response_time = Math.round(this.experiment.vars.total_response_time / this.experiment.vars.total_responses);
-      this.experiment.vars.avg_rt = this.experiment.vars.average_response_time;
-      this.experiment.vars.set('correct_' + this.name, this.experiment.vars.correct);
+      this.experiment.vars.set('total_response_time', this.experiment.vars.get('total_response_time') + this.experiment.vars.get('response_time'));
+      this.experiment.vars.set('total_responses', this.experiment.vars.get('total_responses') + 1);
+      this.experiment.vars.set('accuracy', Math.round(100.0 * this.experiment.vars.get('total_correct') / this.experiment.vars.get('total_responses')));
+      this.experiment.vars.set('acc', this.experiment.vars.get('accuracy'));
+      this.experiment.vars.set('average_response_time', Math.round(this.experiment.vars.get('total_response_time') / this.experiment.vars.get('total_responses')));
+      this.experiment.vars.set('avg_rt', this.experiment.vars.get('average_response_time'));
+      this.experiment.vars.set('correct_' + this.name, this.experiment.vars.get('correct'));
     }
     /**
        * Sets or resets the start of the stimulus response interval.
@@ -9413,7 +9451,7 @@ var InlineHTML = /*#__PURE__*/function (_FormHTML) {
     value: function reset() {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_18___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_21___default()(InlineHTML.prototype), "reset", this).call(this);
 
-      this.vars.html = '';
+      this.vars.set('htm', '');
     }
     /**
      * @return {string} - the HTML content
@@ -9691,8 +9729,8 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default()(InlineJavaScript, [{
     key: "reset",
     value: function reset() {
-      this.vars._prepare = '';
-      this.vars._run = '';
+      this.vars.set('_prepare', '');
+      this.vars.set('_run', '');
     }
     /**
        * Parse a definition string and retrieve all properties of the item.
@@ -9734,17 +9772,17 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
 
               default:
                 if (read_run_lines === true) {
-                  this.vars._run = this.vars._run + lines[i] + '\n';
+                  this.vars.set('_run', this.vars.get('_run', null, false) + lines[i] + '\n');
                 } else if (read_prepare_lines === true) {
-                  this.vars._prepare = this.vars._prepare + lines[i] + '\n';
+                  this.vars.set('_prepare', this.vars.get('_prepare', null, false) + lines[i] + '\n');
                 }
 
             }
           } else {
             if (read_run_lines === true) {
-              this.vars._run = this.vars._run + lines[i] + '\n';
+              this.vars.set('_run', this.vars.get('_run', null, false) + lines[i] + '\n');
             } else if (read_prepare_lines === true) {
-              this.vars._prepare = this.vars._prepare + lines[i] + '\n';
+              this.vars.set('_prepare', this.vars.get('_prepare', null, false) + lines[i] + '\n');
             }
           }
         }
@@ -9755,7 +9793,7 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare",
     value: function prepare() {
-      this.workspace.exec(this.vars._prepare);
+      this.workspace.exec(this.vars.get('_prepare', null, false));
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(InlineJavaScript.prototype), "prepare", this).call(this);
     }
@@ -9767,7 +9805,7 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(InlineJavaScript.prototype), "run", this).call(this);
 
       this.set_item_onset();
-      this.workspace.exec(this.vars._run);
+      this.workspace.exec(this.vars.get('_run', null, false));
 
       this._complete();
     }
@@ -9897,8 +9935,8 @@ var InlineScript = /*#__PURE__*/function (_Item) {
   }, {
     key: "reset",
     value: function reset() {
-      this.vars._prepare = '';
-      this.vars._run = '';
+      this.vars.set('_prepare', '');
+      this.vars.set('_run', '');
     }
     /** Implements the prepare phase of an item. */
 
@@ -9906,8 +9944,8 @@ var InlineScript = /*#__PURE__*/function (_Item) {
     key: "prepare",
     value: function prepare() {
       // Compile the script code to ast trees.
-      this._prepare_tree = this.experiment._runner._pythonParser._parse(this.vars._prepare);
-      this._run_tree = this.experiment._runner._pythonParser._parse(this.vars._run); // Execute the run code.
+      this._prepare_tree = this.experiment._runner._pythonParser._parse(this.vars.get('_prepare'));
+      this._run_tree = this.experiment._runner._pythonParser._parse(this.vars.get('_run')); // Execute the run code.
 
       if (this._prepare_tree !== null) {
         // Set the current item.
@@ -10406,20 +10444,18 @@ var KeyboardResponse = /*#__PURE__*/function (_GenericResponse) {
     key: "reset",
     value: function reset() {
       this.process_feedback = true;
-      this.vars.allowed_responses = null;
-      this.vars.correct_response = null;
-      this.vars.duration = 'keypress';
-      this.vars.flush = 'yes';
-      this.vars.timeout = 'infinite';
+      this.vars.set("allowed_responses", null);
+      this.vars.set("correct_response", null);
+      this.vars.set('duration', 'keypress');
+      this.vars.set('flush', 'yes');
+      this.vars.set('timeout', 'infinite');
     }
     /** Implements the prepare phase of the KeyboardResponse. */
 
   }, {
     key: "prepare",
     value: function prepare() {
-      // Set the internal flush property.
-      this._flush = this.vars.flush ? this.vars.flush : 'yes'; // Inherited.
-
+      // Inherited.
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_15___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_18___default()(KeyboardResponse.prototype), "prepare", this).call(this);
     }
     /** Implements the run phase of the KeyboardResponse. */
@@ -10433,7 +10469,7 @@ var KeyboardResponse = /*#__PURE__*/function (_GenericResponse) {
 
       this.set_item_onset(); // Flush responses, to make sure that earlier responses are not carried over.
 
-      if (this._flush === 'yes') {
+      if (this.vars.get('flush') === 'yes') {
         this._keyboard.flush();
       }
 
@@ -10655,7 +10691,7 @@ var Logger = /*#__PURE__*/function (_Item) {
     value: function reset() {
       this.logvars = [];
       this.exclude_patterns = [];
-      this.vars.auto_log = 'yes';
+      this.vars.set('auto_log', 'yes');
     }
     /**
        * Parse a definition string and retrieve all properties of the item.
@@ -10783,45 +10819,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_14__);
 /* harmony import */ var core_js_modules_es_string_ends_with__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es.string.ends-with */ "./node_modules/core-js/modules/es.string.ends-with.js");
 /* harmony import */ var core_js_modules_es_string_ends_with__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_ends_with__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var core_js_modules_es_string_repeat__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! core-js/modules/es.string.repeat */ "./node_modules/core-js/modules/es.string.repeat.js");
-/* harmony import */ var core_js_modules_es_string_repeat__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_repeat__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! core-js/modules/es.string.split */ "./node_modules/core-js/modules/es.string.split.js");
-/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_18__);
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_19__);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_20__);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/toConsumableArray.js");
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21__);
-/* harmony import */ var _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! @babel/runtime/helpers/toArray */ "./node_modules/@babel/runtime/helpers/toArray.js");
-/* harmony import */ var _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_22__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_23__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_24__);
-/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/get.js");
-/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_26__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_27__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28__);
-/* harmony import */ var lodash_sortBy__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! lodash/sortBy */ "./node_modules/lodash/sortBy.js");
-/* harmony import */ var lodash_sortBy__WEBPACK_IMPORTED_MODULE_29___default = /*#__PURE__*/__webpack_require__.n(lodash_sortBy__WEBPACK_IMPORTED_MODULE_29__);
-/* harmony import */ var lodash_shuffle__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! lodash/shuffle */ "./node_modules/lodash/shuffle.js");
-/* harmony import */ var lodash_shuffle__WEBPACK_IMPORTED_MODULE_30___default = /*#__PURE__*/__webpack_require__.n(lodash_shuffle__WEBPACK_IMPORTED_MODULE_30__);
-/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! lodash/isArray */ "./node_modules/lodash/isArray.js");
-/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(lodash_isArray__WEBPACK_IMPORTED_MODULE_31__);
-/* harmony import */ var lodash_isNumber__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! lodash/isNumber */ "./node_modules/lodash/isNumber.js");
-/* harmony import */ var lodash_isNumber__WEBPACK_IMPORTED_MODULE_32___default = /*#__PURE__*/__webpack_require__.n(lodash_isNumber__WEBPACK_IMPORTED_MODULE_32__);
-/* harmony import */ var _system_constants_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ../system/constants.js */ "./src/js/osweb/system/constants.js");
-/* harmony import */ var _item_js__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./item.js */ "./src/js/osweb/items/item.js");
-/* harmony import */ var _util_matrix__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ../util/matrix */ "./src/js/osweb/util/matrix.js");
-/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! csv-parse/lib/sync */ "./node_modules/csv-parse/lib/sync.js");
-/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_36___default = /*#__PURE__*/__webpack_require__.n(csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_36__);
+/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! core-js/modules/es.string.split */ "./node_modules/core-js/modules/es.string.split.js");
+/* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/toConsumableArray.js");
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! @babel/runtime/helpers/toArray */ "./node_modules/@babel/runtime/helpers/toArray.js");
+/* harmony import */ var _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_21__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_22__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_23__);
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/get.js");
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_25__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_26__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27__);
+/* harmony import */ var lodash_sortBy__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! lodash/sortBy */ "./node_modules/lodash/sortBy.js");
+/* harmony import */ var lodash_sortBy__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(lodash_sortBy__WEBPACK_IMPORTED_MODULE_28__);
+/* harmony import */ var lodash_shuffle__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! lodash/shuffle */ "./node_modules/lodash/shuffle.js");
+/* harmony import */ var lodash_shuffle__WEBPACK_IMPORTED_MODULE_29___default = /*#__PURE__*/__webpack_require__.n(lodash_shuffle__WEBPACK_IMPORTED_MODULE_29__);
+/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! lodash/isArray */ "./node_modules/lodash/isArray.js");
+/* harmony import */ var lodash_isArray__WEBPACK_IMPORTED_MODULE_30___default = /*#__PURE__*/__webpack_require__.n(lodash_isArray__WEBPACK_IMPORTED_MODULE_30__);
+/* harmony import */ var lodash_isNumber__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! lodash/isNumber */ "./node_modules/lodash/isNumber.js");
+/* harmony import */ var lodash_isNumber__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(lodash_isNumber__WEBPACK_IMPORTED_MODULE_31__);
+/* harmony import */ var _system_constants_js__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ../system/constants.js */ "./src/js/osweb/system/constants.js");
+/* harmony import */ var _item_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./item.js */ "./src/js/osweb/items/item.js");
+/* harmony import */ var _util_matrix__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ../util/matrix */ "./src/js/osweb/util/matrix.js");
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! csv-parse/lib/sync */ "./node_modules/csv-parse/lib/sync.js");
+/* harmony import */ var csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_35___default = /*#__PURE__*/__webpack_require__.n(csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_35__);
 
 
 
@@ -10855,8 +10889,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_27___default()(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_26___default()(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -10870,7 +10903,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
  */
 
 var Loop = /*#__PURE__*/function (_Item) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_26___default()(Loop, _Item);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_25___default()(Loop, _Item);
 
   var _super = _createSuper(Loop);
 
@@ -10883,7 +10916,7 @@ var Loop = /*#__PURE__*/function (_Item) {
   function Loop(experiment, name, script) {
     var _this;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_23___default()(this, Loop);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_22___default()(this, Loop);
 
     // Inherited create.
     _this = _super.call(this, experiment, name, script); // Definition of public properties.
@@ -10905,12 +10938,12 @@ var Loop = /*#__PURE__*/function (_Item) {
   /** Implements the complete phase of an item. */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_24___default()(Loop, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_23___default()(Loop, [{
     key: "_complete",
     value: function _complete() {
-      this._status = _system_constants_js__WEBPACK_IMPORTED_MODULE_33__["constants"].STATUS_FINALIZE;
+      this._status = _system_constants_js__WEBPACK_IMPORTED_MODULE_32__["constants"].STATUS_FINALIZE;
 
-      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default()(Loop.prototype), "_complete", this).call(this);
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default()(Loop.prototype), "_complete", this).call(this);
     }
     /**
      * Scans the provided list of argument for variables and retrieves them if found.
@@ -10926,9 +10959,9 @@ var Loop = /*#__PURE__*/function (_Item) {
     value: function _eval_args(args) {
       var _this2 = this;
 
-      if (!lodash_isArray__WEBPACK_IMPORTED_MODULE_31___default()(args)) return args;
+      if (!lodash_isArray__WEBPACK_IMPORTED_MODULE_30___default()(args)) return args;
       return args.map(function (el) {
-        if (lodash_isArray__WEBPACK_IMPORTED_MODULE_31___default()(el)) {
+        if (lodash_isArray__WEBPACK_IMPORTED_MODULE_30___default()(el)) {
           return _this2._eval_args(el);
         } else {
           return _this2._runner._syntax.remove_quotes(_this2._runner._syntax.eval_text(el));
@@ -10941,15 +10974,15 @@ var Loop = /*#__PURE__*/function (_Item) {
     key: "reset",
     value: function reset() {
       this.orig_matrix = [];
-      this.vars.cycles = 1;
-      this.vars.repeat = 1;
-      this.vars.skip = 0;
-      this.vars.offset = 'no';
-      this.vars.order = 'random';
-      this.vars.item = '';
-      this.vars.break_if = 'never';
-      this.vars.source = 'table';
-      this.vars.source_file = '';
+      this.vars.set("cycles", 1);
+      this.vars.set("repeat", 1);
+      this.vars.set("skip", 0);
+      this.vars.set('offset', 'no');
+      this.vars.set('order', 'random');
+      this.vars.set('item', '');
+      this.vars.set('break_if', 'never');
+      this.vars.set('source', 'table');
+      this.vars.set('source_file', '');
       this._index = 0;
       this._operations = [];
       this._initialized = false;
@@ -10973,7 +11006,7 @@ var Loop = /*#__PURE__*/function (_Item) {
         for (var i = 0; i < lines.length; i++) {
           if (lines[i] !== '' && this.parse_variable(lines[i]) === false) {
             var _this$syntax$split = this.syntax.split(lines[i]),
-                _this$syntax$split2 = _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_22___default()(_this$syntax$split),
+                _this$syntax$split2 = _babel_runtime_helpers_toArray__WEBPACK_IMPORTED_MODULE_21___default()(_this$syntax$split),
                 instruction = _this$syntax$split2[0],
                 params = _this$syntax$split2.slice(1);
 
@@ -10983,7 +11016,7 @@ var Loop = /*#__PURE__*/function (_Item) {
 
             switch (instruction) {
               case 'run':
-                if (params.length > 0) this.vars.item = params[0];
+                if (params.length > 0) this.vars.set('item', params[0]);
                 break;
 
               case 'setcycle':
@@ -10997,7 +11030,7 @@ var Loop = /*#__PURE__*/function (_Item) {
                 name = params[1];
                 value = this.syntax.remove_quotes(params[2]); // Check if the value is numeric
 
-                value = lodash_isNumber__WEBPACK_IMPORTED_MODULE_32___default()(value) ? Number(value) : value; // If a python expression, convert to javascript.
+                value = lodash_isNumber__WEBPACK_IMPORTED_MODULE_31___default()(value) ? Number(value) : value; // If a python expression, convert to javascript.
 
                 if (value[0] === '=') {
                   // Parse the python statement.
@@ -11016,49 +11049,49 @@ var Loop = /*#__PURE__*/function (_Item) {
                 break;
 
               case 'fullfactorial':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["fullfactorial"], []]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["fullfactorial"], []]);
 
                 break;
 
               case 'shuffle':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["shuffleVert"], [params]]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["shuffleVert"], [params]]);
 
                 break;
 
               case 'shuffle_horiz':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["shuffleHoriz"], [params]]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["shuffleHoriz"], [params]]);
 
                 break;
 
               case 'slice':
                 this._operations.push([function (matrix, args) {
-                  return matrix.slice.apply(matrix, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(args));
+                  return matrix.slice.apply(matrix, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(args));
                 }, [params]]);
 
                 break;
 
               case 'sort':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["sortCol"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(params)]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["sortCol"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(params)]);
 
                 break;
 
               case 'sortby':
-                this._operations.push([lodash_sortBy__WEBPACK_IMPORTED_MODULE_29___default.a, [params]]);
+                this._operations.push([lodash_sortBy__WEBPACK_IMPORTED_MODULE_28___default.a, [params]]);
 
                 break;
 
               case 'reverse':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["reverseRows"], [params]]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["reverseRows"], [params]]);
 
                 break;
 
               case 'roll':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["roll"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(params)]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["roll"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(params)]);
 
                 break;
 
               case 'weight':
-                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_35__["weight"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(params)]);
+                this._operations.push([_util_matrix__WEBPACK_IMPORTED_MODULE_34__["weight"], _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(params)]);
 
                 break;
             }
@@ -11080,7 +11113,7 @@ var Loop = /*#__PURE__*/function (_Item) {
           // Get the value of the variable.
           var value = this.matrix[cycle][variable]; // Check for python expression.
 
-          if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_20___default()(value) === 'object') {
+          if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_19___default()(value) === 'object') {
             // value contains ast tree, run the parser.
             try {
               // Evaluate the expression
@@ -11105,14 +11138,16 @@ var Loop = /*#__PURE__*/function (_Item) {
     key: "prepare",
     value: function prepare() {
       // Make sure the item to run exists.
-      if (this.experiment.items._items[this.vars.item] === 'undefined') {
-        this._runner._debugger.addError('Could not find an item which is called by loop item: ' + this.name + ' (' + this.vars.item + ')');
+      var item = this.vars.get('item');
+
+      if (this.experiment.items._items[item] === 'undefined') {
+        this._runner._debugger.addError('Could not find an item which is called by loop item: ' + this.name + ' (' + item + ')');
       }
 
       if (this.vars.get('source') === 'file') this.parseFileSource();
       this._initialized = false;
 
-      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default()(Loop.prototype), "prepare", this).call(this);
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default()(Loop.prototype), "prepare", this).call(this);
 
       this.set_item_onset();
     }
@@ -11131,7 +11166,7 @@ var Loop = /*#__PURE__*/function (_Item) {
         throw 'Loop item refers to non-existing source file: ' + src;
       }
 
-      this.orig_matrix = csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_36___default()(this._runner._pool[src].data, {
+      this.orig_matrix = csv_parse_lib_sync__WEBPACK_IMPORTED_MODULE_35___default()(this._runner._pool[src].data, {
         columns: true,
         skip_empty_lines: true
       });
@@ -11143,7 +11178,7 @@ var Loop = /*#__PURE__*/function (_Item) {
     value: function run() {
       var _this3 = this;
 
-      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_25___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_28___default()(Loop.prototype), "run", this).call(this);
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_24___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_27___default()(Loop.prototype), "run", this).call(this);
 
       if (!this._initialized) {
         // The first step is to create an array of cycle indices (`cycles`). We
@@ -11161,25 +11196,26 @@ var Loop = /*#__PURE__*/function (_Item) {
 
 
         var partialRepeats = this.vars.get('repeat') - wholeRepeats;
+        var order = this.vars.get('order');
 
         if (partialRepeats > 0) {
           // Get an array of all cycles indices. (This syntax is like a range().)
           // For randomly ordered loops, shuffle the order of the indices.
           // This makes sure that the next step of determining the repeatcycles
           // is a 'random selection without replacement'
-          var allCycles = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(Array(this.orig_matrix.length).keys());
+          var allCycles = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(Array(this.orig_matrix.length).keys());
 
-          if (this.vars.order === 'random') {
-            allCycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_30___default()(allCycles);
+          if (order === 'random') {
+            allCycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_29___default()(allCycles);
           } // Add the remaining cycles to the cycles array
 
 
           var remainder = Math.floor(this.orig_matrix.length * partialRepeats);
-          cycles = [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(cycles), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(allCycles.splice(0, remainder)));
+          cycles = [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(cycles), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(allCycles.splice(0, remainder)));
         }
 
-        if (this.vars.order === 'random') {
-          cycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_30___default()(cycles);
+        if (order === 'random') {
+          cycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_29___default()(cycles);
         } // Create a live matrix that takes into account the repeats and the
         // shuffles.
 
@@ -11193,26 +11229,26 @@ var Loop = /*#__PURE__*/function (_Item) {
 
 
         this.matrix = this._operations.reduce(function (mtrx, _ref) {
-          var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_19___default()(_ref, 2),
+          var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_18___default()(_ref, 2),
               func = _ref2[0],
               args = _ref2[1];
 
-          return func.apply(void 0, [mtrx].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(_this3._eval_args(args))));
+          return func.apply(void 0, [mtrx].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(_this3._eval_args(args))));
         }, this.matrix);
-        this._cycles = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_21___default()(this.matrix.keys());
+        this._cycles = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_20___default()(this.matrix.keys());
         this._initialized = true;
         this._index = null;
       } // end init
       // Check if if the cycle must be repeated.
 
 
-      if (this.experiment.vars.repeat_cycle === 1 && this._index !== null) {
+      if (this.experiment.vars.get('repeat_cycle') === 1 && this._index !== null) {
         this._runner._debugger.msg('Repeating cycle: ' + this._index);
 
         this._cycles.push(this._index);
 
         if (this.vars.get('order') === 'random') {
-          this._cycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_30___default()(this._cycles);
+          this._cycles = lodash_shuffle__WEBPACK_IMPORTED_MODULE_29___default()(this._cycles);
         }
       } // When the loop is finished
 
@@ -11226,7 +11262,7 @@ var Loop = /*#__PURE__*/function (_Item) {
 
       this._index = this._cycles.shift();
       this.apply_cycle(this._index);
-      this.experiment.vars.repeat_cycle = 0; // Process the break-if statement
+      this.experiment.vars.set('repeat_cycle', 0); // Process the break-if statement
 
       var break_if_val = this.vars.get('break_if', undefined, false);
       this._break_if = ['never', ''].includes(break_if_val) ? null : break_if_val;
@@ -11243,16 +11279,18 @@ var Loop = /*#__PURE__*/function (_Item) {
       } // Execute the item to run
 
 
-      if (this._runner._itemStore._items[this.vars.item].type === 'sequence') {
-        this._runner._itemStore.prepare(this.vars.item, this);
+      var item = this.vars.get('item');
+
+      if (this._runner._itemStore._items[item].type === 'sequence') {
+        this._runner._itemStore.prepare(item, this);
       } else {
-        this._runner._itemStore.execute(this.vars.item, this);
+        this._runner._itemStore.execute(item, this);
       }
     }
   }]);
 
   return Loop;
-}(_item_js__WEBPACK_IMPORTED_MODULE_34__["default"]);
+}(_item_js__WEBPACK_IMPORTED_MODULE_33__["default"]);
 
 
 
@@ -11380,25 +11418,21 @@ var MediaPlayer = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare",
     value: function prepare() {
-      // Opens the video file for playback.
+      var event_handler = this.vars.get('event_handler');
+      var event_handler_trigger = this.vars.get('event_handler_trigger');
+      var duration = this.vars.get('duration'); // Opens the video file for playback.
+
       this._video = this.experiment.pool[this.vars.get('video_src')];
       this._video_player = new _backends_video_js__WEBPACK_IMPORTED_MODULE_12__["default"](this.experiment, this._video); // Set the inline code options.
 
-      if (this.vars.event_handler !== '') {
-        this._video_player._script = this._runner._pythonParser._parse(this.vars.event_handler);
-      }
-
-      this._video_player._event_handler_always = this.vars.event_handler_trigger === 'after every frame'; // Set the audio option.
+      if (event_handler !== '') this._video_player._script = this._runner._pythonParser._parse(event_handler);
+      this._video_player._event_handler_always = event_handler_trigger === 'after every frame'; // Set the audio option.
 
       this._video_player.audio = this.vars.get('playaudio') === 'yes'; // Set the full screen option (if enabled).
 
       this._video_player.full_screen = this.vars.get('resizeVideo') === 'yes'; // Adjust the duration parameter from sound to video if defined.
 
-      if (this.vars.duration === 'sound') {
-        this.vars.duration = 'video';
-      }
-
-      this._video_player.duration = this.vars.duration; // Inherited.
+      if (duration === 'sound') this._video_player.duration = 'video';else this._video_player.duration = duration; // Inherited.
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(MediaPlayer.prototype), "prepare", this).call(this);
     }
@@ -11538,40 +11572,31 @@ var MouseResponse = /*#__PURE__*/function (_GenericResponse) {
       this.resp_codes['3'] = 'right_button';
       this.resp_codes['4'] = 'scroll_up';
       this.resp_codes['5'] = 'scroll_down';
-      this.vars.allowed_responses = null;
-      this.vars.correct_response = null;
-      this.vars.duration = 'mouseclick';
-      this.vars.flush = 'yes';
-      this.vars.show_cursor = 'yes';
-      this.vars.timeout = 'infinite';
+      this.vars.set("allowed_responses", null);
+      this.vars.set("correct_response", null);
+      this.vars.set('duration', 'mouseclick');
+      this.vars.set('flush', 'yes');
+      this.vars.set('show_cursor', 'yes');
+      this.vars.set('timeout', 'infinite');
     }
-    /** Implements the prepare phase of the Sketschpad. */
-
   }, {
     key: "prepare",
     value: function prepare() {
-      // Set the internal flush property.
-      this._flush = this.vars.flush ? this.vars.flush : 'yes'; // Inherited.
-
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(MouseResponse.prototype), "prepare", this).call(this);
     }
-    /** Implements the run phase of the Sketschpad. */
-
   }, {
     key: "run",
     value: function run() {
-      // Inherited.
-      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(MouseResponse.prototype), "run", this).call(this); // Record the onset of the current item.
+      _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(MouseResponse.prototype), "run", this).call(this);
 
+      this.set_item_onset();
 
-      this.set_item_onset(); // Show the cursor if defined.
-
-      if (this.vars.show_cursor === 'yes') {
+      if (this.vars.get('show_cursor') === 'yes') {
         this._mouse.show_cursor(true);
       } // Flush responses, to make sure that earlier responses are not carried over.
 
 
-      if (this._flush === 'yes') {
+      if (this.vars.get("flush") === 'yes') {
         this._mouse.flush();
       }
 
@@ -11606,7 +11631,7 @@ var MouseResponse = /*#__PURE__*/function (_GenericResponse) {
 
             case 6:
               // Show the cursor if defined.
-              if (this.vars.show_cursor === 'yes') {
+              if (this.vars.get('show_cursor') === 'yes') {
                 this._mouse.show_cursor(true);
               } // Record the onset of the current item.
 
@@ -11876,7 +11901,7 @@ var RepeatCycle = /*#__PURE__*/function (_Item) {
 
       if (this._status !== _system_constants_js__WEBPACK_IMPORTED_MODULE_12__["constants"].STATUS_FINALIZE) {
         if (this.experiment._runner._javascriptWorkspace._eval(condition)) {
-          this.experiment.vars.repeat_cycle = 1;
+          this.experiment.vars.set('repeat_cycle', 1);
         } // Complete the current cycle.
 
 
@@ -12103,13 +12128,13 @@ var Sampler = /*#__PURE__*/function (_GenericResponse) {
     key: "reset",
     value: function reset() {
       this.block = false;
-      this.vars.sample = '';
-      this.vars.pan = 0;
-      this.vars.pitch = 1;
-      this.vars.fade_in = 0;
-      this.vars.stop_after = 0;
-      this.vars.volume = 1;
-      this.vars.duration = 'sound';
+      this.vars.set('sample', '');
+      this.vars.set('pan', 0);
+      this.vars.set('pitch', 1);
+      this.vars.set('fade_in', 0);
+      this.vars.set('stop_after', 0);
+      this.vars.set('volume', 1);
+      this.vars.set('duration', 'sound');
     }
     /** Implements the prepare phase of an item. */
 
@@ -12117,10 +12142,12 @@ var Sampler = /*#__PURE__*/function (_GenericResponse) {
     key: "prepare",
     value: function prepare() {
       // Create the sample
-      if (this.vars.sample !== '') {
+      var sample = this.vars.get('sample');
+
+      if (sample !== '') {
         // Retrieve the content from the file pool.
-        this._sample = this._runner._pool[this.syntax.eval_text(this.vars.sample, this.vars, false)];
-        if (typeof this._sample === 'undefined') this.experiment._runner._debugger.addError("\"".concat(this.vars.sample, "\" does not exist in the file pool"));
+        this._sample = this._runner._pool[sample];
+        if (typeof this._sample === 'undefined') this.experiment._runner._debugger.addError("\"".concat(sample, "\" does not exist in the file pool"));
         this._sampler = new _backends_sampler_js__WEBPACK_IMPORTED_MODULE_12__["default"](this.experiment, this._sample);
         this._sampler.volume = this.vars.get("volume");
         this._sampler.duration = this.vars.get("duration");
@@ -12129,7 +12156,7 @@ var Sampler = /*#__PURE__*/function (_GenericResponse) {
         this._sampler.pitch = this.vars.get("pitch");
       } else {
         // Show error message.
-        this._runner._debugger.addError('No sample has been specified in sampler: ' + this.vars.sample);
+        this._runner._debugger.addError("No sample has been specified in sampler: ".concat(sample));
       } // Inherited.
 
 
@@ -12303,7 +12330,7 @@ var Sequence = /*#__PURE__*/function (_Item) {
     key: "reset",
     value: function reset() {
       this.items = [];
-      this.vars.flush_keyboard = 'yes';
+      this.vars.set('flush_keyboard', 'yes');
     }
     /**
        * Parse a definition string and retrieve all properties of the item.
@@ -12352,7 +12379,7 @@ var Sequence = /*#__PURE__*/function (_Item) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_10___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(Sequence.prototype), "prepare", this).call(this); // Create a keyboard to flush responses at the start of the run phase
 
 
-      if (this.vars.flush_keyboard === 'yes') {
+      if (this.vars.get('flush_keyboard') === 'yes') {
         this._keyboard = new _backends_keyboard_js__WEBPACK_IMPORTED_MODULE_15__["default"](this.experiment);
       } else {
         this._keyboard = null;
@@ -12375,7 +12402,7 @@ var Sequence = /*#__PURE__*/function (_Item) {
 
       if (this._index < this._items.length) {
         // Flush the keyboard at the beginning of the sequence.
-        if (this._index === 0 && this.vars.flush_keyboard === 'yes') {
+        if (this._index === 0 && this.vars.get('flush_keyboard') === 'yes') {
           this._keyboard.flush();
         } // Increase the current index.
 
@@ -12559,7 +12586,7 @@ var Sketchpad = /*#__PURE__*/function (_GenericResponse) {
     value: function reset() {
       // Resets all item variables to their default value.
       this.elements = [];
-      this.vars.duration = 'keypress';
+      this.vars.set('duration', 'keypress');
     }
     /** Process a time out response. */
 
@@ -12853,8 +12880,8 @@ var TouchResponse = /*#__PURE__*/function (_MouseResponse) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(TouchResponse.prototype), "reset", this).call(this);
 
       this.vars.set('allowed_responses', null);
-      this.vars._ncol = 2;
-      this.vars._nrow = 1;
+      this.vars.set("_ncol", 2);
+      this.vars.set("_nrow", 1);
     }
     /** Implements the prepare phase of an item. */
 
@@ -12862,7 +12889,7 @@ var TouchResponse = /*#__PURE__*/function (_MouseResponse) {
     key: "prepare",
     value: function prepare() {
       // Temp hack
-      this.experiment.vars.correct = -1; // Inherited.
+      this.experiment.vars.set('correct', -1); // Inherited.
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(TouchResponse.prototype), "prepare", this).call(this);
     }
@@ -12878,10 +12905,16 @@ var TouchResponse = /*#__PURE__*/function (_MouseResponse) {
       this.experiment._end_response_interval = retval.rtTime;
       this.set_mouse_coordinates(retval.event.clientX, retval.event.clientY); // Calulate the row, column and cell.
 
-      this.col = Math.floor((this.experiment.vars.cursor_x + this.experiment.vars.width / 2) / (this.experiment.vars.width / this.vars._ncol));
-      this.row = Math.floor((this.experiment.vars.cursor_y + this.experiment.vars.height / 2) / (this.experiment.vars.height / this.vars._nrow));
-      this.cell = this.row * this.vars._ncol + this.col + 1;
-      this.experiment.vars.response = this.cell;
+      var cursor_x = this.experiment.vars.get('cursor_x');
+      var cursor_y = this.experiment.vars.get('cursor_y');
+      var width = this.experiment.vars.get('width');
+      var height = this.experiment.vars.get('height');
+      var ncol = this.vars.get('_ncol');
+      var nrow = this.vars.get('_nrow');
+      this.col = Math.floor((cursor_x + width / 2) / (width / ncol));
+      this.row = Math.floor((cursor_y + height / 2) / (height / nrow));
+      this.cell = this.row * ncol + this.col + 1;
+      this.experiment.vars.set('response', this.cell);
       this.synonyms = [this.experiment.vars.get('response').toString()];
       this.response_bookkeeping();
     }
@@ -12918,14 +12951,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var filbert__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! filbert */ "./node_modules/filbert/filbert.js");
-/* harmony import */ var filbert__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(filbert__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _python_math_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./python_math.js */ "./src/js/osweb/python/python_math.js");
-/* harmony import */ var _python_opensesame_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./python_opensesame.js */ "./src/js/osweb/python/python_opensesame.js");
-/* harmony import */ var _python_random_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./python_random.js */ "./src/js/osweb/python/python_random.js");
-/* harmony import */ var _python_string_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./python_string.js */ "./src/js/osweb/python/python_string.js");
-/* harmony import */ var lodash_toNumber__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lodash/toNumber */ "./node_modules/lodash/toNumber.js");
-/* harmony import */ var lodash_toNumber__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lodash_toNumber__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _classes_var_store_handler__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../classes/var_store_handler */ "./src/js/osweb/classes/var_store_handler.js");
+/* harmony import */ var filbert__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! filbert */ "./node_modules/filbert/filbert.js");
+/* harmony import */ var filbert__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(filbert__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _python_math_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./python_math.js */ "./src/js/osweb/python/python_math.js");
+/* harmony import */ var _python_opensesame_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./python_opensesame.js */ "./src/js/osweb/python/python_opensesame.js");
+/* harmony import */ var _python_random_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./python_random.js */ "./src/js/osweb/python/python_random.js");
+/* harmony import */ var _python_string_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./python_string.js */ "./src/js/osweb/python/python_string.js");
+/* harmony import */ var lodash_toNumber__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! lodash/toNumber */ "./node_modules/lodash/toNumber.js");
+/* harmony import */ var lodash_toNumber__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lodash_toNumber__WEBPACK_IMPORTED_MODULE_13__);
+
 
 
 
@@ -12953,10 +12988,10 @@ var PythonParser = /*#__PURE__*/function () {
     this._runner = runner; // Parent runner attached to the AST object.
     // Set class properties.
 
-    this.python_math = new _python_math_js__WEBPACK_IMPORTED_MODULE_8__["default"](this._runner);
-    this.python_opensesame = new _python_opensesame_js__WEBPACK_IMPORTED_MODULE_9__["default"](this._runner);
-    this.python_random = new _python_random_js__WEBPACK_IMPORTED_MODULE_10__["default"](this._runner);
-    this.python_string = new _python_string_js__WEBPACK_IMPORTED_MODULE_11__["default"](this._runner); // Definition of private properties.
+    this.python_math = new _python_math_js__WEBPACK_IMPORTED_MODULE_9__["default"](this._runner);
+    this.python_opensesame = new _python_opensesame_js__WEBPACK_IMPORTED_MODULE_10__["default"](this._runner);
+    this.python_random = new _python_random_js__WEBPACK_IMPORTED_MODULE_11__["default"](this._runner);
+    this.python_string = new _python_string_js__WEBPACK_IMPORTED_MODULE_12__["default"](this._runner); // Definition of private properties.
 
     this._classes = {}; // Accessible classes within the script code.
 
@@ -12988,7 +13023,7 @@ var PythonParser = /*#__PURE__*/function () {
       this._variables.exp = this._runner._experiment;
       this._variables.items = this._runner._itemStore;
       this._variables.pool = this._runner._pool;
-      this._variables.var = this._runner._experiment.vars; // Set the console handler.
+      this._variables.var = new Proxy(this._runner._experiment.vars, new _classes_var_store_handler__WEBPACK_IMPORTED_MODULE_7__["default"]()); // Set the console handler.
 
       if (this._runner._onConsole !== null) {
         this._onConsole = this._runner._onConsole;
@@ -13014,7 +13049,7 @@ var PythonParser = /*#__PURE__*/function () {
       // Check if the script exists.
       if (script !== '""') {
         var locations = false;
-        var parseFn = filbert__WEBPACK_IMPORTED_MODULE_7___default.a.parse;
+        var parseFn = filbert__WEBPACK_IMPORTED_MODULE_8___default.a.parse;
         var ranges = false; // Try to parse the script.
 
         try {
@@ -13070,13 +13105,13 @@ var PythonParser = /*#__PURE__*/function () {
       if (items[0] === '__pythonRuntime') {
         // Check if the identifier is part of the import scope.
         if (items[1] === 'imports') {
-          var import_lib = filbert__WEBPACK_IMPORTED_MODULE_7___default.a.pythonRuntime.imports[items[2]];
+          var import_lib = filbert__WEBPACK_IMPORTED_MODULE_8___default.a.pythonRuntime.imports[items[2]];
           var value = import_lib[items[3]]; // Attempt to convert the value to a number,
           // if this fails return the original value
 
-          return isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_12___default()(value)) ? value : lodash_toNumber__WEBPACK_IMPORTED_MODULE_12___default()(value);
+          return isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_13___default()(value)) ? value : lodash_toNumber__WEBPACK_IMPORTED_MODULE_13___default()(value);
         } else {
-          var default_lib = filbert__WEBPACK_IMPORTED_MODULE_7___default.a.pythonRuntime[items[1]];
+          var default_lib = filbert__WEBPACK_IMPORTED_MODULE_8___default.a.pythonRuntime[items[1]];
           return default_lib[items[2]];
         }
       } else {
@@ -13133,13 +13168,13 @@ var PythonParser = /*#__PURE__*/function () {
               }
             } else if (items[0] === '__pythonRuntime') {
               if (items[1] === 'imports') {
-                var import_lib = filbert__WEBPACK_IMPORTED_MODULE_7___default.a.pythonRuntime.imports[items[2]];
+                var import_lib = filbert__WEBPACK_IMPORTED_MODULE_8___default.a.pythonRuntime.imports[items[2]];
                 var value = import_lib[items[3]]; // Attempt to convert the value to a number,
                 // if this fails return the original value
 
-                return isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_12___default()(value)) ? value : lodash_toNumber__WEBPACK_IMPORTED_MODULE_12___default()(value);
+                return isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_13___default()(value)) ? value : lodash_toNumber__WEBPACK_IMPORTED_MODULE_13___default()(value);
               } else {
-                var default_lib = filbert__WEBPACK_IMPORTED_MODULE_7___default.a.pythonRuntime[items[1]];
+                var default_lib = filbert__WEBPACK_IMPORTED_MODULE_8___default.a.pythonRuntime[items[1]];
                 return default_lib[items[2]];
               }
             } else {
@@ -15248,7 +15283,7 @@ var Convertor = /*#__PURE__*/function () {
         // If we're currently inside a multiline variable, check whether the
         // variable ends.
         if (items !== null && items[0] === '__end__') {
-          this.item.vars[this.variableName] = this.variable;
+          this.item.vars.set(this.variableName, this.variable);
           this.variable = null;
         } else {
           this.variable.push(line);
@@ -15289,14 +15324,14 @@ var Convertor = /*#__PURE__*/function () {
               });
             } else {
               // Process a run statement for a loop item.
-              this.item.vars.item = items[1];
+              this.item.vars.set('item', items[1]);
             }
 
             break;
 
           case 'set':
             // Process a set statement.
-            this.item.vars[items[1]] = this.parseValue(items[2]);
+            this.item.vars.set(items[1], this.parseValue(items[2]));
             break;
 
           case 'setcycle':
@@ -16779,7 +16814,11 @@ var Screen = /*#__PURE__*/function () {
   }, {
     key: "_fullScreenChanged",
     value: function _fullScreenChanged() {
-      // Check if we are dropping out of full-screen.
+      var width = this._runner._experiment.vars.get('width');
+
+      var height = this._runner._experiment.vars.get('height'); // Check if we are dropping out of full-screen.
+
+
       if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
         // Scale the canvas
         switch (this._runner._scaleMode) {
@@ -16809,20 +16848,20 @@ var Screen = /*#__PURE__*/function () {
             this._runner._renderer.view.style.display = 'block';
             this._runner._renderer.view.style.position = 'absolute';
 
-            if (this._runner._container.clientWidth - this._runner._experiment.vars.width > this._runner._container.clientHeight - this._runner._experiment.vars.height) {
-              var ar = this._runner._container.clientHeight / this._runner._experiment.vars.height;
+            if (this._runner._container.clientWidth - width > this._runner._container.clientHeight - height) {
+              var ar = this._runner._container.clientHeight / height;
 
-              this._runner._renderer.resize(Math.round(this._runner._experiment.vars.width * ar), this._runner._container.clientHeight);
+              this._runner._renderer.resize(Math.round(width * ar), this._runner._container.clientHeight);
 
-              this._runner._experiment._scale_x = Math.round(this._runner._experiment.vars.width * ar) / this._runner._experiment.vars.width;
-              this._runner._experiment._scale_y = this._runner._container.clientHeight / this._runner._experiment.vars.height;
+              this._runner._experiment._scale_x = Math.round(width * ar) / this._runner._experiment.vars.width;
+              this._runner._experiment._scale_y = this._runner._container.clientHeight / height;
             } else {
-              var _ar = this._runner._container.clientWidth / this._runner._experiment.vars.width;
+              var _ar = this._runner._container.clientWidth / width;
 
-              this._runner._renderer.resize(this._runner._container.clientWidth, Math.round(this._runner._experiment.vars.height * _ar));
+              this._runner._renderer.resize(this._runner._container.clientWidth, Math.round(height * _ar));
 
-              this._runner._experiment._scale_x = this._runner._container.clientWidth / this._runner._experiment.vars.width;
-              this._runner._experiment._scale_y = Math.round(this._runner._experiment.vars.height * _ar) / this._runner._experiment.vars.height;
+              this._runner._experiment._scale_x = this._runner._container.clientWidth / width;
+              this._runner._experiment._scale_y = Math.round(height * _ar) / height;
             }
 
             this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x;
@@ -16834,8 +16873,8 @@ var Screen = /*#__PURE__*/function () {
 
           case 'exactFit':
             // Fit to the exact window size (cropping).
-            this._runner._experiment._scale_x = this._runner._container.clientWidth / this._runner._experiment.vars.width;
-            this._runner._experiment._scale_y = this._runner._container.clientHeight / this._runner._experiment.vars.height; // Reize the current canvas.
+            this._runner._experiment._scale_x = this._runner._container.clientWidth / width;
+            this._runner._experiment._scale_y = this._runner._container.clientHeight / height; // Reize the current canvas.
 
             this._runner._renderer.resize(this._runner._container.clientWidth, this._runner._container.clientHeight);
 
@@ -16853,7 +16892,7 @@ var Screen = /*#__PURE__*/function () {
           this._runner._experiment._scale_x = 1;
           this._runner._experiment._scale_y = 1; // Fit to the exact window size (cropping).
 
-          this._runner._renderer.resize(this._runner._experiment.vars.width, this._runner._experiment.vars.height);
+          this._runner._renderer.resize(width, height);
 
           this._runner._experiment._currentCanvas._container.scale.x = 1;
           this._runner._experiment._currentCanvas._container.scale.y = 1;
@@ -17914,7 +17953,7 @@ var Transfer = /*#__PURE__*/function () {
         data.append('data', resultData.toString()); // Create the request.
 
         var xhr = new XMLHttpRequest();
-        xhr.open('post', target + '?file=subject-' + this._runner._experiment.vars.subject_nr, true); // Send the actual data.
+        xhr.open('post', target + '?file=subject-' + this._runner._experiment.vars.get('subject_nr'), true); // Send the actual data.
 
         return xhr.send(data);
       }
@@ -18601,4 +18640,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.7eecd0d8acab40a60832.bundle.js.map
+//# sourceMappingURL=osweb.79f8145a74c8375e8e6b.bundle.js.map
