@@ -29,6 +29,7 @@ import sys
 import uuid
 from pathlib import Path
 from bs4 import BeautifulSoup
+from libopensesame.experiment import Experiment
 
 # Paths towards assets that are bundled with the osweb extension code
 src_folder = Path(os.path.dirname(__file__)) / 'src'
@@ -112,6 +113,8 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     #     {uuid}/
     #        {component_hash}.html
     #        {component_hash}.osexp
+    #        pool/
+    #            {files from file pool}
     #        css/
     #            vendors-osweb*.css.map
     #            vendors-osweb*.css
@@ -139,7 +142,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
                   'externalJS': external_js}
         assets = _compose_html_and_get_assets(
             osexp_path, index_path, 'jatos', params=params,
-            component_hash=component_hash)
+            component_hash=component_hash, uuid=uuid)
         info = {
             'version': '3',  # This refers to the JATOS version
             'data': {
@@ -166,11 +169,15 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
             fd.write(index_path, f'{uuid}/{component_hash}.html')
             for img in ['opensesame.png', 'warning.png']:
                 fd.write(src_paths['img'] / img, f'{uuid}/img/{img}')
-            fd.write(osexp_path, f'{uuid}/{component_hash}.osexp')
             for js in assets['js']:
                 fd.write(js['src'], f'{uuid}/{js["dest"]}')
             for css in assets['css']:
                 fd.write(css['src'], f'{uuid}/{css["dest"]}')
+            fd.write(osexp_path, f'{uuid}/{component_hash}.osexp')
+            # exp = Experiment(osexp_path)
+            # fd.writestr(exp.to_string(), f'{uuid}/{component_hash}.osexp')
+            # for poolfile_path in exp.pool:
+            #     fd.writestr(exp.pool[pool_path], f'pool/{poolfile_path}')
     return uuid
 
 
@@ -182,7 +189,7 @@ def _get_os_assets(sub_dir):
 
 
 def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
-                                 component_hash=None):
+                                 component_hash=None, uuid=uuid):
     """Generates an index.html and returns asset information.
     
     Parameters
@@ -195,6 +202,8 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
         'standalone' or 'jatos'
     params: dict
         Experiment parameters, such as fullscreen
+    component_hash: str, optional
+    uuid: str, optional
         
     Returns
     -------
@@ -219,7 +228,7 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     if mode == 'standalone':
         _compose_for_standalone(osexp_path, dom, assets, params)
     elif mode == 'jatos':
-        _compose_for_jatos(component_hash, dom, assets, params)
+        _compose_for_jatos(component_hash, uuid, dom, assets, params)
     html = dom.prettify()
     index_path.write_text(html)
     return assets
@@ -272,13 +281,14 @@ def _compose_for_standalone(osexp_path, dom, assets, params=None):
     dom.body.append(exp_tag)
 
 
-def _compose_for_jatos(component_hash, dom, assets, params=None):
+def _compose_for_jatos(component_hash, uuid, dom, assets, params=None):
     """Builds on top of the base HTML template to create a structure that is 
     appropriate for integration in JATOS.
     
     Parameters
     ----------
     component_hash: str
+    uuid: str
     dom: Tag
         A BeautifulSoup Tag corresponding to the full HTML file
     assets: dict
@@ -298,6 +308,8 @@ def _compose_for_jatos(component_hash, dom, assets, params=None):
     # Get the OpenSesame experiment file name, and add a JS variable to its
     # location
     script_tag.append(f'const osexpFile = "{component_hash}.osexp"')
+    script_tag.append(f'const jatosAssetsFolder = "{uuid}"')
+    script_tag.append(f'const jatosComponentHash = "{component_hash}"')
     dom.head.append(script_tag)
     # Add script nodes referencing the sources of all other required javascript
     # files.

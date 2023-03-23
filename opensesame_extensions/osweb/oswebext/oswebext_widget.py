@@ -121,7 +121,7 @@ class OSWebExtWidget(BasePreferencesWidget):
     def _uuid(self):
         uuid = self.experiment.var.get('jatos_uuid', False)
         if uuid:
-            return uuit
+            return uuid
         return None
 
     def _test(self, fullscreen=None, subject_nr=None, logfile=None):
@@ -149,7 +149,7 @@ class OSWebExtWidget(BasePreferencesWidget):
 
     def _export_jatos(self):
         if self.main_window.current_path:
-            suggested_path = self.main_window.current_path + u'.zip'
+            suggested_path = self.main_window.current_path + '.jzip'
         else:
             suggested_path = cfg.file_dialog_path
         path = QFileDialog.getSaveFileName(

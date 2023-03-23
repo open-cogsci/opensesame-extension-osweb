@@ -22,6 +22,7 @@ from libopensesame.oslogging import oslogger
 from metapensiero.pj.__main__ import transform_string as py2js
 import re
 
+RE_VAR = re.compile('(?<!\w)var\.', re.MULTILINE)
 RE_RUN_IF = re.compile(r'^\t(?P<cmd>run \w+ .*)$', re.MULTILINE)
 RE_SET_COND = re.compile(r'^\t(?P<cmd>set (break_if|condition) .*)$',
                          re.MULTILINE)
@@ -38,9 +39,12 @@ class OSWebWriter(OSExpWriter):
     """
     
     def transform(self, cond):
+        py_cond = self._exp.syntax.compile_cond(cond, bytecode=False)
+        # JavaScript uses vars as opposed to var for the var_store object
+        py_cond = RE_VAR.sub('vars.', py_cond)
         # The last two characters are ;\n, which are not valid in some
         # contexts and we therefore strip them off
-        return py2js(self._exp.syntax.compile_cond(cond, bytecode=False))[:-2]
+        return py2js(py_cond)[:-2]
             
     @property
     def create_cmd(self):
