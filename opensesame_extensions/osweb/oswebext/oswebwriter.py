@@ -44,7 +44,7 @@ class OSWebWriter(OSExpWriter):
         py_cond = RE_VAR.sub('vars.', py_cond)
         # The last two characters are ;\n, which are not valid in some
         # contexts and we therefore strip them off
-        return py2js(py_cond)[:-2]
+        return py2js(py_cond)[:-2].replace('"', r'\"')
             
     @property
     def create_cmd(self):
