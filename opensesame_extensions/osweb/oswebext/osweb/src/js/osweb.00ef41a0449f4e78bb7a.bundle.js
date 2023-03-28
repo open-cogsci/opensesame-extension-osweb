@@ -4064,11 +4064,13 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
       }
 
       if (this._script_element !== null) this._script_container.removeChild(this._script_element);
+      this.current_script = js;
       this._script_element = document.createElement('script');
       this._script_element.innerHTML = "_workspace._result = ".concat(js);
 
       this._script_container.appendChild(this._script_element);
 
+      this.current_script = null;
       return this._result;
     }
     /**
@@ -4088,10 +4090,13 @@ var JavaScriptWorkspace = /*#__PURE__*/function () {
       }
 
       if (this._script_element !== null) this._script_container.removeChild(this._script_element);
+      this.current_script = js;
       this._script_element = document.createElement('script');
       this._script_element.innerHTML = js;
 
       this._script_container.appendChild(this._script_element);
+
+      this.current_script = null;
     }
   }]);
 
@@ -5338,10 +5343,10 @@ var VarStore = /*#__PURE__*/function () {
   /**
    * Get the value of a variable from the store (or thje parent store).
    * @param {String} variable - The name of the variable.
-   * @param {Boolean|Number|String} defaultValue - The default value for the variable.
    * @param {Object} evaluate - The parent global var_store.
-   * @param {Object} valid - The parent global var_store.
-   * @param {Boolean} addQuotes - The add quotes toggle.
+   * @param {object} defaultValue - A default value for if the variable is not
+   *   found. If no default is specified, an error is thrown if the variable
+   *   is not found.
    * @return {Boolean|Number|String} - The value of the given variable.
    */
 
@@ -5349,17 +5354,15 @@ var VarStore = /*#__PURE__*/function () {
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_16___default()(VarStore, [{
     key: "get",
     value: function get(variable) {
-      var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var evaluate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var valid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-      var addQuotes = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+      var evaluate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var defaultValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var value = null; // Gets an experimental variable.
 
       if (variable in this._scope) {
         this._bypass_proxy = true; // Avoid Proxy feedback loop
 
         if (typeof this._scope[variable] === 'string' && evaluate === true) {
-          value = this._item.syntax.eval_text(this._scope[variable], null, addQuotes);
+          value = this._item.syntax.eval_text(this._scope[variable]);
         } else {
           value = this._scope[variable];
         }
@@ -5372,14 +5375,18 @@ var VarStore = /*#__PURE__*/function () {
         this._parent._bypass_proxy = true; // Avoid Proxy feedback loop
 
         if (typeof this._parent._scope[variable] === 'string' && evaluate === true) {
-          value = this._item.syntax.eval_text(this._parent._scope[variable], null, addQuotes);
+          value = this._item.syntax.eval_text(this._parent._scope[variable]);
         } else {
           value = this._parent._scope[variable];
         }
 
         this._parent._bypass_proxy = false;
-      } // Return function result.
+      }
 
+      if (value === null) {
+        if (defaultValue !== null) return defaultValue;
+        throw "VariableDoesNotExist: Variable ".concat(variable, " does not exist");
+      }
 
       return value;
     }
@@ -9000,9 +9007,9 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     key: "_complete",
     value: function _complete() {
       // Check if a timeout has occured which must be treaded as a response.
-      var timeout = this.vars.get('timeout');
+      var timeout = this.vars.get('timeout', true, -1);
 
-      if (typeof timeout !== 'undefined' && this.experiment._runner._events._timeStamp - this.experiment.vars.get('time_' + this.name) > timeout) {
+      if (timeout !== -1 && this.experiment._runner._events._timeStamp - this.experiment.vars.get('time_' + this.name) > timeout) {
         // Process the timeout none response.
         this.process_response_timeout();
       } // Inherited.
@@ -9055,9 +9062,9 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare_allowed_responses",
     value: function prepare_allowed_responses() {
-      this._allowed_responses = this._prepare_responses(this.vars.get('allowed_responses'));
+      this._allowed_responses = this._prepare_responses(this.vars.get('allowed_responses', true, -1));
 
-      if (this._allowed_responses !== null && this._allowed_responses.length === 0) {
+      if (this._allowed_responses !== -1 && this._allowed_responses.length === 0) {
         this.experiment._runner._debugger.addError('Defined responses are not valid in keyboard_response: ' + this.name + ' (' + this.vars.get('allowed_responses') + ')');
       }
     }
@@ -9066,9 +9073,9 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare_correct_responses",
     value: function prepare_correct_responses() {
-      this._correct_responses = this._prepare_responses(this.vars.get('correct_response'));
+      this._correct_responses = this._prepare_responses(this.vars.get('correct_response', true, -1));
 
-      if (this._correct_responses !== null && this._correct_responses.length === 0) {
+      if (this._correct_responses !== -1 && this._correct_responses.length === 0) {
         this.experiment._runner._debugger.addError('Correct response is not valid in keyboard_response: ' + this.name + ' (' + this.vars.get('correct_response') + ')');
       }
     } // Prepare the duration of the stimulus interaction. */
@@ -9130,8 +9137,8 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare_timeout",
     value: function prepare_timeout() {
-      var timeout = this.vars.get('timeout');
-      if (timeout === null) return;
+      var timeout = this.vars.get('timeout', true, -1);
+      if (timeout === -1) return;
       this._timeout = typeof timeout === 'number' ? timeout : -1;
     }
     /** Sets duration and allowed responses on the response object. **/
@@ -9139,7 +9146,7 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "configure_response_objects",
     value: function configure_response_objects() {
-      var duration = this.vars.get('duration');
+      var duration = this.vars.get('duration', true, -1);
 
       if (duration === 'keypress') {
         this._keyboard._set_config(this._final_duration, this._allowed_responses);
@@ -9465,7 +9472,7 @@ var InlineHTML = /*#__PURE__*/function (_FormHTML) {
       // to-be-evaluated parts based on whatever is in-between. Finally, we
       // reverse the indices and evaluate the to-be-evaluated HTML parts from the
       // end to the beginning.
-      var html = this.vars.get('html', null, false);
+      var html = this.vars.get('html', false);
       var start_pos = 0;
       var to_eval = [];
 
@@ -9772,17 +9779,17 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
 
               default:
                 if (read_run_lines === true) {
-                  this.vars.set('_run', this.vars.get('_run', null, false) + lines[i] + '\n');
+                  this.vars.set('_run', this.vars.get('_run', false) + lines[i] + '\n');
                 } else if (read_prepare_lines === true) {
-                  this.vars.set('_prepare', this.vars.get('_prepare', null, false) + lines[i] + '\n');
+                  this.vars.set('_prepare', this.vars.get('_prepare', false) + lines[i] + '\n');
                 }
 
             }
           } else {
             if (read_run_lines === true) {
-              this.vars.set('_run', this.vars.get('_run', null, false) + lines[i] + '\n');
+              this.vars.set('_run', this.vars.get('_run', false) + lines[i] + '\n');
             } else if (read_prepare_lines === true) {
-              this.vars.set('_prepare', this.vars.get('_prepare', null, false) + lines[i] + '\n');
+              this.vars.set('_prepare', this.vars.get('_prepare', false) + lines[i] + '\n');
             }
           }
         }
@@ -9793,7 +9800,7 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare",
     value: function prepare() {
-      this.workspace.exec(this.vars.get('_prepare', null, false));
+      this.workspace.exec(this.vars.get('_prepare', false));
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(InlineJavaScript.prototype), "prepare", this).call(this);
     }
@@ -9805,7 +9812,7 @@ var InlineJavaScript = /*#__PURE__*/function (_Item) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_9___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_12___default()(InlineJavaScript.prototype), "run", this).call(this);
 
       this.set_item_onset();
-      this.workspace.exec(this.vars.get('_run', null, false));
+      this.workspace.exec(this.vars.get('_run', false));
 
       this._complete();
     }
@@ -18640,4 +18647,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.79f8145a74c8375e8e6b.bundle.js.map
+//# sourceMappingURL=osweb.00ef41a0449f4e78bb7a.bundle.js.map
