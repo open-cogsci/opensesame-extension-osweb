@@ -217,6 +217,8 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     env_js_src = src_paths['js'] / env_js
     if env_js_src.exists():
         assets['js'].append({'src': env_js_src, 'dest': (f'js/{env_js}')})
+    assets['js'].append({'src': src_paths['js'] / '_shared.js',
+                         'dest': ('js/_shared.js')})
     env_css = f'{mode}.css'
     env_css_src = src_paths[u'css'] / env_css
     if env_css_src.exists():

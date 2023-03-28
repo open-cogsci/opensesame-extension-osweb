@@ -49,24 +49,8 @@ const context = {
 
 let runner = null
 
-if (!alertify.errorAlert) {
-    //define a new errorAlert base on alert
-    alertify.dialog('errorAlert', function factory() {
-        return {
-            build: function () {
-                this.setHeader('Application Error')
-            }
-        }
-    }, true, 'alert')
-}
-
-// Callback function to handle errors
-function errorHandler (msg, url, line, col, error) {
-    let text = '<b>' + msg + '</b><br>'
-    text += 'See ' + (url && url.includes('osdoc') ? '<a href="'+url+'" target="_BLANK">this source</a>':'the console') + ' for further details'
-    alertify.errorAlert(text)
-}
-window.onerror = errorHandler
+defineErrorAlert()
+window.addEventListener('error', errorHandler)
 
 // An array that will contain all logged data to be downloaded as a JSON text
 // file at the end
@@ -149,27 +133,4 @@ function onLogHandler(data) {
     }
     window._logdata.push(data)
     console.log(JSON.stringify(data))
-}
-
-/**
- * Function to handle input prompt dialog messages from the runner.
- * @param {String} title - The title of the dialog box.
- * @param {String} message - The message qwithin the dialog box.
- * @param {String} defaultValue - The default value for the input field.
- * @param {String} dataType - The datatype to store.
- * @param {Object} onConfirm - The confirm event.
- * @param {Object} onCancel - The cancel event.
- */
-function prompt(title, message, defaultValue, dataType, onConfirm, onCancel) {
-    alertify.prompt(
-        title,
-        message,
-        defaultValue,
-        function (evt, value) {
-            onConfirm(value)
-        },
-        function () {
-            onCancel()
-        }.bind(this)
-    ).showModal()
 }

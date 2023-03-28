@@ -107,20 +107,6 @@ function loadExperiment() {
     send('[')
 }
 
-// Callback function to handle errors
-// eslint-disable-next-line no-unused-vars
-function errorHandler (msg, url, _line, _col, _error) {
-    let text = '<p><b>' + msg + '</b></p>'
-    if (url) {
-        text += '<p>See ' + (url && url.includes('osdoc')
-            ? '<a href="'+url+'" target="_BLANK">the OSWeb documentation</a>'
-            : 'the console') + ' for further details</p>'
-        alertify.errorAlert(text, () => jatos.endStudy(false, 'Errors occurred. See log for details.'))
-    }
-    send(']')
-    jatos.log('ERROR: ' + msg)
-}
-
 /**
  * Callback function for processing log data
  * @param {Object} data - The result data.
@@ -232,28 +218,6 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
     ).showModal()
 }
 
-/**
- * Function to handle input prompt dialog messages from the runner.
- * @param {String} title - The title of the dialog box.
- * @param {String} message - The message qwithin the dialog box.
- * @param {String} defaultValue - The default value for the input field.
- * @param {String} dataType - The datatype to store.
- * @param {Object} onConfirm - The confirm event.
- * @param {Object} onCancel - The cancel event.
- */
-function prompt(title, message, defaultValue, _, onConfirm, onCancel) {
-    alertify.prompt(
-        title,
-        message,
-        defaultValue,
-        function (_, value) {
-            onConfirm(value)
-        },
-        function () {
-            onCancel()
-        }.bind(this)
-    ).showModal()
-}
 
 /**
  * Function to handle input prompt dialog messages from the runner.
@@ -261,19 +225,7 @@ function prompt(title, message, defaultValue, _, onConfirm, onCancel) {
 // eslint-disable-next-line no-unused-vars
 function onPageLoad() {
     // Starts the experiment when the page is fully loaded.
-    window.onerror = errorHandler
+    window.addEventListener('error', errorHandler)
     jatos.onLoad(loadExperiment)
-    if (!alertify.errorAlert) {
-        //define a new errorAlert based on alert
-        alertify.dialog('errorAlert', function factory() {
-            return {
-                build: function () {
-                    var errorHeader = '<img src="img/warning.png"' +
-                      'style="vertical-align:middle;color:#e10000"> ' +
-                      'Application Error'
-                    this.setHeader(errorHeader)
-                }
-            }
-        }, true, 'alert')
-    }
+    defineErrorAlert()
 }

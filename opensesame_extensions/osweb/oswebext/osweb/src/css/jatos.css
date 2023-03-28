@@ -1,6 +1,5 @@
 * {
   outline: none;
-  font-size: 105%;
   font-family: Helvetica, Arial, sans-serif
 }
 
@@ -92,4 +91,23 @@ html, body {
     height: 72px;
     opacity: 0;
   }
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+pre {
+  font-family: monospace;
+  background-color: #fafafa;
+  padding: 16px;
+}
+
+.error-line {
+  font-family: monospace;
+  color: red;
+}
+
+.ajs-dialog {
+  max-width: 75%!important;
 }
