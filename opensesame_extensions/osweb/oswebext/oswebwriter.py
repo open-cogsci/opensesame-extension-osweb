@@ -38,13 +38,16 @@ class OSWebWriter(OSExpWriter):
     doesn't have to do any translating itself.
     """
     
-    def transform(self, cond):
+    def transform(self, cond, escape=False):
         py_cond = self._exp.syntax.compile_cond(cond, bytecode=False)
         # JavaScript uses vars as opposed to var for the var_store object
         py_cond = RE_VAR.sub('vars.', py_cond)
         # The last two characters are ;\n, which are not valid in some
         # contexts and we therefore strip them off
-        return py2js(py_cond)[:-2].replace('"', r'\"')
+        js_cond = py2js(py_cond)[:-2]
+        if escape:
+            js_cond = js_cond.replace('"', r'\"')
+        return js_cond
             
     @property
     def create_cmd(self):
@@ -93,7 +96,7 @@ class OSWebWriter(OSExpWriter):
                 if any(ignore_start <= start and ignore_end >= end
                        for ignore_start, ignore_end in ignore_spans):
                     continue
-                template_literal = f'${{{self.transform(m.group("expr"))}}}'
+                template_literal = f'${{{self.transform(m.group("expr"), escape=True)}}}'
                 oslogger.debug(f'converting f-string {m.group()} to template '
                                f'literal {template_literal}')
                 script = script[:start] + template_literal + script[end:]
