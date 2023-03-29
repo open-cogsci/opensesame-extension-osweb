@@ -1534,14 +1534,9 @@ var Keyboard = /*#__PURE__*/function (_ResponseDevice) {
   }, {
     key: "get_key",
     value: function get_key(timeOut, keyList) {
-      // Collects a single key press.
       this._keyList = typeof keyList === 'undefined' ? this._keyList : keyList;
       this._timeOut = typeof timeOut === 'undefined' ? this._timeOut : timeOut;
-
-      if (this._experiment !== null) {
-        // Set the event processor.
-        this._experiment._runner._events._run(this._timeOut, _system_constants_js__WEBPACK_IMPORTED_MODULE_8__["constants"].RESPONSE_KEYBOARD, this._keyList);
-      }
+      if (this._experiment !== null) this._experiment._runner._events._run(this._timeOut, _system_constants_js__WEBPACK_IMPORTED_MODULE_8__["constants"].RESPONSE_KEYBOARD, this._keyList);
     }
     /**
      * Retrieve the moderator keys (LIST, CTRL, ALT) pressed during a response.
@@ -2282,7 +2277,6 @@ var Styles = /*#__PURE__*/function () {
 
     if (typeof item === 'undefined') {
       this._background_color = 0x000000;
-      this._bidi = false;
       this._color = 'white';
       this._fill = false;
       this._font_bold = false;
@@ -2293,17 +2287,16 @@ var Styles = /*#__PURE__*/function () {
       this._html = false;
       this._penwidth = 1;
     } else {
-      this.background_color = item.vars.get('background', 0x000000);
-      this.bidi = item.vars.get('bidi', 'no');
-      this.color = item.vars.get('foreground', 'white');
-      this.fill = item.vars.get('fill', 'no') === 'yes';
-      this.font_bold = item.vars.get('font_bold', 'no');
-      this.font_family = item.vars.get('font_family', 'Arial');
-      this.font_italic = item.vars.get('font_italic', 'no');
-      this.font_size = item.vars.get('font_size', 24);
-      this.font_underline = item.vars.get('font_underline', 'no');
-      this.html = item.vars.get('html', 'no');
-      this.penwidth = item.vars.get('penwidth', 1);
+      this.background_color = item.vars.get('background', true, 0x000000);
+      this.color = item.vars.get('foreground', true, 'white');
+      this.fill = item.vars.get('fill', true, 'no') === 'yes';
+      this.font_bold = item.vars.get('font_bold', true, 'no');
+      this.font_family = item.vars.get('font_family', true, 'Arial');
+      this.font_italic = item.vars.get('font_italic', true, 'no');
+      this.font_size = item.vars.get('font_size', true, 24);
+      this.font_underline = item.vars.get('font_underline', true, 'no');
+      this.html = item.vars.get('html', true, 'no');
+      this.penwidth = item.vars.get('penwidth', true, 1);
     }
   }
   /**
@@ -2422,24 +2415,6 @@ var Styles = /*#__PURE__*/function () {
     ,
     set: function set(val) {
       this._background_color = this._convertColorValue(val, 'number');
-    }
-    /**
-     * Get the bidi value.
-     * @return {Boolean} The bidi value.
-     */
-
-  }, {
-    key: "bidi",
-    get: function get() {
-      return this._bidi;
-    }
-    /**
-     * Set the bidi value.
-     * @param {Boolean} val - The bidi value to set.
-     */
-    ,
-    set: function set(val) {
-      this._bidi = this._checkVal(val);
     }
     /**
      * Get the color value.
@@ -9042,12 +9017,12 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "_prepare_responses",
     value: function _prepare_responses(responses) {
-      if (responses === null) return null;
+      if (responses === -1) return null;
       var response_array = String(responses).split(';').map(function (item) {
         return typeof item === 'string' ? item.replace(/^"(.*)"$/g, '$1').trim() : item;
       }).filter(Boolean);
       if (response_array.length === 0) return null;
-      var duration = this.vars.get('duration');
+      var duration = this.vars.get('duration', true, -1);
 
       if (duration === 'keypress') {
         response_array = this._keyboard._get_default_from_synonym(response_array);
@@ -9064,7 +9039,7 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     value: function prepare_allowed_responses() {
       this._allowed_responses = this._prepare_responses(this.vars.get('allowed_responses', true, -1));
 
-      if (this._allowed_responses !== -1 && this._allowed_responses.length === 0) {
+      if (this._allowed_responses !== null && this._allowed_responses.length === 0) {
         this.experiment._runner._debugger.addError('Defined responses are not valid in keyboard_response: ' + this.name + ' (' + this.vars.get('allowed_responses') + ')');
       }
     }
@@ -9075,7 +9050,7 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     value: function prepare_correct_responses() {
       this._correct_responses = this._prepare_responses(this.vars.get('correct_response', true, -1));
 
-      if (this._correct_responses !== -1 && this._correct_responses.length === 0) {
+      if (this._correct_responses !== null && this._correct_responses.length === 0) {
         this.experiment._runner._debugger.addError('Correct response is not valid in keyboard_response: ' + this.name + ' (' + this.vars.get('correct_response') + ')');
       }
     } // Prepare the duration of the stimulus interaction. */
@@ -9083,22 +9058,25 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare_duration",
     value: function prepare_duration() {
-      this._duration = this.syntax.remove_quotes(this.vars.get('duration'));
-      if (this._duration === null) return;
+      this._duration = this.vars.get('duration', true, -1);
+
+      if (this._duration === -1) {
+        this._duration = 0;
+        return;
+      }
 
       if (this._duration === 'keypress' || this._duration === 'mouseclick' || this._duration === 'sound' || this._duration === 'video') {
-        this._duration = -1;
-        var duration = this.vars.get('duration');
+        this._final_duration = this._timeout !== null ? this._timeout : -1;
 
-        if (duration === 'keypress') {
+        if (this._duration === 'keypress') {
           this.prepare_duration_keypress();
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_KEYBOARD;
-        } else if (duration === 'mouseclick') {
+        } else if (this._duration === 'mouseclick') {
           this.prepare_duration_mouseclick();
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_MOUSE;
-        } else if (duration === 'sound') {
+        } else if (this._duration === 'sound') {
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_SOUND;
-        } else if (duration === 'video') {
+        } else if (this._duration === 'video') {
           this._responsetype = _system_constants_js__WEBPACK_IMPORTED_MODULE_30__["constants"].RESPONSE_VIDEO;
         }
 
@@ -9119,18 +9097,14 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare_duration_keypress",
     value: function prepare_duration_keypress() {
-      // Prepare a keyboard duration.
       this._keyboard = new _backends_keyboard_js__WEBPACK_IMPORTED_MODULE_28__["default"](this.experiment);
-      this._final_duration = this._timeout !== -1 ? this._timeout : this._duration;
     }
     /** Prepare the system for a mouseclick duration interval. */
 
   }, {
     key: "prepare_duration_mouseclick",
     value: function prepare_duration_mouseclick() {
-      // Prepare a mouseclick duration.
       this._mouse = new _backends_mouse_js__WEBPACK_IMPORTED_MODULE_29__["default"](this.experiment);
-      this._final_duration = this._timeout !== -1 ? this._timeout : this._duration;
     }
     /** Prepare the system for a timeout. */
 
@@ -9138,14 +9112,14 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
     key: "prepare_timeout",
     value: function prepare_timeout() {
       var timeout = this.vars.get('timeout', true, -1);
-      if (timeout === -1) return;
-      this._timeout = typeof timeout === 'number' ? timeout : -1;
+      this._timeout = typeof timeout === 'number' && timeout !== -1 ? timeout : null;
     }
     /** Sets duration and allowed responses on the response object. **/
 
   }, {
     key: "configure_response_objects",
     value: function configure_response_objects() {
+      // We get duration again, because this._duration can be set to -1
       var duration = this.vars.get('duration', true, -1);
 
       if (duration === 'keypress') {
@@ -9265,28 +9239,27 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
 
       if (this._correct_responses === null) {
         this.experiment.vars.set('correct', 'undefined');
-        return;
-      }
+      } else {
+        this.experiment.vars.set('correct', 0);
 
-      this.experiment.vars.set('correct', 0);
+        var _iterator = _createForOfIteratorHelper(this._correct_responses),
+            _step;
 
-      var _iterator = _createForOfIteratorHelper(this._correct_responses),
-          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var cr = _step.value;
 
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var cr = _step.value;
-
-          if (this.synonyms.includes(cr)) {
-            this.experiment.vars.set('correct', 1);
-            this.experiment.vars.set('total_correct', this.experiment.vars.get('total_correct') + 1);
-            break;
+            if (this.synonyms.includes(cr)) {
+              this.experiment.vars.set('correct', 1);
+              this.experiment.vars.set('total_correct', this.experiment.vars.get('total_correct') + 1);
+              break;
+            }
           }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
       }
 
       this.experiment.vars.set('total_response_time', this.experiment.vars.get('total_response_time') + this.experiment.vars.get('response_time'));
@@ -9298,9 +9271,9 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
       this.experiment.vars.set('correct_' + this.name, this.experiment.vars.get('correct'));
     }
     /**
-       * Sets or resets the start of the stimulus response interval.
-       * @param {Boolean} reset - If true reset the sri value.
-       */
+     * Sets or resets the start of the stimulus response interval.
+     * @param {Boolean} reset - If true reset the sri value.
+     **/
 
   }, {
     key: "set_sri",
@@ -9322,7 +9295,6 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "sleep_for_duration",
     value: function sleep_for_duration() {
-      // Sleep for a specified time.
       this.sleep(this._duration);
     }
     /** Implements the prepare phase of the general response item. */
@@ -9330,12 +9302,11 @@ var GenericResponse = /*#__PURE__*/function (_Item) {
   }, {
     key: "prepare",
     value: function prepare() {
-      // Implements the prepare phase of the item.
       this.prepare_timeout();
       this.prepare_duration();
       this.prepare_allowed_responses();
       this.prepare_correct_responses();
-      this.configure_response_objects(); // Inherited.
+      this.configure_response_objects();
 
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_23___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_26___default()(GenericResponse.prototype), "prepare", this).call(this);
     }
@@ -10252,7 +10223,6 @@ var Item = /*#__PURE__*/function () {
       if (script !== null) {
         this.parse_multiline_vars(script);
         var lines = script.split('\n');
-        var pattern = /__([0-9A-Z_a-z]+)__/gm;
         var in_multi = false;
 
         var _iterator = _createForOfIteratorHelper(lines),
@@ -10267,7 +10237,7 @@ var Item = /*#__PURE__*/function () {
               continue;
             }
 
-            if (pattern.exec(line)) {
+            if (/__([0-9A-Z_a-z]+)__/gm.test(line)) {
               in_multi = true;
               continue;
             }
@@ -11249,7 +11219,7 @@ var Loop = /*#__PURE__*/function (_Item) {
       // Check if if the cycle must be repeated.
 
 
-      if (this.experiment.vars.get('repeat_cycle') === 1 && this._index !== null) {
+      if (this.experiment.vars.get('repeat_cycle', true, -1) === 1 && this._index !== null) {
         this._runner._debugger.msg('Repeating cycle: ' + this._index);
 
         this._cycles.push(this._index);
@@ -11271,7 +11241,7 @@ var Loop = /*#__PURE__*/function (_Item) {
       this.apply_cycle(this._index);
       this.experiment.vars.set('repeat_cycle', 0); // Process the break-if statement
 
-      var break_if_val = this.vars.get('break_if', undefined, false);
+      var break_if_val = this.vars.get('break_if', false);
       this._break_if = ['never', ''].includes(break_if_val) ? null : break_if_val;
 
       if (this._break_if !== null) {
@@ -11904,7 +11874,7 @@ var RepeatCycle = /*#__PURE__*/function (_Item) {
       _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_7___default()(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_10___default()(RepeatCycle.prototype), "run", this).call(this); // Prepare the condtion for which the repeat_cycle must fire.
 
 
-      var condition = this.vars.get('condition', undefined, false); // Run item only one time.
+      var condition = this.vars.get('condition', false); // Run item only one time.
 
       if (this._status !== _system_constants_js__WEBPACK_IMPORTED_MODULE_12__["constants"].STATUS_FINALIZE) {
         if (this.experiment._runner._javascriptWorkspace._eval(condition)) {
@@ -18647,4 +18617,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.00ef41a0449f4e78bb7a.bundle.js.map
+//# sourceMappingURL=osweb.a806febd2fee54727c2c.bundle.js.map
