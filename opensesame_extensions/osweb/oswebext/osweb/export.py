@@ -163,7 +163,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
                 'batchList': []
             }
         }
-        jas_path.write_text(json.dumps(info))
+        jas_path.write_text(json.dumps(info), 'utf-8')
         with zipfile.ZipFile(jzip_path, 'w') as fd:
             fd.write(jas_path, 'info.jas')
             fd.write(index_path, f'{uuid}/{component_hash}.html')
@@ -232,7 +232,7 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     elif mode == 'jatos':
         _compose_for_jatos(component_hash, uuid, dom, assets, params)
     html = dom.prettify()
-    index_path.write_text(html)
+    index_path.write_text(html, 'utf-8')
     return assets
 
 
@@ -268,12 +268,12 @@ def _compose_for_standalone(osexp_path, dom, assets, params=None):
     script_tag = dom.new_tag('script', type='text/javascript')
     for js_file in assets['js']:
         if js_file['src'].suffix == '.js':
-            script_tag.append(js_file['src'].read_text() + '\n')
+            script_tag.append(js_file['src'].read_text('utf-8') + '\n')
     dom.head.append(script_tag)
     css_tag = dom.new_tag(u'style')
     for css_file in assets['css']:
         if css_file['src'].suffix == '.css':
-            css_tag.append(css_file['src'].read_text() + '\n')
+            css_tag.append(css_file['src'].read_text('utf-8') + '\n')
     dom.head.append(css_tag)
     # Add experiment as base64 encoded string
     exp_tag = dom.new_tag(
