@@ -115,7 +115,7 @@ def check_structure(exp, fullscreen):
             )
         states[item_name] = state
         if item.item_type == 'sequence':
-            for sub_item_name, _ in item.items:
+            for sub_item_name, _, _ in item.items:
                 set_state(sub_item_name, state)
         elif item.item_type == 'loop':
             set_state(item._item, 'prepare')
