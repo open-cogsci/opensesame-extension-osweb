@@ -24,12 +24,17 @@ import json
 import base64
 import tempfile
 import zipfile
+import tarfile
 import io
 import sys
 import uuid
 from pathlib import Path
 from bs4 import BeautifulSoup
+import fileinspector
 from libopensesame.experiment import Experiment
+from libopensesame.oslogging import oslogger
+from opensesame_extensions.osweb.oswebext.oswebwriter import OSWebWriter
+
 
 # Paths towards assets that are bundled with the osweb extension code
 src_folder = Path(os.path.dirname(__file__)) / 'src'
@@ -56,13 +61,18 @@ def standalone(osexp_path, index_path, subject='0', fullscreen=False,
     welcome_text : str, optional
         Text to display on the JATOS study welcome screen, by default ''.
     external_js : List[str], optional
-        List of URLs to external JavaScript libraties to include in the JATOS 
+        List of URLs to external JavaScript libraties to include in the JATOS
         study, by default [].
     """
+    # Extract the script and rewrite it for OSWeb
+    with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
+        pass
+    exp = Experiment(string=osexp_path)
+    OSWebWriter(exp, fd.name)
     params = {'subject': subject, 'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js}
-    _compose_html_and_get_assets(Path(osexp_path), Path(index_path),
+    _compose_html_and_get_assets(Path(fd.name), Path(index_path),
                                  'standalone', params=params)
 
 
@@ -104,6 +114,11 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     osexp_path = Path(osexp_path)
     component_hash = hashlib.md5(osexp_path.read_bytes()).hexdigest()
     jzip_path = Path(jzip_path)
+    # Extract the script and rewrite it for OSWeb
+    with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
+        pass
+    exp = Experiment(string=osexp_path)
+    script = OSWebWriter(exp, fd.name).script
     # We create a temporary directory that will contain all the files that will
     # go into the jzip archive.
     #
@@ -130,6 +145,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     #        img/
     #            warning.png
     #            opensesame.png
+    pool_paths = [Path(exp.pool[path]) for path in exp.pool]
     with tempfile.TemporaryDirectory(suffix='.jatos') as tmp_dir:
         tmp_dir = Path(tmp_dir)
         assets_dir = tmp_dir / uuid
@@ -142,7 +158,8 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
                   'externalJS': external_js}
         assets = _compose_html_and_get_assets(
             osexp_path, index_path, 'jatos', params=params,
-            component_hash=component_hash, uuid=uuid)
+            component_hash=component_hash, uuid=uuid,
+            pool_paths=pool_paths)
         info = {
             'version': '3',  # This refers to the JATOS version
             'data': {
@@ -167,17 +184,15 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
         with zipfile.ZipFile(jzip_path, 'w') as fd:
             fd.write(jas_path, 'info.jas')
             fd.write(index_path, f'{uuid}/{component_hash}.html')
+            fd.writestr(f'{uuid}/{component_hash}.osexp', script)
+            for pool_path in pool_paths:
+                fd.write(pool_path, f'{uuid}/pool/{pool_path.name}')
             for img in ['opensesame.png', 'warning.png']:
                 fd.write(src_paths['img'] / img, f'{uuid}/img/{img}')
             for js in assets['js']:
                 fd.write(js['src'], f'{uuid}/{js["dest"]}')
             for css in assets['css']:
                 fd.write(css['src'], f'{uuid}/{css["dest"]}')
-            fd.write(osexp_path, f'{uuid}/{component_hash}.osexp')
-            # exp = Experiment(osexp_path)
-            # fd.writestr(exp.to_string(), f'{uuid}/{component_hash}.osexp')
-            # for poolfile_path in exp.pool:
-            #     fd.writestr(exp.pool[pool_path], f'pool/{poolfile_path}')
     return uuid
 
 
@@ -189,7 +204,8 @@ def _get_os_assets(sub_dir):
 
 
 def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
-                                 component_hash=None, uuid=uuid):
+                                 component_hash=None, uuid=uuid,
+                                 pool_paths=[]):
     """Generates an index.html and returns asset information.
     
     Parameters
@@ -204,6 +220,9 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
         Experiment parameters, such as fullscreen
     component_hash: str, optional
     uuid: str, optional
+    pool_paths: list, optional
+        A list of paths that should be included in the file pool. This is only
+        applicable when exporting to JATOS.
         
     Returns
     -------
@@ -230,7 +249,8 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     if mode == 'standalone':
         _compose_for_standalone(osexp_path, dom, assets, params)
     elif mode == 'jatos':
-        _compose_for_jatos(component_hash, uuid, dom, assets, params)
+        _compose_for_jatos(component_hash, uuid, dom, assets, params,
+                           pool_paths)
     html = dom.prettify()
     index_path.write_text(html, 'utf-8')
     return assets
@@ -283,7 +303,7 @@ def _compose_for_standalone(osexp_path, dom, assets, params=None):
     dom.body.append(exp_tag)
 
 
-def _compose_for_jatos(component_hash, uuid, dom, assets, params=None):
+def _compose_for_jatos(component_hash, uuid, dom, assets, params, pool_paths):
     """Builds on top of the base HTML template to create a structure that is 
     appropriate for integration in JATOS.
     
@@ -296,6 +316,7 @@ def _compose_for_jatos(component_hash, uuid, dom, assets, params=None):
     assets: dict
     params: dict
         Experiment parameters, such as fullscreen
+    pool_paths: list
     """
     script_tag = dom.new_tag('script', id="parameters", type="text/javascript")
     if params:
@@ -326,6 +347,34 @@ def _compose_for_jatos(component_hash, uuid, dom, assets, params=None):
                                    type="text/css", rel="stylesheet",
                                    media="all")
             dom.head.append(styleTag)
+    # Add the file pool. This is a hidden div tag that contains elements for
+    # each of the files in the pool. These are dynamically loaded by OSWeb.
+    pool = dom.new_tag('div', id='filePool', style='display:none;')
+    for path in pool_paths:
+        # File inspector doesn't accept Path objects
+        mime = fileinspector.determine_type(str(path))
+        if mime is None:
+            oslogger.warning(f'unknown mimetype for {path}')
+            continue
+        src = f'pool/{path.name}'
+        id_ = path.name
+        oslogger.debug(f'adding {path} to file pool')
+        if mime.startswith('image/'):
+            asset = dom.new_tag('img', src=src, id=id_)
+        elif mime.startswith('text/'):
+            asset = dom.new_tag('iframe', src=src ,id=id_)
+        elif mime.startswith('video/'):
+            src = dom.new_tag('source', src=src)
+            asset = dom.new_tag('video', id=id_)
+            asset.append(src)
+        elif mime.startswith('audio/'):
+            src = dom.new_tag('source', src=src)
+            asset = dom.new_tag('audio', id=id_)
+            asset.append(src)
+        else:
+            oslogger.warning(f'unsupported {mime} mimetype for {path}')
+        pool.append(asset)
+    dom.body.append(pool)
 
 
 def _read_b64(path):
