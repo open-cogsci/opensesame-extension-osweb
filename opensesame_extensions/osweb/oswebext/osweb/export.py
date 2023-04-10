@@ -235,8 +235,7 @@ def _compose_html_and_get_assets(script, index_path, mode, params=None,
         assets['css'].append({'src': env_css_src, 'dest': (f'css/{env_css}')})
     tmpl = src_paths['html'] / f'{mode}.html'
     # The HTML file parsed as a DOM Tree
-    with tmpl.open() as t_fp:
-        dom = BeautifulSoup(t_fp, 'html.parser')
+    dom = BeautifulSoup(tmpl.read_text('utf-8'), 'html.parser')
     if mode == 'standalone':
         _compose_for_standalone(script, dom, assets, params)
     elif mode == 'jatos':
