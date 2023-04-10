@@ -218,14 +218,13 @@ function onConfirmHandler(title, message, onConfirm, onCancel) {
     ).showModal()
 }
 
-
 /**
  * Function to handle input prompt dialog messages from the runner.
  **/
 // eslint-disable-next-line no-unused-vars
 function onPageLoad() {
+    document.getElementById('osweb_loading').style.display = 'none'
     // Starts the experiment when the page is fully loaded.
-    window.addEventListener('error', errorHandler)
     jatos.onLoad(loadExperiment)
     defineErrorAlert()
 }

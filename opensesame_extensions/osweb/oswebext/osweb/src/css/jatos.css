@@ -9,6 +9,19 @@ html, body {
   height: 100%;
 }
 
+#osweb_loading {
+  width: 100%
+  margin-top: 25vh;
+  text-align: center;
+  font-family: "Roboto Condensed";
+  font-size: 2em;
+  color: #607d8b;
+}
+
+#osweb_loading small {
+  font-size: .6em;
+}
+
 #modal {
   display: none;
   position: fixed;

@@ -64,16 +64,13 @@ def standalone(osexp_path, index_path, subject='0', fullscreen=False,
         List of URLs to external JavaScript libraties to include in the JATOS
         study, by default [].
     """
-    # Extract the script and rewrite it for OSWeb
-    with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
-        pass
-    exp = Experiment(string=osexp_path)
-    OSWebWriter(exp, fd.name)
+    script, pool_paths = _extract_script_and_pool_paths(osexp_path)
     params = {'subject': subject, 'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js}
-    _compose_html_and_get_assets(Path(fd.name), Path(index_path),
-                                 'standalone', params=params)
+    _compose_html_and_get_assets(script, Path(index_path),
+                                 'standalone', params=params,
+                                 pool_paths=pool_paths)
 
 
 def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
@@ -114,11 +111,7 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     osexp_path = Path(osexp_path)
     component_hash = hashlib.md5(osexp_path.read_bytes()).hexdigest()
     jzip_path = Path(jzip_path)
-    # Extract the script and rewrite it for OSWeb
-    with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
-        pass
-    exp = Experiment(string=osexp_path)
-    script = OSWebWriter(exp, fd.name).script
+    script, pool_paths = _extract_script_and_pool_paths(osexp_path)
     # We create a temporary directory that will contain all the files that will
     # go into the jzip archive.
     #
@@ -145,7 +138,6 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     #        img/
     #            warning.png
     #            opensesame.png
-    pool_paths = [Path(exp.pool[path]) for path in exp.pool]
     with tempfile.TemporaryDirectory(suffix='.jatos') as tmp_dir:
         tmp_dir = Path(tmp_dir)
         assets_dir = tmp_dir / uuid
@@ -203,15 +195,15 @@ def _get_os_assets(sub_dir):
             for path in src_paths[sub_dir].glob('*osweb*')]
 
 
-def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
+def _compose_html_and_get_assets(script, index_path, mode, params=None,
                                  component_hash=None, uuid=uuid,
                                  pool_paths=[]):
     """Generates an index.html and returns asset information.
     
     Parameters
     ----------
-    osexp_path: Path
-        A path to the experiment file
+    script: str
+        The osexp script
     index_path: Path
         A path where the resulting index.html should be created
     mode: str
@@ -221,8 +213,7 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     component_hash: str, optional
     uuid: str, optional
     pool_paths: list, optional
-        A list of paths that should be included in the file pool. This is only
-        applicable when exporting to JATOS.
+        A list of paths that should be included in the file pool
         
     Returns
     -------
@@ -247,23 +238,54 @@ def _compose_html_and_get_assets(osexp_path, index_path, mode, params=None,
     with tmpl.open() as t_fp:
         dom = BeautifulSoup(t_fp, 'html.parser')
     if mode == 'standalone':
-        _compose_for_standalone(osexp_path, dom, assets, params)
+        _compose_for_standalone(script, dom, assets, params)
     elif mode == 'jatos':
-        _compose_for_jatos(component_hash, uuid, dom, assets, params,
-                           pool_paths)
+        _compose_for_jatos(component_hash, uuid, dom, assets, params)
+    # Add the file pool. This is a hidden div tag that contains elements for
+    # each of the files in the pool. These are dynamically loaded by OSWeb.
+    pool = dom.new_tag('div', id='filePool', style='display:none;')
+    for path in pool_paths:
+        # File inspector doesn't accept Path objects
+        mime = fileinspector.determine_type(str(path))
+        if mime is None:
+            oslogger.warning(f'unknown mimetype for {path}')
+            continue
+        if mode == 'standalone':
+            src = f'data:{mime};base64,{_read_b64(path)}'
+        else:
+            src = Path('pool') / path.name
+        id_ = path.name
+        oslogger.debug(f'adding {path} to file pool')
+        if mime.startswith('image/'):
+            asset = dom.new_tag('img', src=src, id=id_)
+        elif mime.startswith('text/'):
+            asset = dom.new_tag('pre', id=id_)
+            asset.string = path.read_text()
+        elif mime.startswith('video/'):
+            src = dom.new_tag('source', src=src)
+            asset = dom.new_tag('video', id=id_)
+            asset.append(src)
+        elif mime.startswith('audio/'):
+            src = dom.new_tag('source', src=src)
+            asset = dom.new_tag('audio', id=id_)
+            asset.append(src)
+        else:
+            oslogger.warning(f'unsupported {mime} mimetype for {path}')
+        pool.append(asset)
+    dom.body.append(pool)
+    # Write HTML file
     html = dom.prettify()
     index_path.write_text(html, 'utf-8')
     return assets
 
 
-def _compose_for_standalone(osexp_path, dom, assets, params=None):
+def _compose_for_standalone(script, dom, assets, params=None):
     """Builds on top of the base HTML template to create a structure that is 
     appropriate for a standalone HTML file.
     
     Parameters
     ----------
-    osexp_path: Path
-        Path to the experiment file
+    script: str
     dom: Tag
         A BeautifulSoup Tag corresponding to the full HTML file
     assets: dict
@@ -298,12 +320,12 @@ def _compose_for_standalone(osexp_path, dom, assets, params=None):
     # Add experiment as base64 encoded string
     exp_tag = dom.new_tag(
         'embed', id='osexp_src',
-        src=f'data:application/gzip;base64,{_read_b64(osexp_path)}',
+        src=f'data:text/plain;base64,{_to_b64(script)}',
         style='display:none')
     dom.body.append(exp_tag)
 
 
-def _compose_for_jatos(component_hash, uuid, dom, assets, params, pool_paths):
+def _compose_for_jatos(component_hash, uuid, dom, assets, params):
     """Builds on top of the base HTML template to create a structure that is 
     appropriate for integration in JATOS.
     
@@ -316,7 +338,6 @@ def _compose_for_jatos(component_hash, uuid, dom, assets, params, pool_paths):
     assets: dict
     params: dict
         Experiment parameters, such as fullscreen
-    pool_paths: list
     """
     script_tag = dom.new_tag('script', id="parameters", type="text/javascript")
     if params:
@@ -347,38 +368,14 @@ def _compose_for_jatos(component_hash, uuid, dom, assets, params, pool_paths):
                                    type="text/css", rel="stylesheet",
                                    media="all")
             dom.head.append(styleTag)
-    # Add the file pool. This is a hidden div tag that contains elements for
-    # each of the files in the pool. These are dynamically loaded by OSWeb.
-    pool = dom.new_tag('div', id='filePool', style='display:none;')
-    for path in pool_paths:
-        # File inspector doesn't accept Path objects
-        mime = fileinspector.determine_type(str(path))
-        if mime is None:
-            oslogger.warning(f'unknown mimetype for {path}')
-            continue
-        src = f'pool/{path.name}'
-        id_ = path.name
-        oslogger.debug(f'adding {path} to file pool')
-        if mime.startswith('image/'):
-            asset = dom.new_tag('img', src=src, id=id_)
-        elif mime.startswith('text/'):
-            asset = dom.new_tag('iframe', src=src ,id=id_)
-        elif mime.startswith('video/'):
-            src = dom.new_tag('source', src=src)
-            asset = dom.new_tag('video', id=id_)
-            asset.append(src)
-        elif mime.startswith('audio/'):
-            src = dom.new_tag('source', src=src)
-            asset = dom.new_tag('audio', id=id_)
-            asset.append(src)
-        else:
-            oslogger.warning(f'unsupported {mime} mimetype for {path}')
-        pool.append(asset)
-    dom.body.append(pool)
 
 
 def _read_b64(path):
     return base64.b64encode(path.read_bytes()).decode()
+    
+
+def _to_b64(s):
+    return base64.b64encode(s.encode('utf-8')).decode()
 
 
 def unique_uuid():
@@ -388,3 +385,16 @@ def unique_uuid():
 def _safe_welcome_text(s):
     return s.replace('\n', '<br />'). \
         replace('"', '&#34;').replace("'", '&#39;')
+
+
+def _extract_script_and_pool_paths(osexp_path):
+    with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
+        pass
+    exp = Experiment(string=osexp_path)
+    script = OSWebWriter(exp, fd.name).script
+    pool_paths = [Path(exp.pool[path]) for path in exp.pool]
+    try:
+        os.remove(fd.name)
+    except Exception as e:
+        oslogger.warning(f'failed to remove temporary file: {fd.name}')
+    return script, pool_paths
