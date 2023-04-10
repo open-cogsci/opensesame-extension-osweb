@@ -196,4 +196,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/extra.js
 /***/ })
 
 /******/ });
-//# sourceMappingURL=extra.4d7f06d400013993e892.bundle.js.map
+//# sourceMappingURL=extra.fe66bf4c8f2116522f2c.bundle.js.map
