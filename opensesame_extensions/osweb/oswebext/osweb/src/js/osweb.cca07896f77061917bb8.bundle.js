@@ -3618,6 +3618,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_esnext_string_match_all_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/esnext.string.match-all.js */ "./node_modules/core-js/modules/esnext.string.match-all.js");
+/* harmony import */ var core_js_modules_esnext_string_match_all_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_esnext_string_match_all_js__WEBPACK_IMPORTED_MODULE_7__);
+
+
 
 
 
@@ -3908,9 +3914,25 @@ class Syntax {
    * @param {String} line - line the line to split in tokens
    * @return {Array} - The list of tokens
    */
-  split(line) {
-    var result = line.match(/(?:[^\s"]+|"[^"]*")+/g);
-    return result !== null ? result : [];
+  split(s) {
+    // Double backslashes cause issues because they get confused with escaped
+    // quotes. That's why we replace them by a very unlikely string first,
+    // replace them back afterwards.
+    s = s.replaceAll('\\\\', '-/*/*-');
+    const regex = /(?:([^\s"']+)|(["'])(.*?[^\\])\2)+/g;
+    const matches = s.matchAll(regex);
+    const result = [];
+    for (const match of matches) {
+      let token = match[0];
+      // If the keyword ends with an =, then an empty string has been stripped
+      // off afterwards. We re-add it.
+      if (token.endsWith('=')) token += '""';
+      result.push(token.replaceAll('-/*/*-', '\\\\'));
+    }
+    // If the original string ends with a trailing empty string, then this has
+    // been stripped off. We add it here.
+    if (s.endsWith(' ""')) result.push('""');
+    return result;
   }
 
   /**
@@ -11064,11 +11086,16 @@ class Runner {
       this._container = typeof content === 'string' ? document.getElementById(content) : content;
 
       // Create and set the experiment canvas.
-      this._renderer = Object(pixi_js__WEBPACK_IMPORTED_MODULE_0__["autoDetectRenderer"])(800, 600, {
-        antialias: true,
-        transparent: false,
-        resolution: 1
-      });
+      try {
+        this._renderer = Object(pixi_js__WEBPACK_IMPORTED_MODULE_0__["autoDetectRenderer"])(800, 600, {
+          antialias: true,
+          transparent: false,
+          resolution: 1
+        });
+      } catch (error) {
+        document.getElementById('webgl-unavailable').style.display = 'block';
+        return;
+      }
       this._renderer.backgroundColor = 0xFFFFFF;
 
       // Append the canvas to the container.
@@ -12311,4 +12338,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.db7ce69b85ff0019a745.bundle.js.map
+//# sourceMappingURL=osweb.cca07896f77061917bb8.bundle.js.map
