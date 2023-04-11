@@ -42,10 +42,26 @@
 			max-width: 75%!important;
 		}
 		
+		#webgl-unavailable {
+			display: none;
+			width: 100%
+			margin-top: 25vh;
+			text-align: center;
+			font-family: "Roboto Condensed";
+			font-size: 2em;
+			color: #607d8b;
+		}
+}
+		
 		</style>
 </head>
 <body onload="runExperiment()">
 	<main class="d-flex justify-content-center flex-column stretch">
+		<div id="webgl-unavailable">
+		<p>Your browser does not support WebGL, which is required for this experiment.</p>
+		<p>&#x1F615;</p>
+		<p>Please try another browser or another computer.</p>
+		</div>
 		<div class='osweb-canvas-container'>
 			<div id="osweb_div" class='aspectwrapper'></div>
 		</div>

@@ -9,6 +9,7 @@ html, body {
   height: 100%;
 }
 
+#webgl-unavailable,
 #osweb_loading {
   width: 100%
   margin-top: 25vh;
@@ -20,6 +21,10 @@ html, body {
 
 #osweb_loading small {
   font-size: .6em;
+}
+
+#webgl-unavailable {
+  display: none;
 }
 
 #modal {
