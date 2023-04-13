@@ -6286,6 +6286,7 @@ class InlineHTML extends _form_html_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
       to_eval.push([start_pos, match.index]);
       start_pos = match.index + match[0].length;
     }
+    to_eval.push([start_pos, html.length]);
     to_eval.reverse();
     for (let [start, end] of to_eval) {
       html = html.slice(0, start) + this.syntax.eval_text(html.slice(start, end)) + html.slice(end);
@@ -12338,4 +12339,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.cca07896f77061917bb8.bundle.js.map
+//# sourceMappingURL=osweb.54c1f2169cdd2ef6dc6c.bundle.js.map
