@@ -5818,12 +5818,12 @@ class FormMultipleChoice extends _form_html_js__WEBPACK_IMPORTED_MODULE_1__["def
     if (!this._hasOkButton) setTimeout(this.resumeOSWeb.bind(this), 100);
   }
   formElements() {
+    const boxType = this.vars.get('allow_multiple') === 'no' ? 'radio' : 'checkbox';
     this._hasOkButton = this.vars.get('advance_immediately') === 'no' || boxType === 'checkbox';
     const elements = [];
     this._boxes = [];
     // Create an array of non-empty options
     const options = String(this.vars.get('options')).split('\n').filter(option => option.trim().length > 0);
-    const boxType = this.vars.get('allow_multiple') === 'no' ? 'radio' : 'checkbox';
     const elementHeight = 1 / (options.length + (this._hasOkButton ? 3 : 2));
     const title = this.element('h1', this.vars.get('form_title'), elementHeight, 1);
     elements.push(title);
@@ -12339,4 +12339,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.54c1f2169cdd2ef6dc6c.bundle.js.map
+//# sourceMappingURL=osweb.1f96b2641eff1a17c179.bundle.js.map
