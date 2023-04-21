@@ -5666,7 +5666,7 @@ class FormHTML extends _items_item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
     let inherit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
     const element = document.createElement(type);
     // Replace all newlines by <br> tags
-    if (typeof html !== "undefined" && html !== null) element.innerHTML = html.replace(/\n/g, '<br>');
+    if (typeof html !== "undefined" && html !== null) element.innerHTML = String(html).replace(/\n/g, '<br>');
     if (typeof height !== "undefined") element.style.height = this._paddedHeight * height - 40 + 'px';
     if (typeof width !== "undefined") element.style.width = this._paddedWidth * width - 40 + 'px';
     element.style.padding = '10px';
@@ -12339,4 +12339,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.1f96b2641eff1a17c179.bundle.js.map
+//# sourceMappingURL=osweb.b3cc1e8c28388098545c.bundle.js.map
