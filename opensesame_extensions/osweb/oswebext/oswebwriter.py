@@ -29,6 +29,7 @@ RE_SET_COND = re.compile(r'^\t(?P<cmd>set (break_if|condition) .*)$',
 RE_DRAW = re.compile(r'^\t(?P<cmd>draw .*)$', re.MULTILINE)
 RE_FSTRING = re.compile(r'(?<!{){(?!{)(?P<expr>.*?)}')
 RE_IGNORE_RUN = re.compile('___run__.*?__end__\n', re.MULTILINE | re.DOTALL)
+RE_IGNORE_PREPARE = re.compile('___prepare__.*?__end__\n', re.MULTILINE | re.DOTALL)
 RE_IGNORE_SCRIPT = re.compile('<script>.*?</script>', re.MULTILINE | re.DOTALL)
 
 
@@ -86,6 +87,8 @@ class OSWebWriter(OSExpWriter):
         # converted.
         ignore_spans = []
         for m in RE_IGNORE_RUN.finditer(script):
+            ignore_spans.append(m.span())
+        for m in RE_IGNORE_PREPARE.finditer(script):
             ignore_spans.append(m.span())
         for m in RE_IGNORE_SCRIPT.finditer(script):
             ignore_spans.append(m.span())
