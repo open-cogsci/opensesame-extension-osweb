@@ -21,6 +21,7 @@ from libopensesame.py3compat import *
 import os
 import tempfile
 import webbrowser
+from pathlib import Path
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtCore import QRegularExpression
 from qtpy.QtGui import QRegularExpressionValidator, QIcon
@@ -32,7 +33,7 @@ from .. import __version__
 from libopensesame.oslogging import oslogger
 from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
-_ = translation_context(u'oswebext', category=u'extension')
+_ = translation_context('oswebext', category='extension')
 
 MEGABYTE = 1024 ** 2
 
@@ -45,7 +46,7 @@ class OSWebExtWidget(BasePreferencesWidget):
     """
 
     def __init__(self, main_window, oswebext):
-        super().__init__(main_window, ui=u'extensions.oswebext.oswebext')
+        super().__init__(main_window, ui='extensions.oswebext.oswebext')
         self._oswebext = oswebext
         self.ui.button_test.clicked.connect(self._test)
         self.ui.fs_checkBox.toggled.connect(self._run_linter)
@@ -103,9 +104,9 @@ class OSWebExtWidget(BasePreferencesWidget):
             size = -1
         if size > 10 * MEGABYTE:
             self.ui.label_expsize_warning.setText(_(
-                u'Your experiment is %d MB. <br />'
-                u'This exceeds the recommended maximum size of 10 MB. <br /> '
-                u'This may increase online loading time.'
+                'Your experiment is %d MB. <br />'
+                'This exceeds the recommended maximum size of 10 MB. <br /> '
+                'This may increase online loading time.'
             ) % (size // MEGABYTE))
             self.ui.icon_expsize_warning.setVisible(True)
             self.ui.label_expsize_warning.setVisible(True)
@@ -153,9 +154,9 @@ class OSWebExtWidget(BasePreferencesWidget):
             suggested_path = cfg.file_dialog_path
         path = QFileDialog.getSaveFileName(
             self.main_window,
-            _(u'Export JATOS study…'),
+            _('Export JATOS study…'),
             directory=suggested_path,
-            filter=u'JATOS study (*.jzip)')
+            filter='JATOS study (*.jzip)')
         if isinstance(path, tuple):
             path = path[0]
         if not path:
@@ -184,44 +185,39 @@ class OSWebExtWidget(BasePreferencesWidget):
 
     def _convert_results(self):
 
-        from osweb import data
+        from opensesame_extensions.osweb.oswebext.osweb import data
         from datamatrix import io
 
-        jatos_results_path = QFileDialog.getOpenFileName(
-            self.main_window,
-            _(u'Select JATOS results file…'),
-            filter=u'JATOS results (*.*)'
-        )
-        if isinstance(jatos_results_path, tuple):
-            jatos_results_path = jatos_results_path[0]
-        if not jatos_results_path:
+        results_path = QFileDialog.getOpenFileName(
+            self.main_window, _('Select OSWeb results file…'),
+            filter='OSWeb results (*.*)')
+        if isinstance(results_path, tuple):
+            results_path = results_path[0]
+        if not results_path:
             return
-
+        results_path = Path(results_path)
         self.main_window.set_busy(True)
         try:
-            dm = data.parse_jatos_results(
-                jatos_results_path,
-                include_context=cfg.oswebext_include_context
-            )
-        except UnicodeDecodeError:
+            dm = data.parse_results(
+                results_path, include_context=cfg.oswebext_include_context)
+        except Exception as e:
             self.extension_manager.fire(
-                'notify',
-                message=_('File is not utf-8 encoded'),
-                category='warning'
-            )
+                'notify', message=_(f'Failed to convert results file: {e}'),
+                category='warning')
             return
         finally:
             self.main_window.set_busy(False)
         export_path = QFileDialog.getSaveFileName(
-            self.main_window,
-            _(u'Save as…'),
-            filter=u'Excel (*.xlsx);;CSV (*.csv)'
-        )
+            self.main_window, _('Save as…'),
+            filter='Excel (*.xlsx);;CSV (*.csv)')
         if isinstance(export_path, tuple):
             export_path = export_path[0]
         if not export_path:
             return
-        if export_path.lower().endswith(u'.xlsx'):
+        export_path = Path(export_path)
+        if export_path.suffix.lower() not in ('.csv', '.xlsx'):
+            export_path = export_path.with_suffix('.xlsx')
+        if export_path.suffix.lower().endswith('.xlsx'):
             io.writexlsx(dm, export_path)
         else:
             io.writetxt(dm, export_path)

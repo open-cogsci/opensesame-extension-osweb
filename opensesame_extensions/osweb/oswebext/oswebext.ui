@@ -98,7 +98,7 @@ Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt;</str
    <item row="4" column="1">
     <widget class="QPushButton" name="button_convert">
      <property name="text">
-      <string>Convert JATOS results to csv/ xlsx</string>
+      <string>Convert OSWeb results to csv/ xlsx</string>
      </property>
      <property name="icon">
       <iconset theme="x-office-spreadsheet">

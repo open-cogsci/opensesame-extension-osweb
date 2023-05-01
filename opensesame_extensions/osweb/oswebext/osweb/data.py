@@ -16,22 +16,107 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
-
+import os
 import json
-from datamatrix import DataMatrix
+from datamatrix import DataMatrix, operations as ops
+from pathlib import Path
+import tempfile
+import zipfile
 from datamatrix.py3compat import *
 
 
 STEPS = 100
 
 
-def parse_jatos_results(jatos_path, include_context=False):
-    
-    """Converts a results file, as exported by JATOS, and returns it as a
+def parse_results(path, include_context=False):
+    """Converts a results file, detects its type, and returns it as a
     DataMatrix. If the context is included, columns are created for each of the
     context variables.
-    """
 
+    Parameters
+    ----------
+    path: Path
+    include_context: bool
+
+    Returns
+    -------
+    DataMatrix
+    """
+    path = Path(path)
+    if path.suffix.lower() in ('.zip', '.jrzip'):
+        return parse_jrzip(path, include_context)
+    if path.suffix.lower() == '.json':
+        return parse_json(path)
+    return parse_jatos_results(path, include_context)
+    
+    
+def parse_json(path):
+    """Converts a json results file, as stored by standalone OSWeb, and returns
+    it as a DataMatrix. If the context is included, columns are created for
+    each of the context variables.
+
+    Parameters
+    ----------
+    path: Path
+    include_context: bool
+
+    Returns
+    -------
+    DataMatrix
+    """
+    data = json.loads(path.read_text())
+    if not isinstance(data, list):
+        raise TypeError('Invalid JSON results file')
+    dm = DataMatrix(length=len(data))
+    for dm_row, data_row in zip(dm, data):
+        for key, val in data_row.items():
+            dm_row[key] = val
+    return dm
+
+
+def parse_jrzip(path, include_context):
+    """Converts a JATOS results archive and returns it as a DataMatrix. If the
+    context is included, columns are created for each of the context variables.
+
+    Parameters
+    ----------
+    path: Path
+    include_context: bool
+
+    Returns
+    -------
+    DataMatrix
+    """
+    dms = []
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        with zipfile.ZipFile(path, 'r') as zip_ref:
+            zip_ref.extractall(temp_dir)
+            # The archive contains separate txt files that are similar to one
+            # line from the old txt data files.
+            for results_file in temp_dir.glob('**/*.txt'):
+                dm = parse_jatos_results(results_file, include_context)
+                # We extract the jatosResultId from the file name, which has
+                # the format study_result_[result_id]
+                dm.jatosStudyResultId = results_file.parts[-3].split('_')[-1]
+                dms.append(dm)
+    return ops.stack(dms)
+
+
+def parse_jatos_results(path, include_context):
+    """Converts a JATOS data-only results file and returns it as a DataMatrix.
+    If the context is included, columns are created for each of the context
+    variables.
+    
+    Parameters
+    ----------
+    path: Path
+    include_context: bool
+    
+    Returns
+    -------
+    DataMatrix
+    """
     if hasattr(json.decoder, 'JSONDecodeError'):
         jsonerror = json.decoder.JSONDecodeError
     else:
@@ -41,7 +126,7 @@ def parse_jatos_results(jatos_path, include_context=False):
     incomplete_lines = 0
     total_lines = 0
     row = 0
-    with safe_open(jatos_path) as fd:
+    with path.open() as fd:
         for line in fd:
             # Strip the lines so that they are valid json
             line = line.strip()
@@ -93,15 +178,11 @@ def parse_jatos_results(jatos_path, include_context=False):
                     dm[key][first_row:row] = safe_decode(value)
     dm.length = row
     if invalid_lines:
-        warn('Failed to parse {} of {} lines'.format(
-            invalid_lines,
-            total_lines
-        ))
+        warn('Failed to parse {} of {} lines'.format(invalid_lines,
+                                                     total_lines))
     if incomplete_lines:
         warn('Incomplete (unfinished) data in {} of {} lines'.format(
-            incomplete_lines,
-            total_lines
-        ))
+            incomplete_lines, total_lines))
     return dm
 
 
