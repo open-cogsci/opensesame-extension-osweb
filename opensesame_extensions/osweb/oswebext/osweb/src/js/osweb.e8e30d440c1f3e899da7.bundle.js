@@ -224,6 +224,8 @@ class Canvas {
     this._height = this.experiment._runner._renderer.height; // Height of the HTML canvas used for drawing.
     this._styles = new _styles_js__WEBPACK_IMPORTED_MODULE_3__["default"](); // The style container.
     this._width = this.experiment._runner._renderer.width; // Width of the HTML canvas used for drawing.
+    this._name_counter = 0; // Used to generate unique names
+    this.current_roi = null;
     this._textures = [];
   }
 
@@ -465,6 +467,7 @@ class Canvas {
         // Create the text element and get the dimension.
         var bounds = {};
         var textElement = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"](htmlNode.textContent, textStyle);
+        textElement.roi = this.current_roi;
         this._textures.push(textElement);
         textElement.getBounds(false, bounds);
 
@@ -535,6 +538,7 @@ class Canvas {
 
     // Create a circle element.
     var circle = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Graphics"]();
+    circle.roi = this.current_roi;
     circle.lineStyle(elementStyle.penwidth, elementStyle.color, 1);
     if (elementStyle.fill === true) {
       circle.beginFill(elementStyle.color);
@@ -595,6 +599,7 @@ class Canvas {
 
     // Create an ellipse element.
     var ellipse = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Graphics"]();
+    ellipse.roi = this.current_roi;
     ellipse.lineStyle(elementStyle.penwidth, elementStyle.color, 1);
     if (elementStyle.fill === true) {
       ellipse.beginFill(elementStyle.color);
@@ -753,6 +758,7 @@ class Canvas {
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
     this._textures.push(texture);
     var sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
+    sprite.roi = this.current_roi;
 
     // Position the image.
     sprite.x = x - size / 2;
@@ -801,6 +807,7 @@ class Canvas {
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
     this._textures.push(texture);
     const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
+    sprite.roi = this.current_roi;
     // sprite.anchor.set(.5)
     if (typeof scale !== 'undefined') {
       sprite.scale.x = scale;
@@ -860,6 +867,7 @@ class Canvas {
 
     // Create a line element.
     var line = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Graphics"]();
+    line.roi = this.current_roi;
     line.lineStyle(elementStyle.penwidth, elementStyle.color, 1);
     line.moveTo(0, 0);
     line.lineTo(ex - sx, ey - sy);
@@ -951,7 +959,7 @@ class Canvas {
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
     this._textures.push(texture);
     var sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
-
+    sprite.roi = this.current_roi;
     // Position the image.
     sprite.x = x - size / 2;
     sprite.y = y - size / 2;
@@ -980,6 +988,7 @@ class Canvas {
 
     // Create a polygon element.
     var polygon = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Graphics"]();
+    polygon.roi = this.current_roi;
     polygon.lineStyle(elementStyle.penwidth, elementStyle.color, 1);
     if (elementStyle.fill === true) polygon.beginFill(elementStyle.color);
     polygon.drawPolygon(path);
@@ -1005,6 +1014,7 @@ class Canvas {
     var elementStyle = this._getStyle(styleArgs);
     // Create a rectangle element.
     var rectangle = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Graphics"]();
+    rectangle.roi = this.current_roi;
     rectangle.lineStyle(elementStyle.penwidth, elementStyle.color, 1);
     if (elementStyle.fill === true) {
       rectangle.beginFill(elementStyle.color);
@@ -1160,6 +1170,7 @@ class Canvas {
         fill: elementStyle.color
       };
       var textElement = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"](txt, textStyle);
+      textElement.roi = this.current_roi;
       this._textures.push(textElement);
       if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
         textElement.x = Math.floor(x - textElement.width / 2);
@@ -1173,6 +1184,28 @@ class Canvas {
       //  Add text element to the stage.
       this._container.addChild(textElement);
     }
+  }
+
+  /** Used to assign unique names to nameless elements **/
+  unique_name() {
+    const name = 'stim' + this.unique_counter;
+    this.unique_counter++;
+    return name;
+  }
+
+  /** Returns a semi-colon separated string of rois that overlap with the
+    * specified x and y coordinates.
+    **/
+  elements_at(x, y) {
+    // Convert to top-left anchored coordinates
+    x += this.experiment.vars.get('width') / 2;
+    y += this.experiment.vars.get('height') / 2;
+    const elements = [];
+    for (const child of this._container.children) {
+      if (typeof child.roi === 'undefined' | child.roi === null) continue;
+      if (child.getBounds().contains(x, y)) elements.push(child.roi);
+    }
+    return elements;
   }
 }
 
@@ -4290,6 +4323,11 @@ class BaseElement {
    */
   from_string(script) {
     this.properties = this.sketchpad.syntax.parse_cmd(script)[2];
+    if (typeof this.properties['name'] === 'undefined') {
+      this.name = this.canvas.unique_name();
+    } else {
+      this.name = this.properties['name'];
+    }
   }
 
   /**
@@ -4347,6 +4385,7 @@ class BaseElement {
   draw() {
     // Calculate the dynamic properties.
     this.eval_properties();
+    this.canvas.current_roi = this.name;
   }
 }
 
@@ -6159,10 +6198,11 @@ class GenericResponse extends _item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
   process_response_mouseclick(retval) {
     this.experiment._start_response_interval = this.sri;
     this.experiment._end_response_interval = retval.rtTime;
-    this.experiment.vars.response = retval.resp;
+    this.experiment.vars.set('response', retval.resp);
     this.synonyms = this._mouse._synonyms(this.experiment.vars.response);
     this.set_mouse_coordinates(retval.event.clientX, retval.event.clientY);
     this.response_bookkeeping();
+    this.cursor_roi_bookkeeping();
   }
 
   /** Process a time out response. */
@@ -6172,6 +6212,16 @@ class GenericResponse extends _item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
     this.experiment.vars.set('response', 'None');
     this.synonyms = ['None', 'none'];
     this.response_bookkeeping();
+  }
+
+  /** Processes roi for the linked-sketchad functionality of the mouse **/
+  cursor_roi_bookkeeping() {
+    const linked_sketchpad = this.experiment.items._items[this.vars.get('linked_sketchpad')];
+    if (typeof linked_sketchpad === 'undefined') {
+      this.experiment.vars.set('cursor_roi', 'undefined');
+      return;
+    }
+    this.experiment.vars.set('cursor_roi', linked_sketchpad.canvas.elements_at(this.experiment.vars.get('cursor_x'), this.experiment.vars.get('cursor_y')).join(';'));
   }
 
   /** General response logging after a stimulus/response. */
@@ -7510,6 +7560,7 @@ class MouseResponse extends _generic_response_js__WEBPACK_IMPORTED_MODULE_0__["d
     this.vars.set('flush', 'yes');
     this.vars.set('show_cursor', 'yes');
     this.vars.set('timeout', 'infinite');
+    this.vars.set('linked_sketchpad', '');
   }
   prepare() {
     super.prepare();
@@ -8047,21 +8098,17 @@ __webpack_require__.r(__webpack_exports__);
 class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
   constructor(experiment, name, script) {
     super(experiment, name, script);
-
-    // Create and set public properties.
     this.canvas = new _backends_canvas_js__WEBPACK_IMPORTED_MODULE_2__["default"](experiment, false);
     this.elements = [];
-
-    // Process the script.
     this.from_string(script);
   }
 
   /**
-     * Sort function used for determining the draw index (z-index) of alle elemente.
-     * @param {Object} a - The first object to compare.
-     * @param {Object} b - The second object to compare.
-     * @return {Number} - The result of the comparison.
-     */
+    * Sort function used for determining the draw index (z-index) of alle elemente.
+    * @param {Object} a - The first object to compare.
+    * @param {Object} b - The second object to compare.
+    * @return {Number} - The result of the comparison.
+    */
   _compare(a, b) {
     // Sort function used for determining the draw index (z-index) of alle elemente.
     if (a.z_index() < b.z_index()) {
@@ -8073,15 +8120,8 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
     }
   }
 
-  /** Implements the complete phase of the Sketchpad item. */
-  _complete() {
-    // Inherited.
-    super._complete();
-  }
-
   /** Resets all item variables to their default value. */
   reset() {
-    // Resets all item variables to their default value.
     this.elements = [];
     this.vars.set('duration', 'keypress');
   }
@@ -8092,11 +8132,10 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
   }
 
   /**
-     * Parse a definition string and retrieve all properties of the item.
-     * @param {String} script - The script containing the properties of the item.
-     */
+    * Parse a definition string and retrieve all properties of the item.
+    * @param {String} script - The script containing the properties of the item.
+    */
   from_string(script) {
-    // Define and reset variables to their defaults.
     this.variables = {};
     this.comments = [];
     this.reset();
@@ -8132,23 +8171,17 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
 
   /** Implements the prepare phase of an item. */
   prepare() {
-    // Clear the canvas.
     this.canvas.clear();
-
-    // Draw the elements.
     for (let i = 0; i < this.elements.length; i++) {
       if (this.elements[i].is_shown() === true) {
         this.elements[i].draw();
       }
     }
-
-    // Inherited.
     super.prepare();
   }
 
   /** Implements the run phase of the Sketschpad. */
   run() {
-    // Inherited.
     super.run();
     this._set_bg_color();
     // Set the onset and start the stimulus response process.
@@ -12339,4 +12372,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.b3cc1e8c28388098545c.bundle.js.map
+//# sourceMappingURL=osweb.e8e30d440c1f3e899da7.bundle.js.map
