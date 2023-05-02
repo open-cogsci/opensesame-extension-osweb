@@ -150,8 +150,6 @@ def check_item_loop(item, fullscreen):
     
 def check_item_mouse_response(item, fullscreen):
     w = []
-    if item.var.linked_sketchpad:
-        w.append(item_warning(item, 'Linked sketchpad not supported'))
     if item.var.event_type == 'mouserelease':
         w.append(item_warning(item, 'Mouse release not supported'))
     return w
