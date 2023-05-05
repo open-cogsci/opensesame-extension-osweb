@@ -97,7 +97,7 @@ function onFinishedHandler(data, sessionData) {
     const element = document.createElement('a')
     element.setAttribute(
         'href', `data:text/plain;charset=utf-8,${encodeURIComponent(logdata)}`)
-    element.setAttribute('download', 'osweb-data.json')
+    element.setAttribute('download', params.logfile)
     element.style.display = 'none'
     document.body.appendChild(element)
     element.click()

@@ -22,6 +22,7 @@ from libqtopensesame.misc.translate import translation_context
 from .osweb import linter
 from .osweb_runner import OSWebRunner
 from openexp import backend
+import os
 _ = translation_context(u'oswebext', category=u'extension')
 
 
@@ -62,7 +63,7 @@ class Oswebext(BaseExtension):
                         logfile='quickrun.csv'):
         if self.run_linter():
             self.widget()._test(fullscreen=fullscreen, subject_nr=subject_nr,
-                                logfile=logfile)
+                                logfile=os.path.basename(logfile))
             return
         self._show_controls()
 

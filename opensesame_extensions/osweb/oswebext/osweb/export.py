@@ -44,8 +44,8 @@ src_paths = {'js': src_folder / 'js',
              'img': src_folder / 'img'}
 
 
-def standalone(osexp_path, index_path, subject='0', fullscreen=False,
-               welcome_text='', external_js=[]):
+def standalone(osexp_path, index_path, subject='0', logfile='osweb-data.json',
+               fullscreen=False, welcome_text='', external_js=[]):
     """Builds an index.html that embeds everything and can be run in a browser.
 
     Parameters
@@ -56,6 +56,9 @@ def standalone(osexp_path, index_path, subject='0', fullscreen=False,
         Path to the to-be-generated index.html file.
     subject : str, optional
         Identifier of the JATOS subject, by default '0'.
+    logfile : str, optional
+        The name of the logfile that is downloaded when the experiment is 
+        finished.
     fullscreen : bool, optional
         Whether to run the JATOS study in fullscreen mode, by default False.
     welcome_text : str, optional
@@ -65,7 +68,7 @@ def standalone(osexp_path, index_path, subject='0', fullscreen=False,
         study, by default [].
     """
     script, pool_paths = _extract_script_and_pool_paths(osexp_path)
-    params = {'subject': subject, 'fullscreen': fullscreen,
+    params = {'subject': subject, 'logfile': logfile, 'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js}
     _compose_html_and_get_assets(script, Path(index_path),

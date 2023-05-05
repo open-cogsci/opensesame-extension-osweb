@@ -126,6 +126,9 @@ class OSWebExtWidget(BasePreferencesWidget):
 
     def _test(self, fullscreen=None, subject_nr=None, logfile=None):
         """Tests the experiment by running it in an external browser"""
+        # Replace the csv extension by a json extension
+        if logfile.lower().endswith('.csv'):
+            logfile = logfile[:-4] + '.json'
         self.main_window.get_ready()
         osexp = self._tmp_osexp()
         html = self._tmp_html()
@@ -137,6 +140,7 @@ class OSWebExtWidget(BasePreferencesWidget):
             osexp,
             html,
             subject=str(subject_nr),
+            logfile=logfile,
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js())
