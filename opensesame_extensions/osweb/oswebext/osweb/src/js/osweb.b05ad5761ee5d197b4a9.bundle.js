@@ -7729,7 +7729,7 @@ class RepeatCycle extends _items_item_js__WEBPACK_IMPORTED_MODULE_0__["default"]
     const condition = this.vars.get('condition', false);
     // Run item only one time.
     if (this._status !== _system_constants_js__WEBPACK_IMPORTED_MODULE_1__["constants"].STATUS_FINALIZE) {
-      if (this.experiment._runner._javascriptWorkspace._eval(condition)) {
+      if (this.experiment._javascriptWorkspace._eval(condition)) {
         this.experiment.vars.set('repeat_cycle', 1);
       }
 
@@ -12372,4 +12372,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.e8e30d440c1f3e899da7.bundle.js.map
+//# sourceMappingURL=osweb.b05ad5761ee5d197b4a9.bundle.js.map
