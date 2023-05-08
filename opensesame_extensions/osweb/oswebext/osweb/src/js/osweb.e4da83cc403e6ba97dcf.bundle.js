@@ -4326,7 +4326,7 @@ class BaseElement {
     if (typeof this.properties['name'] === 'undefined') {
       this.name = this.canvas.unique_name();
     } else {
-      this.name = this.properties['name'];
+      this.name = this.syntax.eval_text(this.properties['name']);
     }
   }
 
@@ -12372,4 +12372,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.b05ad5761ee5d197b4a9.bundle.js.map
+//# sourceMappingURL=osweb.e4da83cc403e6ba97dcf.bundle.js.map
