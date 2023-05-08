@@ -4324,9 +4324,9 @@ class BaseElement {
   from_string(script) {
     this.properties = this.sketchpad.syntax.parse_cmd(script)[2];
     if (typeof this.properties['name'] === 'undefined') {
-      this.name = this.canvas.unique_name();
+      this._name = this.canvas.unique_name();
     } else {
-      this.name = this.syntax.eval_text(this.properties['name']);
+      this.name = this.properties['name'];
     }
   }
 
@@ -4385,7 +4385,7 @@ class BaseElement {
   draw() {
     // Calculate the dynamic properties.
     this.eval_properties();
-    this.canvas.current_roi = this.name;
+    this.canvas.current_roi = this.syntax.eval_text(this.name);
   }
 }
 
@@ -12372,4 +12372,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.e4da83cc403e6ba97dcf.bundle.js.map
+//# sourceMappingURL=osweb.73c5d576ca720d9e5ddf.bundle.js.map
