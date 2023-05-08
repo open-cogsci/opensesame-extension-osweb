@@ -132,5 +132,4 @@ function onLogHandler(data) {
         return
     }
     window._logdata.push(data)
-    console.log(JSON.stringify(data))
 }
