@@ -71,17 +71,20 @@ class Oswebext(BaseExtension):
         self._show_controls()
 
     def run_linter(self):
+        if self._widget is None or \
+                self._widget.ui.checkbox_bypass_linter.isChecked():
+            return True
         error_report = linter.check_compatibility(
             self.experiment,
             fullscreen=(False if self._widget is None 
-                        else self._widget.ui.fs_checkBox.isChecked()))
+                        else self._widget.ui.checkbox_fullscreen.isChecked()))
         if not error_report:
             error_report = u'No problems detected'
             ok = True
         else:
             self.extension_manager.fire(
                 'notify', message=_('Compatibility check failed'),
-                category='warning')
+                category='warning', always_show=True)
             ok = False
         if self._widget is not None:
             self._widget.set_error(error_report)
@@ -103,4 +106,8 @@ class Oswebext(BaseExtension):
             from .oswebext_widget import OSWebExtWidget
             self._widget = OSWebExtWidget(self.main_window, self)
             self.set_busy(False)
+        # When the backend is not set to OSWeb, we point out to the user that
+        # this needs to be done to run the experiment in a browser.
+        self._widget.ui.groupbox_experiment_properties.setVisible(
+                self.experiment.var.canvas_backend != 'osweb')
         return self._widget

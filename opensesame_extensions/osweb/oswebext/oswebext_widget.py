@@ -35,8 +35,6 @@ from libqtopensesame.misc.translate import translation_context
 from libqtopensesame.misc.config import cfg
 _ = translation_context('oswebext', category='extension')
 
-MEGABYTE = 1024 ** 2
-
 
 class OSWebExtWidget(BasePreferencesWidget):
 
@@ -48,45 +46,33 @@ class OSWebExtWidget(BasePreferencesWidget):
     def __init__(self, main_window, oswebext):
         super().__init__(main_window, ui='extensions.oswebext.oswebext')
         self._oswebext = oswebext
-        self.ui.button_test.clicked.connect(self._test)
-        self.ui.fs_checkBox.toggled.connect(self._run_linter)
+        self.ui.checkbox_fullscreen.toggled.connect(self._run_linter)
         self.ui.button_jatos.clicked.connect(self._export_jatos)
+        self.ui.button_experiment_properties.clicked.connect(
+            self.tabwidget.open_general)
         self.ui.button_convert.clicked.connect(self._convert_results)
         self.ui.plaintextedit_welcome_text.setPlainText(
-            safe_decode(cfg.oswebext_welcome_text)
-        )
+            safe_decode(cfg.oswebext_welcome_text))
         self.ui.plaintextedit_welcome_text.textChanged.connect(
             lambda: setattr(
-                cfg,
-                'oswebext_welcome_text',
-                self.ui.plaintextedit_welcome_text.toPlainText()
-            )
-        )
+                cfg, 'oswebext_welcome_text',
+                self.ui.plaintextedit_welcome_text.toPlainText()))
         self.ui.plaintextedit_external_js.setPlainText(
-            safe_decode(cfg.oswebext_external_js)
-        )
+            safe_decode(cfg.oswebext_external_js))
         self.ui.plaintextedit_external_js.textChanged.connect(
             lambda: setattr(
-                cfg,
-                'oswebext_external_js',
-                self.ui.plaintextedit_external_js.toPlainText()
-            )
-        )
-        self.ui.label_version.setText(__version__)
+                cfg, 'oswebext_external_js',
+                self.ui.plaintextedit_external_js.toPlainText()))
+        self.ui.label_version.setText(f'<small>OSWeb v{__version__}</small>')
         self.ui.linedit_subject.setValidator(
             QRegularExpressionValidator(
-                QRegularExpression("^(?:\d+(?:-\d+)?(?:,(?!$))?)+"))
-        )
-        self.ui.icon_expsize_warning.setPixmap(
-            QIcon.fromTheme('emblem-important').pixmap(32, 32)
-        )
+                QRegularExpression("^(?:\d+(?:-\d+)?(?:,(?!$))?)+")))
         self._init_widgets()
         self._run_linter()
 
     def on_activate(self):
 
         self._run_linter()
-        self._check_filesize()
 
     def set_error(self, error_report):
 
@@ -96,24 +82,6 @@ class OSWebExtWidget(BasePreferencesWidget):
 
         self._oswebext.run_linter()
 
-    def _check_filesize(self):
-
-        try:
-            size = self.pool.size()
-        except:
-            size = -1
-        if size > 10 * MEGABYTE:
-            self.ui.label_expsize_warning.setText(_(
-                'Your experiment is %d MB. <br />'
-                'This exceeds the recommended maximum size of 10 MB. <br /> '
-                'This may increase online loading time.'
-            ) % (size // MEGABYTE))
-            self.ui.icon_expsize_warning.setVisible(True)
-            self.ui.label_expsize_warning.setVisible(True)
-        else:
-            self.ui.icon_expsize_warning.setVisible(False)
-            self.ui.label_expsize_warning.setVisible(False)
-            
     def _external_js(self):
         return [url.strip() for url in
                 self.ui.plaintextedit_external_js.toPlainText().splitlines()]
@@ -135,7 +103,7 @@ class OSWebExtWidget(BasePreferencesWidget):
         if subject_nr is None:
             subject_nr = self.ui.linedit_subject.text()
         if fullscreen is None:
-            fullscreen = self.ui.fs_checkBox.isChecked()
+            fullscreen = self.ui.checkbox_fullscreen.isChecked()
         export.standalone(
             osexp,
             html,

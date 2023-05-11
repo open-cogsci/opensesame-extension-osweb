@@ -46,6 +46,8 @@ STRUCTURE_CHECK_ITEMS = [
     'sequence'
 ]
 
+MAX_SIZE = 10 * 1024 ** 2  # 10 MB
+
 
 def item_type_supported(item_type):
     """Checks whether an item_type is supported. Items are supported if they
@@ -65,8 +67,8 @@ def check_compatibility(exp, fullscreen):
     """
     return '\n'.join(
         check_supported_items(exp, fullscreen) + 
-        check_structure(exp, fullscreen)
-    )
+        check_structure(exp, fullscreen) +
+        check_filesize(exp))
 
 
 def check_item(item, fullscreen):
@@ -168,6 +170,7 @@ def check_item_sampler(item, fullscreen):
         w.append(item_warning(item, 'Stop after not supported'))
     return w
 
+
 def check_item_form_text_input(item, fullscreen):
     if not fullscreen:
         return []
@@ -175,3 +178,14 @@ def check_item_form_text_input(item, fullscreen):
         item,
         'Some browsers disable text input in fullscreen for security reasons'
     )]
+
+
+def check_filesize(exp):
+    try:
+        size = exp.pool.size()
+    except Exception:
+        return []
+    if size < MAX_SIZE:
+        return []
+    return [f'The experiment is {size / 1024 ** 2:.0f} MB, which exceeds the '
+            f'recommended maximum size']

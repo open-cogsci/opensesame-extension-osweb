@@ -1,189 +1,337 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>OSWebControlPanel</class>
+ <widget class="QWidget" name="OSWebControlPanel">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>708</width>
-    <height>696</height>
+    <width>786</width>
+    <height>819</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-   </property>
-   <property name="labelAlignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-   <property name="formAlignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-   </property>
-   <property name="horizontalSpacing">
-    <number>12</number>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>6</number>
    </property>
    <property name="leftMargin">
-    <number>12</number>
+    <number>6</number>
    </property>
    <property name="topMargin">
-    <number>12</number>
+    <number>6</number>
    </property>
    <property name="rightMargin">
-    <number>12</number>
+    <number>6</number>
    </property>
    <property name="bottomMargin">
-    <number>12</number>
+    <number>6</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_subject">
-     <property name="text">
-      <string>Possible subject numbers</string>
+   <item>
+    <widget class="QGroupBox" name="groupbox_experiment_properties">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
+     <property name="title">
+      <string>Experiment settings</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>To run this experiment in a browser, select the OSWeb backend under experiment properties.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button_experiment_properties">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Experiment properties</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="linedit_subject">
-     <property name="text">
-      <string>0,1</string>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QCheckBox" name="fs_checkBox">
-     <property name="text">
-      <string>Make browser fullscreen</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="button_test">
-     <property name="text">
-      <string>Test experiment in external browser</string>
-     </property>
-     <property name="icon">
-      <iconset theme="os-run-browser">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Don't have a JATOS server?&lt;br /&gt;
-Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="openExternalLinks">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QPushButton" name="button_jatos">
-     <property name="text">
-      <string>Export experiment as JATOS study</string>
-     </property>
-     <property name="icon">
-      <iconset theme="document-save-as">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QPushButton" name="button_convert">
-     <property name="text">
-      <string>Convert OSWeb results to csv/ xlsx</string>
-     </property>
-     <property name="icon">
-      <iconset theme="x-office-spreadsheet">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QCheckBox" name="cfg_oswebext_include_context">
-     <property name="text">
-      <string>Include JATOS context information</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Compatibility check&lt;br /&gt;&lt;a href=&quot;https://osdoc.cogsci.nl/manual/osweb/osweb/#supported-functionality&quot;&gt;More information&lt;/a&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="openExternalLinks">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QLabel" name="label_linter">
-     <property name="font">
-      <font>
-       <family>Monospace</family>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Error report</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Version</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="label_version">
-     <property name="font">
-      <font>
-       <family>Monospace</family>
-      </font>
-     </property>
-     <property name="text">
-      <string>X.X.X.X</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="icon_expsize_warning">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="label_expsize_warning">
-     <property name="text">
-      <string>Size warning</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
+     <property name="title">
       <string>Welcome text</string>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPlainTextEdit" name="plaintextedit_welcome_text"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>&lt;small&gt;This text appears on the OSWeb welcome screen.&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="9" column="1">
-    <widget class="QPlainTextEdit" name="plaintextedit_welcome_text"/>
+   <item>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>External JavaScript libraries</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPlainTextEdit" name="plaintextedit_external_js"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&lt;small&gt;These libraries will be loaded when the experiment starts. One URL per line.&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="11" column="1">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Export to JATOS</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_subject">
+        <property name="text">
+         <string>Possible subject numbers</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="linedit_subject">
+        <property name="text">
+         <string>0,1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkbox_fullscreen">
+        <property name="text">
+         <string>Make browser fullscreen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QPushButton" name="button_jatos">
+        <property name="text">
+         <string>Export experiment as JATOS study</string>
+        </property>
+        <property name="icon">
+         <iconset theme="document-save-as">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>&lt;small&gt;Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt; to request a free JATOS account.&lt;/small&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Convert OSWeb results</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="cfg_oswebext_include_context">
+        <property name="text">
+         <string>Include JATOS context information</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="button_convert">
+        <property name="text">
+         <string>Convert OSWeb results to csv/ xlsx</string>
+        </property>
+        <property name="icon">
+         <iconset theme="x-office-spreadsheet">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Compatibility check</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_linter">
+        <property name="font">
+         <font>
+          <family>Monospace</family>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Error report</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkbox_bypass_linter">
+        <property name="text">
+         <string>Bypass compatibility check</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&lt;small&gt;Visit &lt;a href=&quot;https://osdoc.cogsci.nl/manual/osweb/workflow&quot;&gt;this page&lt;/a&gt; to read more about compatibility.&lt;/small&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -196,13 +344,13 @@ Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt;</str
      </property>
     </spacer>
    </item>
-   <item row="10" column="1">
-    <widget class="QPlainTextEdit" name="plaintextedit_external_js"/>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_5">
+   <item>
+    <widget class="QLabel" name="label_version">
      <property name="text">
-      <string>External JavaScript libraries</string>
+      <string>OSWeb v0.0.0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
