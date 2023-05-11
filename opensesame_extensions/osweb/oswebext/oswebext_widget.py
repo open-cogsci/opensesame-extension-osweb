@@ -137,7 +137,7 @@ class OSWebExtWidget(BasePreferencesWidget):
             path += '.jzip'
         osexp = self._tmp_osexp()
         poss_subject_nrs = self.ui.linedit_subject.text()
-        fullscreen = self.ui.fs_checkBox.isChecked()
+        fullscreen = self.ui.checkbox_fullscreen.isChecked()
         self.experiment.var.jatos_uuid = export.jatos(
             osexp,
             path,
