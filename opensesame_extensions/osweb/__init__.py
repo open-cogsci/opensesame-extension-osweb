@@ -1,5 +1,5 @@
 """Extension to integrate OSWeb into OpenSesame"""
 
-__version__ = '2.0.0.0a24'
+__version__ = '2.0.0.0a25'
 # The name of the package to check for updates on conda and pip
 packages = ['opensesame-extension-osweb']
