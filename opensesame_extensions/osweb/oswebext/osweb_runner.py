@@ -39,7 +39,8 @@ class OSWebRunner(BaseRunner):
         if subject_nr is None:
             return False
         # Get and set the logfile
-        logfile = self.get_logfile(quick=quick, subject_nr=subject_nr)
+        logfile = self.get_logfile(quick=quick, subject_nr=subject_nr,
+                                   file_extension='.json')
         if logfile is None:
             return False
         self._subject_nr = subject_nr
