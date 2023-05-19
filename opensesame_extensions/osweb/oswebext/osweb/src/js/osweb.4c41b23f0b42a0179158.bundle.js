@@ -1188,8 +1188,8 @@ class Canvas {
 
   /** Used to assign unique names to nameless elements **/
   unique_name() {
-    const name = 'stim' + this.unique_counter;
-    this.unique_counter++;
+    const name = 'stim' + this._name_counter;
+    this._name_counter++;
     return name;
   }
 
@@ -4324,7 +4324,7 @@ class BaseElement {
   from_string(script) {
     this.properties = this.sketchpad.syntax.parse_cmd(script)[2];
     if (typeof this.properties['name'] === 'undefined') {
-      this._name = this.canvas.unique_name();
+      this.name = this.canvas.unique_name();
     } else {
       this.name = this.properties['name'];
     }
@@ -11322,172 +11322,23 @@ class Screen {
 
   /** Initialize the fullscreen mode if enabled. */
   _fullScreenInit() {
-    // Check if fullscreen must be enabled.
     if (this._runner._fullScreen === true) {
-      // Get the container element.
-      var element = this._runner._container;
-
-      // Go full-screen
-      if (element.requestFullscreen) {
-        document.addEventListener('fullscreenchange', e => {
-          this._fullScreenChanged(e);
-        });
-        document.addEventListener('fullscreenerror', e => {
-          this._fullScreenError(e);
-        });
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) {
-        document.addEventListener('webkitfullscreenchange', e => {
-          this._fullScreenChanged(e);
-        });
-        document.addEventListener('webkitfullscreenerror', e => {
-          this._fullScreenError(e);
-        });
-        element.webkitRequestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        document.addEventListener('mozfullscreenchange', e => {
-          this._fullScreenChanged(e);
-        });
-        document.addEventListener('mozfullscreenerror', e => {
-          this._fullScreenError(e);
-        });
-        element.mozRequestFullScreen();
-      } else if (element.msRequestFullscreen) {
-        document.addEventListener('MSFullscreenChange', e => {
-          this._fullScreenChanged(e);
-        });
-        document.addEventListener('MSFullscreenError', e => {
-          this._fullScreenError(e);
-        });
-        element.msRequestFullscreen();
+      // At the moment, Safari appears not implement the fullscreen API and
+      // still needs the webkit prefix
+      if (typeof document.documentElement.requestFullscreen === 'undefined') {
+        console.log('using webkit fullscreen functions');
+        document.documentElement.requestFullscreen = document.documentElement.webkitRequestFullscreen;
+        document.exitFullscreen = document.webkitExitFullscreen;
       }
+      document.documentElement.requestFullscreen();
     }
   }
 
   /** Finalize the fullscreen mode if if was enabled. */
   _fullScreenExit() {
-    // Check if fullscreen must be enabled.
-    if (this._runner._fullScreen === true) {
-      // Set the exit toggle.
-      this._exit = true;
-
-      // Exit the full screen mode.
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
+    if (document.fullscreenElement !== null && this._runner._fullScreen === true) {
+      document.exitFullscreen();
     }
-  }
-
-  /** Event handler which responds to full-screen change. */
-  _fullScreenChanged() {
-    const width = this._runner._experiment.vars.get('width');
-    const height = this._runner._experiment.vars.get('height');
-    // Check if we are dropping out of full-screen.
-    if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-      // Scale the canvas
-      switch (this._runner._scaleMode) {
-        case 'noScale':
-          // Default mode, no scaling, canbas is centered on the screen.
-          this._runner._renderer.view.style.top = '0px';
-          this._runner._renderer.view.style.bottom = '0px';
-          this._runner._renderer.view.style.left = '0px';
-          this._runner._renderer.view.style.right = '0px';
-          this._runner._renderer.view.style.right = '0px';
-          this._runner._renderer.view.style.margin = 'auto';
-          this._runner._renderer.view.style.display = 'block';
-          this._runner._renderer.view.style.position = 'absolute';
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container);
-          break;
-        case 'showAll':
-          // Default mode, no scaling, canbas is centered on the screen.
-          this._runner._renderer.view.style.top = '0px';
-          this._runner._renderer.view.style.bottom = '0px';
-          this._runner._renderer.view.style.left = '0px';
-          this._runner._renderer.view.style.right = '0px';
-          this._runner._renderer.view.style.right = '0px';
-          this._runner._renderer.view.style.margin = 'auto';
-          this._runner._renderer.view.style.display = 'block';
-          this._runner._renderer.view.style.position = 'absolute';
-          if (this._runner._container.clientWidth - width > this._runner._container.clientHeight - height) {
-            const ar = this._runner._container.clientHeight / height;
-            this._runner._renderer.resize(Math.round(width * ar), this._runner._container.clientHeight);
-            this._runner._experiment._scale_x = Math.round(width * ar) / this._runner._experiment.vars.width;
-            this._runner._experiment._scale_y = this._runner._container.clientHeight / height;
-          } else {
-            const ar = this._runner._container.clientWidth / width;
-            this._runner._renderer.resize(this._runner._container.clientWidth, Math.round(height * ar));
-            this._runner._experiment._scale_x = this._runner._container.clientWidth / width;
-            this._runner._experiment._scale_y = Math.round(height * ar) / height;
-          }
-          this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x;
-          this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y;
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container);
-          break;
-        case 'exactFit':
-          // Fit to the exact window size (cropping).
-          this._runner._experiment._scale_x = this._runner._container.clientWidth / width;
-          this._runner._experiment._scale_y = this._runner._container.clientHeight / height;
-
-          // Reize the current canvas.
-          this._runner._renderer.resize(this._runner._container.clientWidth, this._runner._container.clientHeight);
-          this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x;
-          this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y;
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container);
-          break;
-      }
-    } else {
-      // Check for exiting experiment.
-      if (this._exit === false) {
-        // Resclae to 1Fit to the exact window size (cropping).
-        this._runner._experiment._scale_x = 1;
-        this._runner._experiment._scale_y = 1;
-
-        // Fit to the exact window size (cropping).
-        this._runner._renderer.resize(width, height);
-        this._runner._experiment._currentCanvas._container.scale.x = 1;
-        this._runner._experiment._currentCanvas._container.scale.y = 1;
-        this._runner._renderer.render(this._runner._experiment._currentCanvas._container);
-
-        // Open Sesame is running, request subject to continue of to stop.
-        if (lodash_isFunction__WEBPACK_IMPORTED_MODULE_0___default()(this._runner._confirm)) {
-          this._runner._confirm('Leaving full-screen mode, pausing experiment.', 'Please press ok the resume the experiment otherwise cancel to stop.', this._onFullScreenConfirm.bind(this), this._onFullScreenCancel.bind(this));
-        }
-      }
-    }
-  }
-
-  /** Event handler which responds to full-screen change errors. */
-  _fullScreenError() {
-    // Show error message.
-    this._runner.debugger.addError('Could not start full-screen mode, experiment stopped.');
-  }
-
-  /** Event handler to respond to dialog ok conmfirmation. */
-  _onFullScreenConfirm() {
-    // Get the container element.
-    var element = this._runner._container;
-    // Go full-screen
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
-    }
-  }
-
-  /** Event handler to respond to dialog cancel confirmation. */
-  _onFullScreenCancel() {
-    // Exit the experiment.
-    this._runner._finalize();
   }
 
   /** Set the introscreen elements. */
@@ -12372,4 +12223,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.73c5d576ca720d9e5ddf.bundle.js.map
+//# sourceMappingURL=osweb.4c41b23f0b42a0179158.bundle.js.map
