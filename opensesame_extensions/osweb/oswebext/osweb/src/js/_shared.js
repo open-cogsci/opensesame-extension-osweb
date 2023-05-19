@@ -5,6 +5,15 @@ function defineErrorAlert() {
             return {
                 build: function () {
                     this.setHeader('Application Error')
+                },
+                hooks: {
+                    onclose: function() {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen().catch((error) => {
+                                console.log(error);
+                            });
+                        }
+                    }
                 }
             }
         }, true, 'alert')
@@ -45,7 +54,7 @@ function errorHandler (event) {
             error_msg += `<p>The script below caused the error. This script may be a conditional expression or be embedded in text.</p><pre>\n${script}</pre`
         }
     }
-    alertify.errorAlert(error_msg)
+    alertify.errorAlert(error_msg).showModal()
 }
 
 

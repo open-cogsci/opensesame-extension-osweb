@@ -227,4 +227,5 @@ function onPageLoad() {
     // Starts the experiment when the page is fully loaded.
     jatos.onLoad(loadExperiment)
     defineErrorAlert()
+    window.addEventListener('error', errorHandler)
 }
