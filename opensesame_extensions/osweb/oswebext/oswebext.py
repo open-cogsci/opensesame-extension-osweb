@@ -110,4 +110,12 @@ class Oswebext(BaseExtension):
         # this needs to be done to run the experiment in a browser.
         self._widget.ui.groupbox_experiment_properties.setVisible(
                 self.experiment.var.canvas_backend != 'osweb')
+        uuid = self.experiment.var.get('jatos_uuid', False)
+        if uuid:
+            self._widget.ui.label_uuid.show()
+            self._widget.ui.edit_uuid.show()
+            self._widget.ui.edit_uuid.setText(uuid)
+        else:
+            self._widget.ui.label_uuid.hide()
+            self._widget.ui.edit_uuid.hide()
         return self._widget

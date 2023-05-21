@@ -88,9 +88,19 @@ class OSWebExtWidget(BasePreferencesWidget):
         
     def _uuid(self):
         uuid = self.experiment.var.get('jatos_uuid', False)
-        if uuid:
+        if not uuid:
+            return
+        from libqtopensesame._input.confirmation import Confirmation
+        reuse_uuid = Confirmation(
+            self.main_window,
+            _('This experiment has a JATOS identifier. This likely means that '
+              'a previous version of this experiment was already uploaded '
+              'to JATOS. Do you want to update this previous version? \n\n'
+              'Select "yes" to update the experiment on JATOS. \n'
+              'Select "no" to create a new experiment on JATOS.')
+        ).show()
+        if reuse_uuid:
             return uuid
-        return None
 
     def _test(self, fullscreen=None, subject_nr=None, logfile=None):
         """Tests the experiment by running it in an external browser"""
@@ -148,6 +158,7 @@ class OSWebExtWidget(BasePreferencesWidget):
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js(),
             uuid=self._uuid())
+        self.ui.edit_uuid.setText(self.experiment.var.jatos_uuid)
         os.remove(osexp)
         self.extension_manager.fire(
             'notify',
