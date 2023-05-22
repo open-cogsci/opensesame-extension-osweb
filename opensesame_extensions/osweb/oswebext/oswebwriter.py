@@ -20,6 +20,7 @@ from libopensesame.py3compat import *
 from libopensesame.osexpfile import OSExpWriter
 from libopensesame.oslogging import oslogger
 from metapensiero.pj.__main__ import transform_string as py2js
+from .oswebexceptions import PythonToJavaScriptError
 import re
 
 RE_VAR = re.compile('(?<!\w)var\.', re.MULTILINE)
@@ -45,7 +46,11 @@ class OSWebWriter(OSExpWriter):
         py_cond = RE_VAR.sub('vars.', py_cond)
         # The last two characters are ;\n, which are not valid in some
         # contexts and we therefore strip them off
-        js_cond = py2js(py_cond)[:-2]
+        try:
+            js_cond = py2js(py_cond)[:-2]
+        except Exception as e:
+            raise PythonToJavaScriptError(
+                f'Failed to convert {cond} to JavaScript')
         if escape:
             js_cond = js_cond.replace('"', r'\"')
         return js_cond

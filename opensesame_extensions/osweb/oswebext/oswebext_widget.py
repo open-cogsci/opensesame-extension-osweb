@@ -29,6 +29,7 @@ from libqtopensesame.widgets.base_preferences_widget \
     import BasePreferencesWidget
 from libopensesame.osexpfile import OSExpWriter
 from .osweb import export
+from .oswebexceptions import PythonToJavaScriptError
 from .. import __version__
 from libopensesame.oslogging import oslogger
 from libqtopensesame.misc.translate import translation_context
@@ -114,14 +115,20 @@ class OSWebExtWidget(BasePreferencesWidget):
             subject_nr = self.ui.linedit_subject.text()
         if fullscreen is None:
             fullscreen = self.ui.checkbox_fullscreen.isChecked()
-        export.standalone(
-            osexp,
-            html,
-            subject=str(subject_nr),
-            logfile=logfile,
-            fullscreen=fullscreen,
-            welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
-            external_js=self._external_js())
+        try:
+            export.standalone(
+                osexp,
+                html,
+                subject=str(subject_nr),
+                logfile=logfile,
+                fullscreen=fullscreen,
+                welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
+                external_js=self._external_js())
+        except PythonToJavaScriptError as e:
+            self.console.write(e)
+            self.tabwidget.open_markdown(e.markdown(), 'os-finished-error',
+                                         e.title())
+            return
         webbrowser.open('file://{}'.format(html))
         try:
             os.remove(osexp)
