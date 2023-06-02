@@ -11747,7 +11747,10 @@ class Transfer {
           urls: ['//fonts.googleapis.com/css?family=Droid Sans', '//fonts.googleapis.com/css?family=Droid Serif', '//fonts.googleapis.com/css?family=Droid Sans Mono']
         },
         active: () => resolve(),
-        inactive: () => reject(new Error('Could not load webfonts'))
+        inactive: () => {
+          console.warn('Could not load webfonts');
+          resolve(false);
+        }
       });
     });
   }
@@ -12223,4 +12226,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.4c41b23f0b42a0179158.bundle.js.map
+//# sourceMappingURL=osweb.5c4ac3508a519d50e3fb.bundle.js.map
