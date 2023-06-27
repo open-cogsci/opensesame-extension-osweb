@@ -45,7 +45,8 @@ src_paths = {'js': src_folder / 'js',
 
 
 def standalone(osexp_path, index_path, subject='0', logfile='osweb-data.json',
-               fullscreen=False, welcome_text='', external_js=[]):
+               fullscreen=False, welcome_text='', external_js=[],
+               intro_click=True):
     """Builds an index.html that embeds everything and can be run in a browser.
 
     Parameters
@@ -66,11 +67,16 @@ def standalone(osexp_path, index_path, subject='0', logfile='osweb-data.json',
     external_js : List[str], optional
         List of URLs to external JavaScript libraties to include in the JATOS
         study, by default [].
+    intro_click: bool, optional
+        Indicates whether the experiment should be preceded by a screen that
+        the participant needs to click. This allows the experiment to be 
+        executed in the context of a user action, which is necessary for
+        certain actions.
     """
     script, pool_paths = _extract_script_and_pool_paths(osexp_path)
     params = {'subject': subject, 'logfile': logfile, 'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
-              'externalJS': external_js}
+              'externalJS': external_js, 'introClick': intro_click}
     _compose_html_and_get_assets(script, Path(index_path),
                                  'standalone', params=params,
                                  pool_paths=pool_paths)
@@ -78,7 +84,7 @@ def standalone(osexp_path, index_path, subject='0', logfile='osweb-data.json',
 
 def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
           description='No description', subject='0', fullscreen=False,
-          welcome_text='', external_js=[], uuid=None):
+          welcome_text='', external_js=[], intro_click=True, uuid=None):
     """Builds a jzip archive that can be imported into JATOS.
 
     Parameters
@@ -100,6 +106,11 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
     external_js : List[str], optional
         List of URLs to external JavaScript libraties to include in the JATOS 
         study, by default [].
+    intro_click: bool, optional
+        Indicates whether the experiment should be preceded by a screen that
+        the participant needs to click. This allows the experiment to be 
+        executed in the context of a user action, which is necessary for
+        certain actions.
     uuid : str, optional
         Unique identifier of the JATOS study, by default None, in which case a
         random uuid is generated.
@@ -150,7 +161,8 @@ def jatos(osexp_path, jzip_path, title='My OpenSesame experiment',
         params = {'subject': subject,
                   'fullscreen': fullscreen,
                   'welcomeText': _safe_welcome_text(welcome_text),
-                  'externalJS': external_js}
+                  'externalJS': external_js,
+                  'introClick': intro_click}
         assets = _compose_html_and_get_assets(
             osexp_path, index_path, 'jatos', params=params,
             component_hash=component_hash, uuid=uuid,

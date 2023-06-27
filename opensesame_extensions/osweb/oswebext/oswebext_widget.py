@@ -123,7 +123,8 @@ class OSWebExtWidget(BasePreferencesWidget):
                 logfile=logfile,
                 fullscreen=fullscreen,
                 welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
-                external_js=self._external_js())
+                external_js=self._external_js(),
+                intro_click=self.ui.checkbox_intro_click.isChecked())
         except PythonToJavaScriptError as e:
             self.console.write(e)
             self.tabwidget.open_markdown(e.markdown(), 'os-finished-error',
@@ -164,6 +165,7 @@ class OSWebExtWidget(BasePreferencesWidget):
             fullscreen=fullscreen,
             welcome_text=self.ui.plaintextedit_welcome_text.toPlainText(),
             external_js=self._external_js(),
+            intro_click=self.ui.checkbox_intro_click.isChecked(),
             uuid=self._uuid())
         self.ui.edit_uuid.setText(self.experiment.var.jatos_uuid)
         os.remove(osexp)

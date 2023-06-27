@@ -88,8 +88,8 @@ function loadExperiment() {
         source: (new URL(osexpFile, window.location)).href,
         debug: false,
         subject: subject_nr,
-        fullScreen: params.fullscreen || false,
-        introClick: true, // Required to enable fullscreen mode (and circumvent browser security for doing so)
+        fullScreen: params.fullscreen,
+        introClick: params.introClick,
         introScreen: true,
         name: 'osweb',
         prompt: prompt,

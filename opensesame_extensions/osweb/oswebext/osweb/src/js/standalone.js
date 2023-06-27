@@ -32,7 +32,7 @@ const context = {
     confirm: onConfirmHandler,
     debug: false,
     fullScreen: params.fullscreen,
-    introClick: true,
+    introClick: params.introClick,
     introScreen: true,
     mimetype: '',
     name: 'osweb',
