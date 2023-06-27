@@ -11284,13 +11284,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Screen; });
 /* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/isFunction */ "./node_modules/lodash/isFunction.js");
 /* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_isFunction__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
-/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
-
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
 
 
 
@@ -11346,21 +11343,21 @@ class Screen {
     // Check if introscreen is used.
     if (this._active === true) {
       // Define introscreen elements.
-      this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Container"]();
+      this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]();
       const center = this.screenCenter();
       const logoPath = typeof logoSrc === 'undefined' ? 'img/opensesame.png' : logoSrc;
-      const oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_3__["Sprite"].from(logoPath);
-      const oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('OSWeb', {
+      const oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from(logoPath);
+      const oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]('OSWeb', {
         fontFamily: 'Arial',
         fontSize: 48,
         fill: '#607d8b'
       });
-      const versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_4__["VERSION_NUMBER"], {
+      const versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_3__["VERSION_NUMBER"], {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: '#607d8b'
       });
-      const copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
+      const copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
         fontFamily: 'Arial',
         fontSize: 16,
         fill: '#607d8b'
@@ -11370,7 +11367,7 @@ class Screen {
       oswebTitle.position.set(center.x - oswebTitle.width / 2, 215);
       versionInfo.position.set(center.x - versionInfo.width / 2, 270);
       copyrightText.position.set(center.x - copyrightText.width / 2, center.y * 2 - copyrightText.height * 2);
-      this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('', {
+      this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]('', {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: '#607d8b'
@@ -11392,40 +11389,34 @@ class Screen {
         text = "\nNever provide personal or sensitive information\n    such as credit card numbers or PIN codes\n\n           Click or touch the screen to begin!";
       }
       this._updateIntroScreen(text);
-
-      // Setup the mouse click response handler.
-      var clickHandler = function (event) {
-        // Briefly play each of the samples from the file pool. This is
-        // necessary in Safari so that the first happens as a direct 
-        // consequence of a user interaction.
-        for (let item of this._runner._experiment.pool._items) {
+      // We preload each audio stimulus by briefly playing it. This seems
+      // required on Safari. We use a callback to insert a brief delay between
+      // each preload. When all stimuli have been preloaded, we continue with
+      // initializing the experiment.
+      let preloadStimuli = function (event) {
+        if (this._preloadQueue.length > 0) {
+          let item = this._preloadQueue.pop();
           if (item.type === 'audio') {
+            console.log('silently playing audio file for preloading');
             item.data.volume = 0;
-            item.data.play();
+            item.data.play().catch(error => console.error('Failed to play audio:', error));
             item.data.pause();
             item.data.currentTime = 0;
             item.data.volume = 1;
           }
+          setTimeout(preloadStimuli, 10);
+        } else {
+          this._runner._renderer.view.removeEventListener('click', preloadStimuli);
+          this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
+          this._clearIntroScreen();
+          this._runner._initialize();
         }
-        // Remove the handler.
-        this._runner._renderer.view.removeEventListener('click', clickHandler);
-        this._runner._renderer.view.removeEventListener('touchstart', clickHandler);
-
-        // Finalize the introscreen elements.
-        this._clearIntroScreen();
-
-        // Start the task.
-        this._runner._initialize();
       }.bind(this);
-
-      // Set the temporary mouse click.
-      this._runner._renderer.view.addEventListener('click', clickHandler, false);
-      this._runner._renderer.view.addEventListener('touchstart', clickHandler, false);
+      this._preloadQueue = this._runner._experiment.pool._items.slice();
+      this._runner._renderer.view.addEventListener('click', preloadStimuli, false);
+      this._runner._renderer.view.addEventListener('touchstart', preloadStimuli, false);
     } else {
-      // Finalize the introscreen elements.
       this._clearIntroScreen();
-
-      // Start the runner.
       this._runner._initialize();
     }
   }
@@ -11696,36 +11687,29 @@ class Transfer {
       console.log('file pool not embedded in HTML');
       return;
     }
-    console.log('file pool embedded in HTML');
+    console.log("file pool embedded in HTML (".concat(filePool.children.length, " files)"));
     let item;
     for (const asset of filePool.children) {
       item = {
         data: null,
         type: 'undefined'
       };
-      console.log(asset.id);
       if (asset instanceof HTMLImageElement) {
-        console.log('image');
         item.data = asset;
         item.type = 'image';
       } else if (asset instanceof HTMLAudioElement) {
-        console.log('audio');
         item.data = asset;
         item.type = 'audio';
       } else if (asset instanceof HTMLVideoElement) {
-        console.log('video');
         item.data = asset;
         item.type = 'video';
       } else if (asset instanceof HTMLPreElement) {
-        console.log('text');
         item.data = asset.innerText;
         item.type = 'text';
       } else {
         console.log("unknown pool element: ".concat(asset));
         continue;
       }
-      console.log('adding asset to file pool');
-      console.log(item);
       this._runner._pool.add(item, asset.id);
     }
   }
@@ -12226,4 +12210,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.5c4ac3508a519d50e3fb.bundle.js.map
+//# sourceMappingURL=osweb.ddf83a747c226d7c7eae.bundle.js.map
