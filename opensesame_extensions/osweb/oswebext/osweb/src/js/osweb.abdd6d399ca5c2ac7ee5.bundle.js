@@ -8124,6 +8124,7 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
   reset() {
     this.elements = [];
     this.vars.set('duration', 'keypress');
+    this.vars.set('linked_sketchpad', '');
   }
 
   /** Process a time out response. */
@@ -12210,4 +12211,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.ddf83a747c226d7c7eae.bundle.js.map
+//# sourceMappingURL=osweb.abdd6d399ca5c2ac7ee5.bundle.js.map
