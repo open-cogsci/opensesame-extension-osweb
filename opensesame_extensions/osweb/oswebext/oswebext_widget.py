@@ -21,6 +21,7 @@ from libopensesame.py3compat import *
 import os
 import tempfile
 import webbrowser
+import requests
 from pathlib import Path
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtCore import QRegularExpression
@@ -48,7 +49,8 @@ class OSWebExtWidget(BasePreferencesWidget):
         super().__init__(main_window, ui='extensions.oswebext.oswebext')
         self._oswebext = oswebext
         self.ui.checkbox_fullscreen.toggled.connect(self._run_linter)
-        self.ui.button_jatos.clicked.connect(self._export_jatos)
+        self.ui.button_export.clicked.connect(self._export_jatos)
+        self.ui.button_publish.clicked.connect(self._publish_jatos)
         self.ui.button_experiment_properties.clicked.connect(
             self.tabwidget.open_general)
         self.ui.button_convert.clicked.connect(self._convert_results)
@@ -137,16 +139,17 @@ class OSWebExtWidget(BasePreferencesWidget):
             oslogger.warning(
                 'failed to remove temporary experiment file ({})'.format(e))
 
-    def _export_jatos(self):
-        if self.main_window.current_path:
-            suggested_path = self.main_window.current_path + '.jzip'
-        else:
-            suggested_path = cfg.file_dialog_path
-        path = QFileDialog.getSaveFileName(
-            self.main_window,
-            _('Export JATOS study…'),
-            directory=suggested_path,
-            filter='JATOS study (*.jzip)')
+    def _export_jatos(self, path=None):
+        if path is None:
+            if self.main_window.current_path:
+                suggested_path = self.main_window.current_path + '.jzip'
+            else:
+                suggested_path = cfg.file_dialog_path
+            path = QFileDialog.getSaveFileName(
+                self.main_window,
+                _('Export JATOS study…'),
+                directory=suggested_path,
+                filter='JATOS study (*.jzip)')
         if isinstance(path, tuple):
             path = path[0]
         if not path:
@@ -168,12 +171,51 @@ class OSWebExtWidget(BasePreferencesWidget):
             intro_click=self.ui.checkbox_intro_click.isChecked(),
             uuid=self._uuid())
         self.ui.edit_uuid.setText(self.experiment.var.jatos_uuid)
+        self.ui.edit_uuid.show()
         os.remove(osexp)
         self.extension_manager.fire(
             'notify',
-            message='Experiment succesfully exported',
+            message=_('Experiment succesfully exported'),
             category='success',
             always_show=True)
+        
+    def _publish_jatos(self):
+        if not cfg.oswebext_jatos_url or not cfg.oswebext_jatos_api_token:
+            self.extension_manager.fire(
+                'notify',
+                message=_('Please specify a JATOS server and API token'),
+                category='warning',
+                always_show=True)
+            return
+        with tempfile.NamedTemporaryFile(suffix='.jzip', delete=False) as fd:
+            pass
+        self._export_jatos(fd.name)
+        headers = {'accept': 'application/json',
+                   'Authorization': f'Bearer {cfg.oswebext_jatos_api_token}'}
+        files = {'study': open(fd.name, 'rb')}
+        try:
+            response = requests.post(f'{cfg.oswebext_jatos_url}/jatos/api/v1/study',
+                                     headers=headers,
+                                     files=files)
+        except Exception as e:
+            self.extension_manager.fire(
+                'notify',
+                message='Failed to connect to JATOS server',
+                category='warning',
+                always_show=True)
+            return
+        if response.status_code == 200:
+            self.extension_manager.fire(
+                'notify',
+                message='Experiment succesfully published',
+                category='success',
+                always_show=True)
+        else:
+            self.extension_manager.fire(
+                'notify',
+                message='Failed to publish experiment',
+                category='warning',
+                always_show=True)
 
     def _convert_results(self):
 
