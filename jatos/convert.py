@@ -8,7 +8,7 @@ the Free Software Foundation, either version 3 of the License, or
 OpenSesame is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public Lcense for more details.
 
 You should have received a copy of the GNU General Public License
 along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
@@ -25,6 +25,7 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import sys
 import tarfile
 import tempfile
@@ -34,6 +35,8 @@ import zipfile
 from . import version_info, sync
 
 
+FORMAT_IDENTIFIER = 'OSWeb JZIP Format v1'
+
 # Paths towards assets that are bundled with the osweb extension code
 src_folder = Path(os.path.dirname(__file__)) / 'src'
 src_paths = {'js': src_folder / 'js',
@@ -42,10 +45,52 @@ src_paths = {'js': src_folder / 'js',
              'img': src_folder / 'img'}
 
 
+class VersionConflict(Exception):
+    pass
+
+
+class UnsupportedJZIP(Exception):
+    pass
+
+
+def supported_jzip(info_jas):
+    """Takes a JSON dict in the format of info.jas and checks whether the
+    info indicates that the associated JZIP can be converted to an Experiment.
+    
+    Parameters
+    ----------
+    info_jas: dict
+    
+    Returns
+    -------
+    bool
+    """
+    try:
+        data = info_jas.get('data', {})
+        if not isinstance(data, dict):
+            oslogger.warning(
+                f"Expected 'data' to be a dictionary in info_jas, got {data}")
+            return False
+        comments = data.get('comments', None)
+        return comments == FORMAT_IDENTIFIER
+    except Exception as e:
+        oslogger.warning(f"An error occurred while checking info_jas: {e}")
+        return False
+
+
 def as_jatos_exp(exp):
     """Takes an experiment object (or a Path or str in which case the 
     experiment is opened from file), adds a UUID variable if it doesn't already
     exist, and returns the Experiment object.
+    
+    Parameters
+    ----------
+    exp : Experiment or str or Path
+        Experiment
+        
+    Returns
+    -------
+    Experiment
     """
     if isinstance(exp, (str, Path)):
         oslogger.debug(f'reading experiment from file: {exp}')
@@ -56,9 +101,56 @@ def as_jatos_exp(exp):
     return exp
 
 
+def jzip_to_exp(jzip_path):
+    """Converts a JZIP archive to an Experiment
+    
+    Parameters
+    ----------
+    jzip_path: str or Path
+    
+    Returns
+    -------
+    Experiment
+    
+    Raises
+    ------
+    UnsupportedJZIP
+    """
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_dir_path = Path(tmp_dir)
+        with zipfile.ZipFile(jzip_path, 'r') as zip_ref:
+            zip_ref.extractall(tmp_dir)
+        # Find the .jas file, which is the only file in the root with a .jas
+        # extension
+        info_jas_path = next(tmp_dir_path.glob('*.jas'))
+        with info_jas_path.open('r') as f:
+            info = json.load(f)
+        if not supported_jzip(info):
+            raise UnsupportedJZIP()
+        # Get the uuid and component_hash from info.jas
+        uuid = info['data']['uuid']
+        component_hash = info['data']['componentList'][0]['htmlFilePath'] \
+            .replace('.html', '')
+        # Build the paths to the necessary files
+        osexp_path = tmp_dir_path / uuid / f'{component_hash}.orig.osexp'
+        pool_path = tmp_dir_path / uuid / 'pool'
+        version_info_path = tmp_dir_path / uuid / 'version_info.json'
+        # Load the .orig.osexp file
+        with osexp_path.open('r') as f:
+            script = f.read()
+        exp = Experiment(string=script)
+        # Copy all files from the pool folder to the experiment's file pool
+        dest_pool_path = Path(exp.pool.folder())
+        for filename in pool_path.iterdir():
+            shutil.copy(filename, dest_pool_path)
+        # Copy version_info.json to the experiment's file pool
+        shutil.copy(version_info_path, dest_pool_path)
+    return exp
+
+
 def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 welcome_text='', external_js=[], intro_click=True,
-                exclude_files=[], jatos_info=None):
+                jatos_info=None):
     """Builds a jzip archive that can be imported into JATOS.
 
     Parameters
@@ -85,28 +177,27 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         the participant needs to click. This allows the experiment to be 
         executed in the context of a user action, which is necessary for
         certain actions.
-    exclude_files: list, optional
-        A list of files to be excluded from the file pool
+    jatos_info: JatosInfo or None, optional
+        If provided, remote version information is checked and only modified
+        assets are included in the archive.
 
     Returns
     -------
     Path
         The path to the jzip file
+        
+    Raises
+    ------
+    VersionConflict
     """
     exp = as_jatos_exp(exp)
-    if jatos_info is not None:
-        version_info.update_version_info(exp, jatos_info)
     if jzip_path is None:
         jzip_path = Path(tempfile.NamedTemporaryFile(suffix='.jzip').name)
     else:
         jzip_path = Path(jzip_path)
+    version_info_path = Path(exp.pool.folder()) / 'version_info.json'
     component_hash = unique_uuid()
-    orig_script, osweb_script, pool_paths = _extract_script_and_pool_paths(
-        exp, exclude_files)
-    for path in exclude_files:
-        oslogger.info(f'excluding pool file {path}')
-    for path in pool_paths:
-        oslogger.info(f'including pool file {path.name}')
+    orig_script, osweb_script, pool_paths = _extract_script_and_pool_paths(exp)
     # We create a temporary directory that will contain all the files that will
     # go into the jzip archive.
     #
@@ -116,7 +207,8 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
     #     {uuid}/
     #        {component_hash}.html
     #        {component_hash}.osexp
-    #        {component_hash}.original.osexp
+    #        {component_hash}.orig.osexp
+    #        version_info.json
     #        pool/
     #            {files from file pool}
     #        css/
@@ -156,7 +248,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 'groupStudy': False,
                 'dirName': exp.var.jatos_uuid,
                 'uuid': exp.var.jatos_uuid,
-                'comments': 'Experiment exported by OpenSesame',
+                'comments': FORMAT_IDENTIFIER,
                 'jsonData': None,
                 'componentList': [{
                     'title': 'OSWeb experiment',
@@ -169,27 +261,96 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
             }
         }
         jas_path.write_text(json.dumps(info), 'utf-8')
+        # Create a list of (src, jzip paths) where src can be a Path object
+        # or a str that should be written to a file
+        asset_list = [(index_path, f'{component_hash}.html'),
+                      (osweb_script, f'{component_hash}.osexp'),
+                      (orig_script, f'{component_hash}.orig.osexp'),
+                      (version_info_path, 'version_info.json')]
+        for pool_path in pool_paths:
+            asset_list.append((pool_path, f'pool/{pool_path.name}'))
+        for img in assets['img']:
+            asset_list.append((img['src'], f'{img["dest"]}'))
+        for js in assets['js']:
+            asset_list.append((js['src'], f'{js["dest"]}'))
+        for css in assets['css']:
+            asset_list.append((css['src'], f'{css["dest"]}'))
+        # Now that we have a complete list of files we can remove files that
+        # don't need to be updated. To do so, we first update the current
+        # version info. Then we try to download the previous version. If this
+        # is not available, we upload everything. If it is available and there
+        # is a conflict, then we raise an Exception. If it is available and
+        # there is no conflict, then we remove all unmodified files
+        if jatos_info is not None:
+            current_info = version_info.update_version_info(exp, asset_list,
+                                                            jatos_info)
+            older_info = version_info.download_version_info(exp, jatos_info)
+            if older_info is not None:
+                vc = version_info.compare_version_info(jatos_info, older_info,
+                                                       current_info)
+                oslogger.info(f'unmodified: {len(vc.unmodified)}')
+                oslogger.info(f'modified: {len(vc.modified)}')
+                oslogger.info(f'conflicting: {len(vc.conflicting)}')
+                oslogger.info(f'added: {len(vc.added)}')
+                oslogger.info(f'deleted: {len(vc.deleted)}')
+                if vc.conflicting:
+                    raise VersionConflict(
+                        f'Conflicting files: {vc.conflicting}')
+                # TODO For now we don't strip the unmodified assets because
+                # it's unclear how to do incremental uploads to JATOS
+                # asset_list = [(src, tgt) for src, tgt in asset_list
+                #               if tgt not in vc.unmodified]
         with zipfile.ZipFile(jzip_path, 'w') as fd:
+            # info.jas is the only non-asset file
             fd.write(jas_path, 'info.jas')
-            fd.write(index_path, f'{exp.var.jatos_uuid}/{component_hash}.html')
-            fd.writestr(f'{exp.var.jatos_uuid}/{component_hash}.osexp',
-                        osweb_script)
-            fd.writestr(f'{exp.var.jatos_uuid}/{component_hash}.orig.osexp',
-                        orig_script)
-            for pool_path in pool_paths:
-                fd.write(pool_path,
-                         f'{exp.var.jatos_uuid}/pool/{pool_path.name}')
-            if jatos_info is None or sync.needs_osweb(exp, jatos_info, assets):
-                oslogger.info('including osweb source')
-                for img in assets['img']:
-                    fd.write(img['src'], f'{exp.var.jatos_uuid}/{img["dest"]}')
-                for js in assets['js']:
-                    fd.write(js['src'], f'{exp.var.jatos_uuid}/{js["dest"]}')
-                for css in assets['css']:
-                    fd.write(css['src'], f'{exp.var.jatos_uuid}/{css["dest"]}')
-            else:
-                oslogger.info('not including osweb source')
+            # Write all assets to jzip
+            for src, tgt in asset_list:
+                oslogger.info(f'adding {tgt}')
+                tgt = f'{exp.var.jatos_uuid}/{tgt}'
+                if isinstance(src, Path):
+                    fd.write(src, tgt)
+                else:
+                    fd.writestr(tgt, src)
     return jzip_path
+
+
+def exp_to_html(exp, index_path, subject='0', logfile='osweb-data.json',
+                fullscreen=False, welcome_text='', external_js=[],
+                intro_click=True):
+    """Builds an index.html that embeds everything and can be run in a browser.
+
+    Parameters
+    ----------
+    exp : Experiment or str or Path
+        Experiment
+    index_path : str or Path
+        Path to the to-be-generated index.html file.
+    subject : str, optional
+        Identifier of the JATOS subject, by default '0'.
+    logfile : str, optional
+        The name of the logfile that is downloaded when the experiment is 
+        finished.
+    fullscreen : bool, optional
+        Whether to run the JATOS study in fullscreen mode, by default False.
+    welcome_text : str, optional
+        Text to display on the JATOS study welcome screen, by default ''.
+    external_js : List[str], optional
+        List of URLs to external JavaScript libraties to include in the JATOS
+        study, by default [].
+    intro_click: bool, optional
+        Indicates whether the experiment should be preceded by a screen that
+        the participant needs to click. This allows the experiment to be 
+        executed in the context of a user action, which is necessary for
+        certain actions.
+    """
+    exp = as_jatos_exp(exp)
+    _, script, pool_paths = _extract_script_and_pool_paths(exp)
+    params = {'subject': subject, 'logfile': logfile, 'fullscreen': fullscreen,
+              'welcomeText': _safe_welcome_text(welcome_text),
+              'externalJS': external_js, 'introClick': intro_click}
+    _compose_html_and_get_assets(exp, Path(index_path), 'standalone',
+                                 script=script, params=params,
+                                 pool_paths=pool_paths)
 
 
 # Private functions
@@ -199,8 +360,9 @@ def _get_os_assets(sub_dir):
             for path in src_paths[sub_dir].glob('*osweb*')]
 
 
-def _compose_html_and_get_assets(exp, index_path, mode, params=None,
-                                 component_hash=None, pool_paths=[]):
+def _compose_html_and_get_assets(exp, index_path, mode, script=None,
+                                 params=None, component_hash=None,
+                                 pool_paths=[]):
     """Generates an index.html and returns asset information.
     
     Parameters
@@ -210,6 +372,8 @@ def _compose_html_and_get_assets(exp, index_path, mode, params=None,
         A path where the resulting index.html should be created
     mode: str
         'standalone' or 'jatos'
+    script: str, optional
+        The experiment script
     params: dict
         Experiment parameters, such as fullscreen
     component_hash: str, optional
@@ -395,13 +559,11 @@ def _safe_welcome_text(s):
         replace('"', '&#34;').replace("'", '&#39;')
 
 
-def _extract_script_and_pool_paths(exp, exclude_files):
+def _extract_script_and_pool_paths(exp):
     with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
         pass
     script = OSWebWriter(exp, fd.name).script
     pool_paths = [Path(exp.pool[path]) for path in exp.pool]
-    pool_paths = [path for path in pool_paths
-                  if path.name not in exclude_files]
     try:
         os.remove(fd.name)
     except Exception as e:

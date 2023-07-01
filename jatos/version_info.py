@@ -19,6 +19,7 @@ from pathlib import Path
 import json
 import requests
 import hashlib
+import zlib
 from libopensesame.oslogging import oslogger
 from . import convert, sync
 
@@ -83,7 +84,7 @@ def download_version_info(exp, jatos_info):
                'Authorization': f'Bearer {jatos_info.token}'}
     response = requests.get(
         f'{jatos_info.url}/jatos/api/v1/studies/{exp.var.jatos_uuid}/assets'
-        f'/pool/version_info.json',
+        f'/version_info.json',
         headers=headers)
     if response.status_code == 200:
         oslogger.debug('version info succesfully downloaded')
@@ -92,7 +93,7 @@ def download_version_info(exp, jatos_info):
     oslogger.warning('failed to download version info')
 
 
-def update_version_info(exp, jatos_info):
+def update_version_info(exp, asset_list, jatos_info):
     """Updates version_info.json in the file pool (creating it if it doesn't
     exist yet) and return the version info as a dict.
     """
@@ -110,13 +111,29 @@ def update_version_info(exp, jatos_info):
     version_info[jatos_info.url].setdefault('versions', [])
     # Compute the version dict for the current state of the files in the folder
     current_version = {}
-    for file_path in folder.iterdir():
-        if file_path.is_file() and file_path.name != 'version_info.json':
-            sha256 = hashlib.sha256(file_path.read_bytes()).hexdigest()
-            current_version[file_path.name] = sha256
-            oslogger.debug(f'{file_path}: {sha256}')
+    for src, tgt in asset_list:
+        if isinstance(src, Path):
+            if not src.exists():
+                oslogger.info(f'asset does not exist: {src}')
+                continue
+            src = src.read_bytes()
+        else:
+            src = src.encode('utf-8')
+        sha256 = adler32(src)
+        current_version[tgt] = sha256
+        oslogger.info(f'{tgt}: {sha256}')
     # Append the current version to the list of versions
     version_info[jatos_info.url]['versions'].append(current_version)
     # Save back to the file and return
     version_info_path.write_text(json.dumps(version_info))
     return version_info
+
+
+def extract_version_info(exp):
+    path = Path(convert.as_jatos_exp(exp).pool.folder()) / 'version_info.json'
+    return json.loads(path.read_text())
+
+
+def adler32(data):
+    """Compute the Adler32 checksum of the file specified by `path`."""
+    return zlib.adler32(data) & 0xffffffff  # Return a 32-bit integer<
