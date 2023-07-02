@@ -19,6 +19,8 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 
 from libopensesame.py3compat import *
 import itertools as it
+from libqtopensesame.misc.translate import translation_context
+_ = translation_context('oswebext', category='extension')
 
 
 # These items are supported but don't have a specific linter function
@@ -66,9 +68,9 @@ def check_compatibility(exp, fullscreen):
     compatible.
     """
     return '\n'.join(
-        check_supported_items(exp, fullscreen) + 
-        check_structure(exp, fullscreen) +
-        check_filesize(exp))
+        check_supported_items(exp, fullscreen)
+        + check_structure(exp, fullscreen)
+        + check_filesize(exp))
 
 
 def check_item(item, fullscreen):

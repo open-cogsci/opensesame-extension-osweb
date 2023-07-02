@@ -19,19 +19,16 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 
 from libopensesame.py3compat import *
 from libqtopensesame.runners.base_runner import BaseRunner
-from libopensesame.exceptions import UserAborted
 
 
 class OSWebRunner(BaseRunner):
     """Runs an experiment in the traditional way, in the same process."""
     
     def execute(self):
-        self.main_window.extension_manager.fire(
+        return_values = self.main_window.extension_manager.fire(
             'osweb_run', fullscreen=self._fullscreen,
             subject_nr=self._subject_nr, logfile=self._logfile)
-        # The UserAborted exception will result in a notification, rather than
-        # in a full-screen tab saying that the experiment has finished.
-        return UserAborted('Experiment started in external browser')
+        return return_values.get('Oswebext', None)
     
     def init_experiment(self, quick=False, fullscreen=False):
         # Get and set the subject number

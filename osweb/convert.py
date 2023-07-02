@@ -94,12 +94,15 @@ def as_jatos_exp(exp):
     return exp
 
 
-def jzip_to_exp(jzip_path):
+def jzip_to_exp(jzip_path, factory=Experiment):
     """Converts a JZIP archive to an Experiment
     
     Parameters
     ----------
-    jzip_path: str or Path
+    jzip_path : str or Path
+    factory : callable, optional
+        A callable that takes a definition string and returns an Experiment
+        object.
     
     Returns
     -------
@@ -119,7 +122,7 @@ def jzip_to_exp(jzip_path):
         with info_jas_path.open('r') as f:
             info = json.load(f)
         if not supported_jzip(info):
-            raise UnsupportedJZIP()
+            raise UnsupportedJZIP('Unsupported JZIP Study Archive')
         # Get the uuid and component_hash from info.jas
         uuid = info['data']['uuid']
         component_hash = info['data']['componentList'][0]['htmlFilePath'] \
@@ -131,13 +134,17 @@ def jzip_to_exp(jzip_path):
         # Load the .orig.osexp file
         with osexp_path.open('r') as f:
             script = f.read()
-        exp = Experiment(string=script)
-        # Copy all files from the pool folder to the experiment's file pool
-        dest_pool_path = Path(exp.pool.folder())
-        for filename in pool_path.iterdir():
-            shutil.copy(filename, dest_pool_path)
+        exp = factory(string=script)
+        # Copy all files from the pool folder to the experiment's file pool.
+        # If there are no files in the file pool, the pool path doesn't exist
+        # in the jzip.
+        if pool_path.exists():
+            dest_pool_path = Path(exp.pool.folder())
+            for filename in pool_path.iterdir():
+                shutil.copy(filename, dest_pool_path)
         # Copy version_info.json to the experiment's file pool
-        shutil.copy(version_info_path, dest_pool_path)
+        if version_info_path.exists():
+            shutil.copy(version_info_path, dest_pool_path)
     return exp
 
 
@@ -151,7 +158,9 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
     exp : Experiment or str or Path
         Experiment
     jzip_path : str or Path
-        Path and filename of the resulting jzip file.
+        Path and filename of the resulting jzip file.  If no path is provided,
+        a temporary file is created. The temporary needs to be explicitly
+        removed.
     title : str, optional
         Title of the JATOS study, by default 'My OpenSesame experiment'.
     description : str, optional
@@ -258,8 +267,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         # or a str that should be written to a file
         asset_list = [(index_path, f'{component_hash}.html'),
                       (osweb_script, f'{component_hash}.osexp'),
-                      (orig_script, f'{component_hash}.orig.osexp'),
-                      (version_info_path, 'version_info.json')]
+                      (orig_script, f'{component_hash}.orig.osexp')]
         for pool_path in pool_paths:
             asset_list.append((pool_path, f'pool/{pool_path.name}'))
         for img in assets['img']:
@@ -289,6 +297,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 if vc.conflicting:
                     raise VersionConflict(
                         f'Conflicting files: {vc.conflicting}')
+                asset_list.append((version_info_path, 'version_info.json'))
                 # TODO For now we don't strip the unmodified assets because
                 # it's unclear how to do incremental uploads to JATOS
                 # asset_list = [(src, tgt) for src, tgt in asset_list
@@ -307,7 +316,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
     return jzip_path
 
 
-def exp_to_html(exp, index_path, subject='0', logfile='osweb-data.json',
+def exp_to_html(exp, index_path=None, subject='0', logfile='osweb-data.json',
                 fullscreen=False, welcome_text='', external_js=[],
                 intro_click=True):
     """Builds an index.html that embeds everything and can be run in a browser.
@@ -316,8 +325,10 @@ def exp_to_html(exp, index_path, subject='0', logfile='osweb-data.json',
     ----------
     exp : Experiment or str or Path
         Experiment
-    index_path : str or Path
-        Path to the to-be-generated index.html file.
+    index_path : str or Path or None, optional
+        Path to the to-be-generated index.html file. If no path is provided,
+        a temporary file is created. The temporary needs to be explicitly
+        removed.
     subject : str, optional
         Identifier of the JATOS subject, by default '0'.
     logfile : str, optional
@@ -335,15 +346,24 @@ def exp_to_html(exp, index_path, subject='0', logfile='osweb-data.json',
         the participant needs to click. This allows the experiment to be 
         executed in the context of a user action, which is necessary for
         certain actions.
+        
+    Returns
+    -------
+    Path
+        The path to the html file
     """
     exp = as_jatos_exp(exp)
     _, script, pool_paths = _extract_script_and_pool_paths(exp)
     params = {'subject': subject, 'logfile': logfile, 'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js, 'introClick': intro_click}
-    _compose_html_and_get_assets(exp, Path(index_path), 'standalone',
-                                 script=script, params=params,
-                                 pool_paths=pool_paths)
+    if index_path is None:
+        with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as fd:
+            index_path = fd.name
+    index_path = Path(index_path)
+    _compose_html_and_get_assets(exp, index_path, 'standalone', script=script,
+                                 params=params, pool_paths=pool_paths)
+    return index_path
 
 
 # Private functions
@@ -553,12 +573,23 @@ def _safe_welcome_text(s):
 
 
 def _extract_script_and_pool_paths(exp):
+    """Extracts the scripts and pool paths from the experiment. There are
+    two scripts. The first is the original script. The second is the script as
+    it will be used by OSWeb, which is partly rewritten. If the experiment is
+    not configured to use OSWeb, the second script is a placeholder that 
+    informs the user that the experiment does not run in a browser.
+    """
+    if exp.var.canvas_backend != 'osweb':
+        oslogger.info('using placeholder experiment')
+        osweb_exp = as_jatos_exp(src_folder / 'osexp/placeholder.osexp')
+    else:
+        osweb_exp = exp
     with tempfile.NamedTemporaryFile(suffix='.osexp', delete=False) as fd:
         pass
-    script = OSWebWriter(exp, fd.name).script
-    pool_paths = [Path(exp.pool[path]) for path in exp.pool]
+    script = OSWebWriter(osweb_exp, fd.name).script
     try:
         os.remove(fd.name)
     except Exception as e:
         oslogger.warning(f'failed to remove temporary file: {fd.name}')
+    pool_paths = [Path(exp.pool[path]) for path in exp.pool]
     return exp.to_string(), script, pool_paths

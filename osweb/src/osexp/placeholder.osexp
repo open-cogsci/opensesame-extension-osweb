@@ -1,0 +1,47 @@
+---
+API: 3
+OpenSesame: 4.0.0a47
+Platform: posix
+---
+set width 1024
+set title "OSWeb Placeholder"
+set subject_parity even
+set subject_nr 0
+set start experiment
+set sound_sample_size -16
+set sound_freq 48000
+set sound_channels 2
+set sound_buf_size 1024
+set sampler_backend osweb
+set round_decimals 2
+set mouse_backend osweb
+set keyboard_backend osweb
+set height 768
+set fullscreen no
+set form_clicks no
+set foreground "#241f31"
+set font_underline no
+set font_size 18
+set font_italic False
+set font_family mono
+set font_bold False
+set experiment_path "/home/sebastiaan/git/opensesame-extension-osweb/osweb/src/osexp"
+set disable_garbage_collection False
+set description "The main experiment item"
+set color_backend osweb
+set clock_backend osweb
+set canvas_backend osweb
+set background white
+
+define sequence experiment
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run message True
+
+define sketchpad message
+	set start_response_interval no
+	set reset_variables no
+	set duration mouseclick
+	set description "Displays stimuli"
+	draw textline center=1 color=black font_bold=no font_family=serif font_italic=no font_size=32 html=yes show_if=True text="This experiment does not run in a browser<br />because it has not been configured to use OSWeb.<br /><br />To run this experiment, open it in<br />OpenSesame using the 'Open from JATOS' function.<br /><br />Click or touch to exit." x=0 y=0 z_index=0
+

@@ -12,8 +12,8 @@ def test_as_jatos_exp():
     exp = convert.as_jatos_exp(Path('test-data/gaze-cuing.osexp'))
     assert isinstance(exp, Experiment)
     assert exp.var.has('jatos_uuid')
-    exp = convert.as_jatos_exp(exp)
     assert isinstance(exp, Experiment)
+    exp = convert.as_jatos_exp(exp)
     assert exp.var.has('jatos_uuid')
     
     
@@ -80,4 +80,3 @@ def test_upload_download():
 jatos_info = sync.JatosInfo('https://jatos.mindprobe.eu',
                             os.environ.get('JATOS_API_TOKEN', None))
 oslogger.start('osweb')
-test_upload_download()
