@@ -1,0 +1,83 @@
+import os
+from pathlib import Path
+from libopensesame.oslogging import oslogger
+from libopensesame.experiment import Experiment
+from osweb import version_info, sync, convert
+
+
+def test_as_jatos_exp():
+    exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
+    assert isinstance(exp, Experiment)
+    assert exp.var.has('jatos_uuid')
+    exp = convert.as_jatos_exp(Path('test-data/gaze-cuing.osexp'))
+    assert isinstance(exp, Experiment)
+    assert exp.var.has('jatos_uuid')
+    exp = convert.as_jatos_exp(exp)
+    assert isinstance(exp, Experiment)
+    assert exp.var.has('jatos_uuid')
+    
+    
+def test_version_info():
+    # We first test non-conflicting changes by opening a file, removing,
+    # changing, and adding some files to the file pool, and then validating
+    # the version info
+    exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
+    pool = Path(exp.pool.folder())
+    convert.exp_to_jzip(exp, jatos_info=jatos_info)
+    vi0 = version_info.extract_version_info(exp)
+    (pool / 'left.png').unlink()
+    (pool / 'right.png').write_text('modified')
+    (pool / 'new.txt').write_text('new')
+    convert.exp_to_jzip(exp, jatos_info=jatos_info)
+    vi1 = version_info.extract_version_info(exp)
+    vc = version_info.compare_version_info(jatos_info, vi0, vi1)
+    print(vc)
+    assert vc.modified == {'pool/right.png'}
+    assert vc.conflicting == set()
+    assert 'pool/new.txt' in vc.added
+    assert 'pool/left.png' in vc.deleted
+    # We then test conflicting changes by opening the same experiment twice,
+    # and each time making a the same new file with different content.
+    exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
+    pool = Path(exp.pool.folder())
+    (pool / 'conflicting.txt').write_text('conflicting new A')
+    (pool / 'right.png').write_text('conflicting existing A')
+    convert.exp_to_jzip(exp, jatos_info=jatos_info)
+    vi0 = version_info.extract_version_info(exp)
+    exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
+    pool = Path(exp.pool.folder())
+    (pool / 'conflicting.txt').write_text('conflicting new B')
+    (pool / 'right.png').write_text('conflicting existing B')
+    convert.exp_to_jzip(exp, jatos_info=jatos_info)
+    vi1 = version_info.extract_version_info(exp)
+    vc = version_info.compare_version_info(jatos_info, vi0, vi1)
+    assert vc.modified == set()
+    assert vc.conflicting == {'pool/conflicting.txt', 'pool/right.png'}
+
+
+def test_convert():
+    if jatos_info.token is None:
+        oslogger.warning('no API token provided, skipping test')
+        return
+    path = convert.exp_to_jzip('test-data/gaze-cuing.osexp',
+                               jzip_path='tmp.jzip',
+                               jatos_info=jatos_info)
+    exp = convert.jzip_to_exp(path)
+    path = convert.exp_to_html(exp, index_path='tmp.html')
+
+
+def test_upload_download():
+    if jatos_info.token is None:
+        oslogger.warning('no API token provided, skipping test')
+        return
+    exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
+    sync.upload(exp, jatos_info)
+    jzip_path = sync.download_jzip(exp.var.jatos_uuid, jatos_info)
+    exp = convert.jzip_to_exp(jzip_path)
+    path = convert.exp_to_html(exp, index_path='tmp.html')
+
+
+jatos_info = sync.JatosInfo('https://jatos.mindprobe.eu',
+                            os.environ.get('JATOS_API_TOKEN', None))
+oslogger.start('osweb')
+test_upload_download()

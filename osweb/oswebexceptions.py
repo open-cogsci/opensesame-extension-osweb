@@ -29,3 +29,19 @@ class PythonToJavaScriptError(OSException):
 
     def markdown(self):
         return f'# {self.title()}\n\n{self._msg}\n\n{self._read_more}'
+
+
+class JZIPDownloadError(Exception):
+    pass
+
+
+class JZIPUploadError(Exception):
+    pass
+
+
+class VersionConflict(Exception):
+    pass
+
+
+class UnsupportedJZIP(Exception):
+    pass

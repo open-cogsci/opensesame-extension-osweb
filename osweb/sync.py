@@ -22,13 +22,10 @@ import os
 from libopensesame.oslogging import oslogger
 from . import version_info
 from . import convert
+from .oswebexceptions import JZIPDownloadError, JZIPUploadError
 
 
 JatosInfo = namedtuple('JatosInfo', ('url', 'token'))
-
-
-class JZIPDownloadError(Exception):
-    pass
 
 
 def download_jzip(uuid, jatos_info, jzip_path=None):
@@ -167,11 +164,10 @@ def upload(exp, jatos_info):
     exp : Experiment
     jatos_info : JatosInfo
 
-    Returns
-    -------
-    bool
-        True if the upload was successful (HTTP status code 200), False
-        otherwise.
+    Raises
+    ------
+    JZIPUploadError
+        If the experiment failed to upload
     """
     path = convert.exp_to_jzip(exp, jatos_info=jatos_info)
     oslogger.info(
@@ -189,8 +185,6 @@ def upload(exp, jatos_info):
                                  headers=headers,
                                  files={'study': fd})
     path.unlink()
-    if response.status_code == 200:
-        oslogger.debug('succesfully published')
-        return True
-    oslogger.warning('failed to publish')
-    return False
+    if response.status_code != 200:
+        raise JZIPUploadError(f'status code: {response.status_code}')
+    oslogger.debug('succesfully published')

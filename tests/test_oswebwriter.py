@@ -21,7 +21,7 @@ import unittest
 from libopensesame.py3compat import *
 from openexp._color.color import color
 from libopensesame.experiment import Experiment
-from opensesame_extensions.osweb.oswebext.oswebwriter import OSWebWriter
+from osweb.oswebwriter import OSWebWriter
 
 
 class OSWebWriterTestCase(unittest.TestCase):

@@ -16,25 +16,25 @@ along with OpenSesame.  If not, see <http://www.gnu.org/licenses/>.
 """
 import unittest
 from libopensesame.py3compat import *
-from opensesame_extensions.osweb.oswebext.osweb import data
+from osweb import results
 
 
 class DataConversionTestCase(unittest.TestCase):
     
     def test_txt(self):
-        dm = data.parse_results('tests/data/test-data.txt')
+        dm = results.parse_results('tests/data/test-data.txt')
         assert len(dm) > 0 and dm.columns
         
     def test_json(self):
-        dm = data.parse_results('tests/data/test-data.json')
+        dm = results.parse_results('tests/data/test-data.json')
         assert len(dm) > 0 and dm.columns
         
     def test_jrzip(self):
-        dm = data.parse_results('tests/data/test-data.jrzip')
+        dm = results.parse_results('tests/data/test-data.jrzip')
         assert len(dm) > 0 and dm.columns
         
     def test_zip(self):
-        dm = data.parse_results('tests/data/test-data.zip')
+        dm = results.parse_results('tests/data/test-data.zip')
         assert len(dm) > 0 and dm.columns
 
         

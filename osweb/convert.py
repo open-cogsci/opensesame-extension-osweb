@@ -17,7 +17,6 @@ from libopensesame.py3compat import *
 from bs4 import BeautifulSoup
 from libopensesame.experiment import Experiment
 from libopensesame.oslogging import oslogger
-from opensesame_extensions.osweb.oswebext.oswebwriter import OSWebWriter
 from pathlib import Path
 import base64
 import fileinspector
@@ -33,6 +32,8 @@ import time
 import uuid
 import zipfile
 from . import version_info, sync
+from .oswebwriter import OSWebWriter
+from .oswebexceptions import VersionConflict, UnsupportedJZIP
 
 
 FORMAT_IDENTIFIER = 'OSWeb JZIP Format v1'
@@ -43,14 +44,6 @@ src_paths = {'js': src_folder / 'js',
              'css': src_folder / 'css',
              'html': src_folder / 'html',
              'img': src_folder / 'img'}
-
-
-class VersionConflict(Exception):
-    pass
-
-
-class UnsupportedJZIP(Exception):
-    pass
 
 
 def supported_jzip(info_jas):
