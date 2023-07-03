@@ -75,8 +75,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>&lt;b&gt;OSWeb and JATOS control panel&lt;/b&gt;&lt;br /&gt;
-Options for online experiments and JATOS synchronization</string>
+         <string>&lt;b&gt;OSWeb and JATOS control panel&lt;/b&gt;&lt;br /&gt;Options for online experiments and JATOS synchronization</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

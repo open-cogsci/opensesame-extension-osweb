@@ -183,7 +183,7 @@ class Oswebext(BaseExtension):
         self.extension_manager.fire(
             'quick_select',
             haystack=haystack,
-            placeholder_text=_(f'Browse {cfg.oswebext_jatos_url} …'))
+            placeholder_text=_('Browse') + f' {cfg.oswebext_jatos_url} …')
         
     def _select_remote_experiment(self, remote_exp):
         from osweb import sync, convert
