@@ -303,12 +303,13 @@ class Oswebext(BaseExtension):
         del self.experiment.var.jatos_uuid
         widget.ui.edit_uuid.setText('')
 
-    def _show_controls(self):
+    def _show_controls(self, jatos_configured=True):
         from .osweb_control_panel import OSWebControlPanel
         if self._control_panel is None:
             self._control_panel = OSWebControlPanel(self.main_window,
                                                     self.settings_widget())
         self.tabwidget.add(self._control_panel, self.icon(), self.label())
+        self._control_panel.set_jatos_configured(jatos_configured)
         
     def _external_js(self):
         return [url.strip() for url in cfg.oswebext_external_js.splitlines()]
@@ -319,11 +320,7 @@ class Oswebext(BaseExtension):
                 isinstance(cfg.oswebext_jatos_api_token, str) and \
                 cfg.oswebext_jatos_api_token.startswith('jap_'):
             return True
-        self.extension_manager.fire(
-            'notify',
-            message=_('Please specify a JATOS server and API token'),
-            always_show=True, timeout=0)
-        self._show_controls()
+        self._show_controls(jatos_configured=False)
         return False
 
     def _jatos_info(self):

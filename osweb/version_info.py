@@ -22,6 +22,7 @@ import hashlib
 import zlib
 from libopensesame.oslogging import oslogger
 from . import convert, sync
+from .oswebexceptions import VersionInfoDownloadError
 
 
 VersionComparison = namedtuple(
@@ -82,14 +83,21 @@ def download_version_info(exp, jatos_info):
     """
     headers = {'accept': 'application/json',
                'Authorization': f'Bearer {jatos_info.token}'}
-    response = requests.get(
-        f'{jatos_info.url}/jatos/api/v1/studies/{exp.var.jatos_uuid}/assets'
-        f'/version_info.json',
-        headers=headers)
+    try:
+        response = requests.get(
+            f'{jatos_info.url}/jatos/api/v1/studies/{exp.var.jatos_uuid}'
+            f'/assets/version_info.json',
+            headers=headers)
+    except Exception as e:
+        raise VersionInfoDownloadError(
+            f'Failed to connect to JATOS server: \n\n{e}')
     if response.status_code == 200:
         oslogger.debug('version info succesfully downloaded')
-        return response.json()
-        # print(response._content.decode('utf-8'))
+        try:
+            return response.json()
+        except Exception as e:
+            raise VersionInfoDownloadError(
+                f'Failed to parse version info: \n\n{e}')
     oslogger.warning('failed to download version info')
 
 
@@ -114,14 +122,14 @@ def update_version_info(exp, asset_list, jatos_info):
     for src, tgt in asset_list:
         if isinstance(src, Path):
             if not src.exists():
-                oslogger.info(f'asset does not exist: {src}')
+                oslogger.debug(f'asset does not exist: {src}')
                 continue
             src = src.read_bytes()
         else:
             src = src.encode('utf-8')
         sha256 = adler32(src)
         current_version[tgt] = sha256
-        oslogger.info(f'{tgt}: {sha256}')
+        oslogger.debug(f'{tgt}: {sha256}')
     # Append the current version to the list of versions
     version_info[jatos_info.url]['versions'].append(current_version)
     # Save back to the file and return

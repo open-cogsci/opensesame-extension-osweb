@@ -23,7 +23,7 @@ from libopensesame.oslogging import oslogger
 from . import version_info
 from . import convert
 from .oswebexceptions import JZIPDownloadError, JZIPUploadError, \
-    ListRemoteError
+    ListRemoteError, VersionConflict
 
 
 JatosInfo = namedtuple('JatosInfo', ('url', 'token'))
@@ -60,9 +60,12 @@ def download_jzip(uuid, jatos_info, jzip_path=None):
     """
     headers = {'accept': 'application/json',
                'Authorization': f'Bearer {jatos_info.token}'}
-    response = requests.get(
-        f'{jatos_info.url}/jatos/api/v1/studies/{uuid}', headers=headers,
-        stream=True)
+    try:
+        response = requests.get(
+            f'{jatos_info.url}/jatos/api/v1/studies/{uuid}', headers=headers,
+            stream=True)
+    except Exception as e:
+        raise JZIPDownloadError(f'Failed to connect to JATOS server: \n\n{e}')
     if response.status_code == 401:
         raise JZIPDownloadError(
             'Invalid API token: {jato_info.token} status code 401)')
@@ -76,11 +79,14 @@ def download_jzip(uuid, jatos_info, jzip_path=None):
         temp = tempfile.NamedTemporaryFile(delete=False)
         jzip_path = temp.name
     jzip_path = Path(jzip_path)
-    with jzip_path.open('wb') as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
-    oslogger.info(f'file downloaded at {jzip_path}')
+    try:
+        with jzip_path.open('wb') as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+    except Exception as e:
+        raise JZIPDownloadError(f'Failed to stream from JATOS server: \n\n{e}')
+    oslogger.debug(f'file downloaded at {jzip_path}')
     return jzip_path
 
 
@@ -129,17 +135,27 @@ def upload(exp, jatos_info, **jzip_kwargs):
     jatos_info : JatosInfo
     jzip_kwags : dict, optional
         Parameters that are passed onto convert.exp_to_jzip()
+        
+    Returns
+    -------
+    str
+        JATOS UUID
 
     Raises
     ------
     JZIPUploadError
-        If the experiment failed to upload
+        If the experiment failed to upload for technical reasons
+    VersionConflict
+        If the experiment failed to upload because of a version conflict
     """
+    exp = convert.as_jatos_exp(exp)
     try:
         path = convert.exp_to_jzip(exp, jatos_info=jatos_info, **jzip_kwargs)
+    except VersionConflict:
+        raise
     except Exception as e:
         raise JZIPUploadError(f'Failed to connect to server: \n\n{e}')
-    oslogger.info(
+    oslogger.debug(
         f'jzip exported to {path} ({path.stat().st_size / 1024 ** 2:.2f} Mb)')
     headers = {'accept': 'application/json',
                'Authorization': f'Bearer {jatos_info.token}'}
@@ -159,7 +175,7 @@ def upload(exp, jatos_info, **jzip_kwargs):
     path.unlink()
     if response.status_code == 200:
         oslogger.debug('succesfully published')
-        return
+        return exp.var.jatos_uuid
     if response.status_code == 401:
         raise JZIPUploadError(
             'Invalid API token: {jato_info.token} status code 401)')

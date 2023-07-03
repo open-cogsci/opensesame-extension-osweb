@@ -51,6 +51,9 @@ class OSWebControlPanel(BaseWidget):
         else:
             self.ui.button_experiment_properties.setVisible(True)
             self.ui.label_experiment_properties.setVisible(True)
+            
+    def set_jatos_configured(self, configured):
+        self.ui.label_jatos_unconfigured.setVisible(not configured)
 
     def _export_html(self):
         self.extension_manager.fire('osweb_export_html')

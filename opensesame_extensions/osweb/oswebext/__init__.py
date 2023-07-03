@@ -1,7 +1,7 @@
 """Create online experiments"""
 
-icon = "applications-internet"
-label = "OSWeb control panel"
+icon = "preferences-desktop"
+label = "OSWeb and JATOS control panel"
 settings = {
   "oswebext_include_context": True,
   "oswebext_intro_click": True,

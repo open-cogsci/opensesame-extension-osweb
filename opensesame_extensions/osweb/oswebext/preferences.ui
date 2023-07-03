@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupbox_experiment_properties">
+    <widget class="QGroupBox" name="groupbox_osweb">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -243,7 +243,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupbox_jatos">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -361,7 +361,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Get at JATOS user profile&lt;/small&gt;</string>
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Available from JATOS user profile&lt;/small&gt;</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -379,7 +379,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;🛈 JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS.&lt;/small&gt;</string>
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;🛈 JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -392,7 +392,8 @@
          <string>Clear UUID</string>
         </property>
         <property name="icon">
-         <iconset theme="edit-clear"/>
+         <iconset theme="edit-clear">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>

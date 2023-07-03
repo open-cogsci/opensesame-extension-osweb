@@ -32,7 +32,6 @@ class PythonToJavaScriptError(OSWebException):
     JavaScript. To resolve the error, locate and fix the Python expression
     mentioned in the error message.
     """
-    pass
         
         
 class OSWebCompatibilityError(OSWebException):
@@ -43,13 +42,22 @@ class OSWebCompatibilityError(OSWebException):
     documentation site. The compatibility check can be disabled (at your own 
     risk!) in the OSWeb control panel.
     """
-    pass
 
 
 class JZIPDownloadError(OSWebException):
-    """A `JZIPDownloadError` is raised when an experiment could not be 
-    downloaded from a JATOS server. This may happen when the JATOS server or 
-    API  token are incorrect. This may also happen when there is a problem with
+    """A `JZIPDownloadError` is raised when an experiment could not be
+    downloaded from a JATOS server. This may happen when the JATOS server or
+    API token are incorrect. This may also happen when there is a problem with
+    the internet connection. Finally, this may also happen when the experiment
+    that you are trying to open is not in the correct format, for example when
+    it uses jsPsych, lab.js, or an older version of OSWeb.
+    """
+
+
+class VersionInfoDownloadError(OSWebException):
+    """A `VersionInfoDownloadError` is raised when version info could not be
+    downloaded from a JATOS server. This may happen when the JATOS server or
+    API token are incorrect. This may also happen when there is a problem with
     the internet connection. Finally, this may also happen when the experiment
     that you are trying to open is not in the correct format, for example when
     it uses jsPsych, lab.js, or an older version of OSWeb.
@@ -62,7 +70,6 @@ class JZIPUploadError(OSWebException):
     token are incorrect. This may also happen when there is a problem with the
     internet connection.
     """
-    pass
 
 
 class VersionConflict(OSWebException):
@@ -71,7 +78,6 @@ class VersionConflict(OSWebException):
     this, you can reset the JATOS UUID to reset the link between the remote
     experiment and the current experiment.
     """
-    pass
 
 
 class UnsupportedJZIP(OSWebException):
@@ -80,7 +86,6 @@ class UnsupportedJZIP(OSWebException):
     version of OSWeb or with other software. This may also happen when the
     jzip file is corruped.
     """
-    pass
 
 
 class ListRemoteError(OSWebException):
@@ -89,4 +94,3 @@ class ListRemoteError(OSWebException):
     JATOS server or API token are incorrect. This may also happen when there is
     a problem with the internet connection.
     """
-    pass

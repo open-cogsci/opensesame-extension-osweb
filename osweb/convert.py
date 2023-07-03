@@ -138,8 +138,8 @@ def jzip_to_exp(jzip_path, factory=Experiment):
         # Copy all files from the pool folder to the experiment's file pool.
         # If there are no files in the file pool, the pool path doesn't exist
         # in the jzip.
+        dest_pool_path = Path(exp.pool.folder())
         if pool_path.exists():
-            dest_pool_path = Path(exp.pool.folder())
             for filename in pool_path.iterdir():
                 shutil.copy(filename, dest_pool_path)
         # Copy version_info.json to the experiment's file pool
@@ -205,11 +205,13 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
     #
     # The folder structure is as follows:
     #
-    #     info.jas
+    #     info.jas                        # JATOS metadata
     #     {uuid}/
-    #        {component_hash}.html
-    #        {component_hash}.osexp
-    #        {component_hash}.orig.osexp
+    #        {component_hash}.html        # HTML entry point
+    #        {component_hash}.osexp       # Rewritten OSWeb script
+    #        {component_hash}.orig.osexp  # Original OpenSesame script
+    #        orig.osexp                   # As above but with constant name for
+    #                                     # conflict detection
     #        version_info.json
     #        pool/
     #            {files from file pool}
@@ -267,7 +269,8 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         # or a str that should be written to a file
         asset_list = [(index_path, f'{component_hash}.html'),
                       (osweb_script, f'{component_hash}.osexp'),
-                      (orig_script, f'{component_hash}.orig.osexp')]
+                      (orig_script, f'{component_hash}.orig.osexp'),
+                      (orig_script, 'orig.osexp')]
         for pool_path in pool_paths:
             asset_list.append((pool_path, f'pool/{pool_path.name}'))
         for img in assets['img']:
@@ -283,21 +286,27 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         # is a conflict, then we raise an Exception. If it is available and
         # there is no conflict, then we remove all unmodified files
         if jatos_info is not None:
+            asset_list.append((version_info_path, 'version_info.json'))
             current_info = version_info.update_version_info(exp, asset_list,
                                                             jatos_info)
             older_info = version_info.download_version_info(exp, jatos_info)
             if older_info is not None:
                 vc = version_info.compare_version_info(jatos_info, older_info,
                                                        current_info)
-                oslogger.info(f'unmodified: {len(vc.unmodified)}')
-                oslogger.info(f'modified: {len(vc.modified)}')
-                oslogger.info(f'conflicting: {len(vc.conflicting)}')
-                oslogger.info(f'added: {len(vc.added)}')
-                oslogger.info(f'deleted: {len(vc.deleted)}')
+                oslogger.debug(f'unmodified: {vc.unmodified}')
+                oslogger.debug(f'modified: {vc.modified}')
+                oslogger.debug(f'conflicting: {vc.conflicting}')
+                oslogger.debug(f'added: {vc.added}')
+                oslogger.debug(f'deleted: {vc.deleted}')
                 if vc.conflicting:
+                    file_list = '- ' + '\n- '.join(vc.conflicting)
                     raise VersionConflict(
-                        f'Conflicting files: {vc.conflicting}')
-                asset_list.append((version_info_path, 'version_info.json'))
+                        f'The current version of the experiment contains '
+                        f'changes that conflict with the (remote) version of '
+                        f'the experiment on JATOS.\n\nThis conflict results '
+                        f'from the following files:\n\n{file_list}')
+            else:
+                oslogger.debug(f'no older version info found')
                 # TODO For now we don't strip the unmodified assets because
                 # it's unclear how to do incremental uploads to JATOS
                 # asset_list = [(src, tgt) for src, tgt in asset_list
@@ -307,7 +316,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
             fd.write(jas_path, 'info.jas')
             # Write all assets to jzip
             for src, tgt in asset_list:
-                oslogger.info(f'adding {tgt}')
+                oslogger.debug(f'adding {tgt}')
                 tgt = f'{exp.var.jatos_uuid}/{tgt}'
                 if isinstance(src, Path):
                     fd.write(src, tgt)
@@ -580,7 +589,7 @@ def _extract_script_and_pool_paths(exp):
     informs the user that the experiment does not run in a browser.
     """
     if exp.var.canvas_backend != 'osweb':
-        oslogger.info('using placeholder experiment')
+        oslogger.debug('using placeholder experiment')
         osweb_exp = as_jatos_exp(src_folder / 'osexp/placeholder.osexp')
     else:
         osweb_exp = exp
