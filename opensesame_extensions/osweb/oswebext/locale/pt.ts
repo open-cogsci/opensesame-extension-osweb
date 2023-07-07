@@ -3,52 +3,52 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Experiment started in external browser</source>
         <translation>Experimento iniciado em navegador externo</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="8" />
+        <location filename="../../../../translation_tools/translatables.py" line="10" />
         <source>Save as…</source>
         <translation>Salvar como..</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>OSWeb and JATOS control panel</source>
         <translation>Painel de controle do OSWeb e JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
+        <location filename="../../../../translation_tools/translatables.py" line="8" />
         <source>Publish to JATOS</source>
         <translation>Publicar para JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>Publish to MindProbe</source>
         <translation>Publicar para MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>Create online experiments</source>
         <translation>Criar experimentos online</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="12" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Open from MindProbe</source>
         <translation>Abrir do MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="12" />
         <source>Please specify a JATOS server and API token</source>
         <translation>Por favor, especifique um servidor JATOS e um token de API</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="10" />
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
         <source>Experiment succesfully exported</source>
         <translation>Experimento exportado com sucesso</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="7" />
+        <location filename="../../../../translation_tools/translatables.py" line="6" />
         <source>Open from JATOS</source>
         <translation>Abrir do JATOS</translation>
     </message>
@@ -58,22 +58,22 @@
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="6" />
+        <location filename="../../../../translation_tools/translatables.py" line="7" />
         <source>Experiment has been published to JATOS</source>
         <translation>O experimento foi publicado no JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>Select OSWeb results file…</source>
         <translation>Selecione o arquivo de resultados do OSWeb…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="11" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Export JATOS study…</source>
         <translation>Exportar estudo JATOS…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="11" />
         <source>Browse</source>
         <translation>Navegar</translation>
     </message>
@@ -179,22 +179,22 @@
 <context>
     <name>plugin_inline_html</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Embeds custom HTML</source>
         <translation>Incorpora HTML personalizado</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
         <source>An HTML editor widget</source>
         <translation>Um widget de editor HTML</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
         <source>HTML editor</source>
         <translation>Editor de HTML</translation>
     </message>
