@@ -363,7 +363,11 @@ def exp_to_html(exp, index_path=None, subject='0', logfile='osweb-data.json',
     """
     exp = as_jatos_exp(exp)
     _, script, pool_paths = _extract_script_and_pool_paths(exp)
-    params = {'subject': subject, 'logfile': logfile, 'fullscreen': fullscreen,
+    # We replace backslashes with slash forwards to avoid escaping issues with
+    # first needing to escape the JSON and then needing to escape JavaScript
+    # code
+    params = {'subject': subject, 'logfile': logfile.replace('\\', '/'),
+              'fullscreen': fullscreen,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js, 'introClick': intro_click}
     if index_path is None:
