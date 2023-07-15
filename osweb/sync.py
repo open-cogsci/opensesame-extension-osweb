@@ -112,6 +112,9 @@ def list_remote(jatos_info):
             f'{jatos_info.url}/jatos/api/v1/studies/properties',headers=headers)
     except Exception as e:
         raise ListRemoteError(f'Failed to connect to JATOS server: \n\n{e}')
+    if response.status_code == 401:
+        raise ListRemoteError(
+            'Invalid API token: {jato_info.token} status code 401)')
     try:
         study_list = response.json()['data']
     except Exception as e:
