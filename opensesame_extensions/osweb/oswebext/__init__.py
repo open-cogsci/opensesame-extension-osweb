@@ -6,6 +6,7 @@ settings = {
   "oswebext_include_context": True,
   "oswebext_intro_click": True,
   "oswebext_fullscreen": False,
+  "oswebext_full_background_color": False,
   "oswebext_bypass_linter": False,
   "oswebext_subject_nrs": "0,1",
   "oswebext_welcome_text": "",

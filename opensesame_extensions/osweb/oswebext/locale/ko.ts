@@ -3,77 +3,77 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="10" />
         <source>Experiment started in external browser</source>
         <translation>외부 브라우저에서 실험 시작됨</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="10" />
+        <location filename="../../../../translation_tools/translatables.py" line="12" />
         <source>Save as…</source>
         <translation>다른 이름으로 저장…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>OSWeb and JATOS control panel</source>
         <translation>OSWeb와 JATOS 제어판</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="8" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>Publish to JATOS</source>
         <translation>JATOS에 게시</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
         <source>Publish to MindProbe</source>
         <translation>MindProbe에 게시</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Create online experiments</source>
         <translation>온라인 실험 만들기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Open from MindProbe</source>
         <translation>MindProbe에서 열기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="12" />
+        <location filename="../../../../translation_tools/translatables.py" line="8" />
         <source>Please specify a JATOS server and API token</source>
         <translation>JATOS 서버와 API 토큰을 지정해주세요</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="6" />
         <source>Experiment succesfully exported</source>
         <translation>실험이 성공적으로 내보내졌습니다</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="6" />
+        <location filename="../../../../translation_tools/translatables.py" line="9" />
         <source>Open from JATOS</source>
         <translation>JATOS에서 열기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="9" />
+        <location filename="../../../../translation_tools/translatables.py" line="11" />
         <source>Open</source>
         <translation>열다</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="7" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Experiment has been published to JATOS</source>
         <translation>실험은 JATOS에 게시되었습니다</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Select OSWeb results file…</source>
         <translation>OSWeb 결과 파일을 선택하세요…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>Export JATOS study…</source>
         <translation>JATOS 연구를 내보내세요...</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="11" />
+        <location filename="../../../../translation_tools/translatables.py" line="7" />
         <source>Browse</source>
         <translation>브라우즈</translation>
     </message>
@@ -172,14 +172,14 @@
     </message>
     <message>
         <location filename="../osweb_control_panel.ui" line="96" />
-        <source>&amp;lt;h2 style=&amp;quot;color:#78909c&amp;quot;&amp;gt;🛈 To publish experiments directly to JATOS, please specify a server and API token below&amp;lt;/h2&amp;gt;</source>
-        <translation>&amp;lt;h2 style=&amp;quot;color:#78909c&amp;quot;&amp;gt;🛈 JATOS에 직접 실험을 게시하려면 아래에 서버와 API 토큰을 지정해주세요&amp;lt;/h2&amp;gt;</translation>
+        <source>&lt;h2 style="color:#78909c"&gt;&amp;#x1F6C8; To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</source>
+        <translation>&lt;h2 style="color:#78909c"&gt;&amp;#x1F6C8; JATOS에 바로 실험을 게시하려면 아래에 서버와 API 토큰을 지정하세요&lt;/h2&gt;</translation>
     </message>
 </context>
 <context>
     <name>plugin_inline_html</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
         <source>Embeds custom HTML</source>
         <translation>사용자 정의 HTML 포함</translation>
     </message>
@@ -189,12 +189,12 @@
         <translation>HTML 편집기 위젯</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>HTML editor</source>
         <translation>HTML 편집기</translation>
     </message>
@@ -225,67 +225,67 @@
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="59" />
+        <location filename="../preferences.ui" line="125" />
         <source>Possible subject numbers</source>
         <translation>가능한 피실험자 번호</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="74" />
+        <location filename="../preferences.ui" line="182" />
         <source>&lt;small  style="color:#78909c"&gt;Run experiment even if compatibility check fails&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;호환성 검사가 실패하더라도 실험을 실행하십시오&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="86" />
+        <location filename="../preferences.ui" line="194" />
         <source>&lt;small style="color:#78909c"&gt;Appears on OSWeb welcome screen.&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;OSWeb 환영 화면에 나타납니다.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="96" />
+        <location filename="../preferences.ui" line="103" />
         <source>Show OSWeb welcome screen</source>
         <translation>OSWeb 환영 화면을 표시하십시오</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="111" />
+        <location filename="../preferences.ui" line="209" />
         <source>&lt;small  style="color:#78909c"&gt;Loaded when experiment starts&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;실험이 시작될 때 로드됩니다&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="121" />
+        <location filename="../preferences.ui" line="135" />
         <source>Bypass compatibility check</source>
         <translation>호환성 검사를 우회하십시오</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="128" />
+        <location filename="../preferences.ui" line="142" />
         <source>Welcome text</source>
         <translation>환영 텍스트</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="238" />
+        <location filename="../preferences.ui" line="118" />
         <source>&lt;small  style="color:#78909c"&gt;Only applies when exporting&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;내보낼 때만 적용됩니다&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="156" />
+        <location filename="../preferences.ui" line="84" />
         <source>Never provide personal or sensitive information such as credit card numbers or PIN codes. Click or touch the screen to begin!</source>
         <translation>신용 카드 번호나 PIN 코드와 같은 개인 정보나 민감한 정보를 절대 제공하지 마세요. 화면을 클릭하거나 터치하여 시작하세요!</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="163" />
+        <location filename="../preferences.ui" line="219" />
         <source>0,1</source>
         <translation>0,1</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="182" />
+        <location filename="../preferences.ui" line="71" />
         <source>One URL per line</source>
         <translation>줄 당 하나의 URL</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="189" />
+        <location filename="../preferences.ui" line="167" />
         <source>External libraries</source>
         <translation>외부 라이브러리</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="204" />
+        <location filename="../preferences.ui" line="238" />
         <source>&lt;small  style="color:#78909c"&gt;Required for reliable media playback&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;신뢰할 수 있는 미디어 재생에 필요합니다&lt;/small&gt;</translation>
     </message>
@@ -295,74 +295,79 @@
         <translation>브라우저를 전체 화면으로 만들기</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="254" />
+        <location filename="../preferences.ui" line="261" />
         <source>JATOS</source>
         <translation>JATOS</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="272" />
+        <location filename="../preferences.ui" line="279" />
         <source>JATOS UUID</source>
         <translation>JATOS UUID</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="287" />
+        <location filename="../preferences.ui" line="294" />
         <source>&lt;small  style="color:#78909c"&gt;Visit &lt;a href="https://mindprobe.eu"&gt;mindprobe.eu&lt;/a&gt; to request a free account&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;무료 계정을 요청하려면 &lt;a href="https://mindprobe.eu"&gt;mindprobe.eu&lt;/a&gt;를 방문하세요&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="294" />
+        <location filename="../preferences.ui" line="301" />
         <source>JATOS server</source>
         <translation>JATOS 서버</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="307" />
+        <location filename="../preferences.ui" line="314" />
         <source>jap_</source>
         <translation>jap_</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="320" />
+        <location filename="../preferences.ui" line="327" />
         <source>https://jatos.mindprobe.eu</source>
         <translation>https://jatos.mindprobe.eu</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="332" />
+        <location filename="../preferences.ui" line="339" />
         <source>&lt;small  style="color:#78909c"&gt;Identifies experiment on JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;JATOS에서 실험을 식별합니다&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="342" />
+        <location filename="../preferences.ui" line="349" />
         <source>undefined</source>
         <translation>미정의</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="349" />
+        <location filename="../preferences.ui" line="356" />
         <source>JATOS API token</source>
         <translation>JATOS API 토큰</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="364" />
+        <location filename="../preferences.ui" line="371" />
         <source>&lt;small  style="color:#78909c"&gt;Available from JATOS user profile&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;JATOS 사용자 프로필에서 사용 가능&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="392" />
+        <location filename="../preferences.ui" line="399" />
         <source>Clear UUID</source>
         <translation>UUID 지우기</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="408" />
+        <location filename="../preferences.ui" line="415" />
         <source>&lt;small  style="color:#78909c"&gt;Resets link between experiment and JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;실험과 JATOS 사이의 연결을 재설정합니다&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="216" />
-        <source>&amp;lt;small  style=&amp;quot;color:#78909c&amp;quot;&amp;gt;🛈 OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&amp;lt;/small&amp;gt;</source>
-        <translation>&amp;lt;small style=&amp;quot;color:#78909c&amp;quot;&amp;gt;🛈 OSWeb은 웹 브라우저에서 OpenSesame 실험을 실행하기 위한 JavaScript 라이브러리입니다.&amp;lt;/small&amp;gt;</translation>
+        <location filename="../preferences.ui" line="245" />
+        <source>Apply background color to full browser tab</source>
+        <translation>브라우저 탭 전체에 배경 색상 적용</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="382" />
-        <source>&amp;lt;small  style=&amp;quot;color:#78909c&amp;quot;&amp;gt;🛈 JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&amp;lt;/small&amp;gt;</source>
-        <translation>&amp;lt;small style="color:#78909c"&amp;gt;🛈 JATOS는 온라인 실험을 관리하기 위한 서버 소프트웨어입니다. mindprobe.eu와 같은 JATOS 서버에 계정이 필요합니다. OpenSesame를 JATOS와 연결하려면 JATOS API 토큰을 입력해야합니다. 지침은 OpenSesame 문서를 참조하세요.&amp;lt;/small&amp;gt;</translation>
+        <location filename="../preferences.ui" line="157" />
+        <source>&lt;small  style="color:#78909c"&gt;&amp;#x1F6C8; OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&lt;/small&gt;</source>
+        <translation>&lt;small style="color:#78909c"&gt;&amp;#x1F6C8; OSWeb은 웹 브라우저에서 OpenSesame 실험을 실행하는 JavaScript 라이브러리입니다.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <location filename="../preferences.ui" line="389" />
+        <source>&lt;small  style="color:#78909c"&gt;&amp;#x1F6C8; JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</source>
+        <translation>&lt;small style="color:#78909c"&gt;&amp;#x1F6C8; JATOS는 온라인 실험을 관리하기 위한 서버 소프트웨어입니다. 온라인에서 실험을 수행하려면, mindprobe.eu와 같은 JATOS 서버에 계정이 필요합니다. OpenSesame를 JATOS에 연결하려면, JATOS API 토큰을 입력해야 합니다. 지침에 대해서는 OpenSesame 문서를 참조하세요.&lt;/small&gt;</translation>
     </message>
 </context>
 </TS>
