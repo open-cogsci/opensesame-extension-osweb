@@ -91,15 +91,15 @@ class OSWebWriter(OSExpWriter):
         # However, we ignore multiline _run and html variables, because those
         # can contain code that looks like f-strings but should not be
         # converted.
-        ignore_spans = []
-        for m in RE_IGNORE_RUN.finditer(script):
-            ignore_spans.append(m.span())
-        for m in RE_IGNORE_PREPARE.finditer(script):
-            ignore_spans.append(m.span())
-        for m in RE_IGNORE_SCRIPT.finditer(script):
-            ignore_spans.append(m.span())
         start_pos = 0
         while True:
+            ignore_spans = []
+            for m in RE_IGNORE_RUN.finditer(script):
+                ignore_spans.append(m.span())
+            for m in RE_IGNORE_PREPARE.finditer(script):
+                ignore_spans.append(m.span())
+            for m in RE_IGNORE_SCRIPT.finditer(script):
+                ignore_spans.append(m.span())
             for m in RE_FSTRING.finditer(script, start_pos):
                 start, end = m.span()
                 if any(ignore_start <= start and ignore_end >= end
