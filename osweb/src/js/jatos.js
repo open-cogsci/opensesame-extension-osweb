@@ -80,7 +80,7 @@ function loadExperiment() {
         //subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)];
         // Selection depending on jatos ID
         subject_nr = possible_subject_nrs[jatos.componentResultId % possible_subject_nrs.length]
-        console.log('The used subject number is', subject_nr)
+        console.log('subject_nr =', subject_nr)
     }
 
     context = {
@@ -89,6 +89,7 @@ function loadExperiment() {
         debug: false,
         subject: subject_nr,
         fullScreen: params.fullscreen,
+        fullBackgroundColor: params.fullBackgroundColor,
         introClick: params.introClick,
         introScreen: true,
         name: 'osweb',

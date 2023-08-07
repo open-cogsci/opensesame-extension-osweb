@@ -53,118 +53,7 @@
       <property name="bottomMargin">
        <number>12</number>
       </property>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_subject">
-        <property name="text">
-         <string>Possible subject numbers</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2">
-       <widget class="QLabel" name="label_15">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Run experiment even if compatibility check fails&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2">
-       <widget class="QLabel" name="label_3">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small style=&quot;color:#78909c&quot;&gt;Appears on OSWeb welcome screen.&lt;/small&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="cfg_oswebext_intro_click">
-        <property name="text">
-         <string>Show OSWeb welcome screen</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="2">
-       <widget class="QLabel" name="label_4">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Loaded when experiment starts&lt;/small&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QCheckBox" name="cfg_oswebext_bypass_linter">
-        <property name="text">
-         <string>Bypass compatibility check</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Welcome text</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="label">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Only applies when exporting&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QPlainTextEdit" name="cfg_oswebext_welcome_text">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="placeholderText">
-         <string>Never provide personal or sensitive information such as credit card numbers or PIN codes. Click or touch the screen to begin!</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="cfg_oswebext_subject_nrs">
-        <property name="text">
-         <string>0,1</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
+      <item row="11" column="1">
        <widget class="QPlainTextEdit" name="cfg_oswebext_external_js">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -183,47 +72,16 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>External libraries</string>
+      <item row="10" column="1">
+       <widget class="QPlainTextEdit" name="cfg_oswebext_welcome_text">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>50</height>
+         </size>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="label_10">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Required for reliable media playback&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="0" colspan="3">
-       <widget class="QLabel" name="label_14">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;🛈 OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&lt;/small&gt;</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="cfg_oswebext_fullscreen">
-        <property name="text">
-         <string>Make browser fullscreen</string>
+        <property name="placeholderText">
+         <string>Never provide personal or sensitive information such as credit card numbers or PIN codes. Click or touch the screen to begin!</string>
         </property>
        </widget>
       </item>
@@ -236,6 +94,155 @@
         </property>
         <property name="text">
          <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Only applies when exporting&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="cfg_oswebext_intro_click">
+        <property name="text">
+         <string>Show OSWeb welcome screen</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Only applies when exporting&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_subject">
+        <property name="text">
+         <string>Possible subject numbers</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QCheckBox" name="cfg_oswebext_bypass_linter">
+        <property name="text">
+         <string>Bypass compatibility check</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Welcome text</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0" colspan="3">
+       <widget class="QLabel" name="label_14">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;&amp;#x1F6C8; OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&lt;/small&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>External libraries</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLabel" name="label_15">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Run experiment even if compatibility check fails&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small style=&quot;color:#78909c&quot;&gt;Appears on OSWeb welcome screen.&lt;/small&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Loaded when experiment starts&lt;/small&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="cfg_oswebext_subject_nrs">
+        <property name="text">
+         <string>0,1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="cfg_oswebext_fullscreen">
+        <property name="text">
+         <string>Make browser fullscreen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="label_10">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Required for reliable media playback&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="cfg_oswebext_full_background_color">
+        <property name="text">
+         <string>Apply background color to full browser tab</string>
         </property>
        </widget>
       </item>
@@ -379,7 +386,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;🛈 JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</string>
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;&amp;#x1F6C8; JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

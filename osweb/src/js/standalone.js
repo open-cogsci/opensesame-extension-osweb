@@ -25,13 +25,14 @@ if (params.subject) {
         }
     }
     subject_nr = possible_subject_nrs[Math.floor(Math.random() * possible_subject_nrs.length)]
-    console.log('The used subject number is', subject_nr)
+    console.log('subject_nr =', subject_nr)
 }
 
 const context = {
     confirm: onConfirmHandler,
     debug: false,
     fullScreen: params.fullscreen,
+    fullBackgroundColor: params.fullBackgroundColor,
     introClick: params.introClick,
     introScreen: true,
     mimetype: '',

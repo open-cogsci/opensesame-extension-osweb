@@ -150,7 +150,7 @@ def jzip_to_exp(jzip_path, factory=Experiment):
 
 def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 welcome_text='', external_js=[], intro_click=True,
-                jatos_info=None):
+                full_background_color=False, jatos_info=None):
     """Builds a jzip archive that can be imported into JATOS.
 
     Parameters
@@ -179,6 +179,8 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         the participant needs to click. This allows the experiment to be 
         executed in the context of a user action, which is necessary for
         certain actions.
+    full_background_color: bool, optional
+        Indicates whether full browser body should get the background color.
     jatos_info: JatosInfo or None, optional
         If provided, remote version information is checked and only modified
         assets are included in the archive.
@@ -238,6 +240,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
         jas_path = tmp_dir / 'info.jas'
         params = {'subject': subject,
                   'fullscreen': fullscreen,
+                  'fullBackgroundColor': full_background_color,
                   'welcomeText': _safe_welcome_text(welcome_text),
                   'externalJS': external_js,
                   'introClick': intro_click}
@@ -327,7 +330,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
 
 def exp_to_html(exp, index_path=None, subject='0', logfile='osweb-data.json',
                 fullscreen=False, welcome_text='', external_js=[],
-                intro_click=True):
+                intro_click=True, full_background_color=False):
     """Builds an index.html that embeds everything and can be run in a browser.
 
     Parameters
@@ -355,6 +358,8 @@ def exp_to_html(exp, index_path=None, subject='0', logfile='osweb-data.json',
         the participant needs to click. This allows the experiment to be 
         executed in the context of a user action, which is necessary for
         certain actions.
+    full_background_color: bool, optional
+        Indicates whether full browser body should get the background color.
         
     Returns
     -------
@@ -368,6 +373,7 @@ def exp_to_html(exp, index_path=None, subject='0', logfile='osweb-data.json',
     # code
     params = {'subject': subject, 'logfile': logfile.replace('\\', '/'),
               'fullscreen': fullscreen,
+              'fullBackgroundColor': full_background_color,
               'welcomeText': _safe_welcome_text(welcome_text),
               'externalJS': external_js, 'introClick': intro_click}
     if index_path is None:

@@ -144,6 +144,7 @@ class Oswebext(BaseExtension):
             jzip_path=path,
             subject=str(cfg.oswebext_subject_nrs),
             fullscreen=cfg.oswebext_fullscreen,
+            full_background_color=cfg.oswebext_full_background_color,
             welcome_text=cfg.oswebext_welcome_text,
             external_js=self._external_js(),
             intro_click=cfg.oswebext_intro_click)
@@ -209,6 +210,7 @@ class Oswebext(BaseExtension):
                 self._jatos_info(),
                 subject=str(cfg.oswebext_subject_nrs),
                 fullscreen=cfg.oswebext_fullscreen,
+                full_background_color=cfg.oswebext_full_background_color,
                 welcome_text=cfg.oswebext_welcome_text,
                 external_js=self._external_js(),
                 intro_click=cfg.oswebext_intro_click)
@@ -277,6 +279,7 @@ class Oswebext(BaseExtension):
                 subject=str(subject_nr),
                 logfile=logfile,
                 fullscreen=fullscreen,
+                full_background_color=cfg.oswebext_full_background_color,
                 welcome_text=cfg.oswebext_welcome_text,
                 external_js=self._external_js(),
                 intro_click=cfg.oswebext_intro_click)

@@ -93,7 +93,7 @@
       </font>
      </property>
      <property name="text">
-      <string>&lt;h2 style=&quot;color:#78909c&quot;&gt;🛈 To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</string>
+      <string>&lt;h2 style=&quot;color:#78909c&quot;&gt;&amp;#x1F6C8; To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
