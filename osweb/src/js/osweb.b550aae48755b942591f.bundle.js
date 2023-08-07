@@ -1059,14 +1059,12 @@ class Canvas {
     this._container.scale.x = this.experiment._scale_x;
     this._container.scale.y = this.experiment._scale_y;
 
-    // Set renderer background and render the content.
+    // Set renderer background and render the content. Because PixiJS users
+    // numerical values for colors, whereas the body uses regular CSS colors,
+    // we need to assign two different values for each. Color conversion is
+    // done inside the style object.
     this.experiment._runner._renderer.backgroundColor = this._styles._background_color;
-    try {
-      const c = this._styles.rgb;
-      document.body.style.backgroundColor = "rgb(".concat(c.r, ",").concat(c.g, ",").concat(c.b, ")");
-    } catch (e) {
-      console.error(e);
-    }
+    if (this.experiment._runner._fullBackgroundColor) document.body.style.backgroundColor = this._styles._background_color_rgb;
     this.experiment._runner._renderer.render(this._container);
     return experiment != null ? experiment.clock.time() : null;
   }
@@ -1892,6 +1890,7 @@ class Styles {
    */
   set background_color(val) {
     this._background_color = this._convertColorValue(val, 'number');
+    this._background_color_rgb = val;
   }
 
   /**
@@ -3719,8 +3718,10 @@ class Syntax {
     if (lodash_isObject__WEBPACK_IMPORTED_MODULE_1___default()(text)) return this._runner._pythonParser._run_statement(text);
     // if pTxt is already a number simply return it
     if (lodash_isNumber__WEBPACK_IMPORTED_MODULE_3___default()(text)) return text;
-    // Try to convert text to a number. If this succeeds return it.
-    if (text !== '' && !isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_2___default()(text))) return lodash_toNumber__WEBPACK_IMPORTED_MODULE_2___default()(text);
+    // Try to convert text to a number. If this succeeds return it. Don't do 
+    // this for strings that are either empty or contain only whitespace, to
+    // avoid them from being converted to 0.
+    if (text.trim().length !== 0 && !isNaN(lodash_toNumber__WEBPACK_IMPORTED_MODULE_2___default()(text))) return lodash_toNumber__WEBPACK_IMPORTED_MODULE_2___default()(text);
     // Check if the text contains template literals. If so, we evaluate these.
     // This is the preferred syntax.
     if (text.includes('${')) return this._runner._experiment._javascriptWorkspace._eval("`".concat(text, "`"));
@@ -4923,7 +4924,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.0.0";
+const VERSION_NUMBER = "2.0.1";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11155,6 +11156,7 @@ class Runner {
         confirm: this._confirm = null,
         debug: this._debugger.enabled = false,
         fullScreen: this._fullScreen = false,
+        fullBackgroundColor: this._fullBackgroundColor = false,
         introClick: this._screen._click = true,
         introScreen: this._screen._active = true,
         mimetype: this._mimetype = null,
@@ -12211,4 +12213,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.abdd6d399ca5c2ac7ee5.bundle.js.map
+//# sourceMappingURL=osweb.b550aae48755b942591f.bundle.js.map
