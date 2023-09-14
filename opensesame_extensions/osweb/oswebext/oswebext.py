@@ -284,14 +284,15 @@ class Oswebext(BaseExtension):
                 external_js=self._external_js(),
                 intro_click=cfg.oswebext_intro_click)
         except PythonToJavaScriptError as e:
-            self.report_exception(e)
-            return
+            return e
+        else:
+            webbrowser.open('file://{}'.format(index_path))
+            # The UserAborted exception will result in a notification, rather
+            # than # in a full-screen tab saying that the experiment has
+            # finished.
+            return UserAborted(_('Experiment started in external browser'))
         finally:
             self._refresh_control_panel()
-        webbrowser.open('file://{}'.format(index_path))
-        # The UserAborted exception will result in a notification, rather than
-        # in a full-screen tab saying that the experiment has finished.
-        return UserAborted(_('Experiment started in external browser'))
 
     def activate(self):
         self._show_controls()
@@ -315,6 +316,7 @@ class Oswebext(BaseExtension):
         self._control_panel.set_jatos_configured(jatos_configured)
         
     def _external_js(self):
+        print('external js =', cfg.oswebext_external_js)
         return [url.strip() for url in cfg.oswebext_external_js.splitlines()]
 
     def _jatos_configured(self):
