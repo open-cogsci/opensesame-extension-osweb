@@ -450,6 +450,11 @@ def _compose_html_and_get_assets(exp, index_path, mode, script=None,
     for path in pool_paths:
         # File inspector doesn't accept Path objects
         mime = fileinspector.determine_type(str(path))
+        # This is a hack to make sure that CSV files are tagged with the
+        # correct mimetype, instead of 'application/vnd.ms-excel', which
+        # happens on Windows when Excel is installed.
+        if str(path).lower().endswith('.csv'):
+            mime = 'text/csv'
         if mime is None:
             oslogger.warning(f'unknown mimetype for {path}')
             continue
