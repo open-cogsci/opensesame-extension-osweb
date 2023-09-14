@@ -4924,7 +4924,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.0.1";
+const VERSION_NUMBER = "2.0.2";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11516,9 +11516,9 @@ class Session {
         version: navigator.appVersion
       },
       date: {
-        startdate: ('0' + this._date.getDate()).slice(-2) + '-' + ('0' + this._date.getMonth()).slice(-2) + '-' + ('0' + this._date.getFullYear()).slice(-2),
+        startdate: ('0' + this._date.getDate()).slice(-2) + '-' + ('0' + (1 + this._date.getMonth())).slice(-2) + '-' + ('0' + this._date.getFullYear()).slice(-2),
         starttime: ('0' + this._date.getHours()).slice(-2) + ':' + ('0' + this._date.getMinutes()).slice(-2) + ':' + ('0' + this._date.getSeconds()).slice(-2),
-        startdateUTC: ('0' + this._date.getUTCDate()).slice(-2) + '-' + ('0' + this._date.getUTCMonth()).slice(-2) + '-' + ('0' + this._date.getUTCFullYear()).slice(-2)
+        startdateUTC: ('0' + this._date.getUTCDate()).slice(-2) + '-' + ('0' + (1 + this._date.getUTCMonth())).slice(-2) + '-' + ('0' + this._date.getUTCFullYear()).slice(-2)
       },
       experiment: {
         debug: 0,
@@ -12213,4 +12213,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.b550aae48755b942591f.bundle.js.map
+//# sourceMappingURL=osweb.f53f359d0dfe534bfbc6.bundle.js.map
