@@ -126,7 +126,7 @@ def parse_jatos_results(path, include_context):
     incomplete_lines = 0
     total_lines = 0
     row = 0
-    with path.open() as fd:
+    with path.open(encoding='utf-8') as fd:
         for line in fd:
             # Strip the lines so that they are valid json
             line = line.strip()
