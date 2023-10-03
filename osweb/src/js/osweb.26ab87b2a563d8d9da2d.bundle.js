@@ -1659,7 +1659,6 @@ class SamplerBackend {
    * @param {Boolean} block - If true use the sound ad a block wave.
    */
   constructor(experiment, source, volume, pitch, pan, duration, fade, block) {
-    // Create and set public properties.
     this.block = typeof block === 'undefined' ? false : block;
     this.duration = typeof duration === 'undefined' ? 'sound' : duration;
     this.experiment = experiment;
@@ -1716,8 +1715,12 @@ class SamplerBackend {
     // Set the blocking of the sound.
     this.experiment._runner._events._run(this, -1, _system_constants_js__WEBPACK_IMPORTED_MODULE_0__["constants"].RESPONSE_SOUND, []);
   }
+  clearFilters() {
+    // Disconnect audio nodes so that they don't accumulate
+    this.nodes.forEach(node => node.disconnect());
+  }
   applyFilters() {
-    const nodes = [audioCtx.destination];
+    this.nodes = [audioCtx.destination];
     // Set volume
     const gainNode = new GainNode(audioCtx);
     gainNode.gain.setValueAtTime(this.volume, audioCtx.currentTime);
@@ -1725,13 +1728,13 @@ class SamplerBackend {
       gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
       gainNode.gain.linearRampToValueAtTime(this.volume, audioCtx.currentTime + this.fade / 1000);
     }
-    nodes.unshift(gainNode);
+    this.nodes.unshift(gainNode);
     // Set panning
     if (this.pan) {
       let pan;
       if (this.pan === 'left') pan = -1;else if (this.pan === 'right') pan = 1;else pan = this.pan;
       try {
-        nodes.unshift(new StereoPannerNode(audioCtx, {
+        this.nodes.unshift(new StereoPannerNode(audioCtx, {
           pan: pan
         }));
       } catch (e) {
@@ -1739,12 +1742,12 @@ class SamplerBackend {
       }
     }
     // Connect the filters creating a chain
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i] !== audioCtx.destination) {
-        nodes[i].connect(nodes[i + 1]);
+    for (let i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i] !== audioCtx.destination) {
+        this.nodes[i].connect(this.nodes[i + 1]);
       }
     }
-    return nodes.shift(0);
+    return this.nodes[0];
   }
 }
 
@@ -4924,7 +4927,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.0.2";
+const VERSION_NUMBER = "2.0.3";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -10788,6 +10791,7 @@ class Events {
      * @param {Object} event - sound end event.
      */
   _audioEnded(sampler) {
+    sampler.clearFilters();
     // If duration isequal to sound exit the sound item.
     if (sampler.duration === 'sound') {
       this.proceed();
@@ -12213,4 +12217,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.f53f359d0dfe534bfbc6.bundle.js.map
+//# sourceMappingURL=osweb.26ab87b2a563d8d9da2d.bundle.js.map
