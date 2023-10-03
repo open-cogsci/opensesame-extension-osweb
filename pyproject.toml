@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "opensesame-extension-osweb"
-version = "2.0.2.0"
+version = "2.0.3.0"
 description = "Extensions and plugins for OpenSesame to run experiments in a browser using OSWeb"
 authors = ["Sebastiaan Mathôt <s.mathot@cogsci.nl>"]
 readme = "readme.md"
