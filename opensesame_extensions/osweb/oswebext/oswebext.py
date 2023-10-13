@@ -30,7 +30,7 @@ from osweb.oswebexceptions import PythonToJavaScriptError, \
     OSWebCompatibilityError, ListRemoteError, UnsupportedJZIP, \
     JZIPDownloadError
 from openexp import backend
-from qtpy.QtWidgets import QFileDialog
+from qtpy.QtWidgets import QFileDialog, QMessageBox
 _ = translation_context('oswebext', category='extension')
 
 
@@ -59,6 +59,7 @@ class Oswebext(BaseExtension):
     def event_startup(self):
         cfg.oswebext_jatos_ignore_conflicts = False
         self._control_panel = None
+        self._experiment_name = None
         backend.backend_info = decorate_backend_info(backend.backend_info)
         file_menu = self.get_submenu('file')
         if cfg.oswebext_jatos_url == 'https://jatos.mindprobe.eu':
@@ -302,6 +303,28 @@ class Oswebext(BaseExtension):
             return UserAborted(_('Experiment started in external browser'))
         finally:
             self._refresh_control_panel()
+            
+    def event_prepare_change_experiment(self):
+        self._experiment_name = self.experiment.var.title
+    
+    def event_change_experiment(self):
+        if not self.experiment.var.has('jatos_uuid'):
+            return
+        if self._experiment_name == self.experiment.var.title:
+            return
+        resp = QMessageBox.question(
+            self.main_window,
+            _('Unlink from JATOS'),
+            _('You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?'),
+            QMessageBox.Yes,
+            QMessageBox.No
+        )
+        if resp == QMessageBox.No:
+            return
+        # Delete the JATOS uuid and close all other tabs so that we don't have
+        # to update the preferences or control panel
+        del self.experiment.var.jatos_uuid
+        self.tabwidget.close_other()
 
     def activate(self):
         self._show_controls()
