@@ -57,6 +57,7 @@ class Oswebext(BaseExtension):
     preferences_ui = 'extensions.oswebext.preferences'
 
     def event_startup(self):
+        cfg.oswebext_jatos_ignore_conflicts = False
         self._control_panel = None
         backend.backend_info = decorate_backend_info(backend.backend_info)
         file_menu = self.get_submenu('file')
@@ -213,7 +214,8 @@ class Oswebext(BaseExtension):
                 full_background_color=cfg.oswebext_full_background_color,
                 welcome_text=cfg.oswebext_welcome_text,
                 external_js=self._external_js(),
-                intro_click=cfg.oswebext_intro_click)
+                intro_click=cfg.oswebext_intro_click,
+                ignore_conflicts=cfg.oswebext_jatos_ignore_conflicts)
         except Exception as e:
             self.report_exception(e)
         else:
@@ -223,6 +225,12 @@ class Oswebext(BaseExtension):
                 always_show=True)
         finally:
             self.main_window.set_busy(False)
+        # Automatically reset this option to avoid accidental force uploads in
+        # the future
+        cfg.oswebext_jatos_ignore_conflicts = False
+        self.extension_manager.fire('setting_changed',
+                                    setting='oswebext_jatos_ignore_conflicts',
+                                    value=False)
         self._refresh_control_panel()
         self.main_window.save_file()
     

@@ -74,9 +74,16 @@ class JZIPUploadError(OSWebException):
 
 class VersionConflict(OSWebException):
     """A `VersionConflict` is raised when trying to update a remote experiment
-    that cannot be safely updated to the current experiment. To work around 
-    this, you can reset the JATOS UUID to reset the link between the remote
-    experiment and the current experiment.
+    that cannot be safely updated to the current experiment. You can work 
+    around this in two ways: 
+    
+    1. Reset the JATOS UUID to reset the link between the remote experiment and
+    the current experiment. This will upload the current experiment as a new
+    remote experiment.
+    2. Enable 'Ignore conflicts'. This will forcibly update the remote 
+    experiment, overwriting conflicting files.
+    
+    These options are available in the OSWeb and JATOS control panel.
     """
 
 

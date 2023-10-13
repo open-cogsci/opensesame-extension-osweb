@@ -150,7 +150,8 @@ def jzip_to_exp(jzip_path, factory=Experiment):
 
 def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 welcome_text='', external_js=[], intro_click=True,
-                full_background_color=False, jatos_info=None):
+                full_background_color=False, jatos_info=None,
+                ignore_conflicts=False):
     """Builds a jzip archive that can be imported into JATOS.
 
     Parameters
@@ -184,6 +185,9 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
     jatos_info: JatosInfo or None, optional
         If provided, remote version information is checked and only modified
         assets are included in the archive.
+    ignore_conflicts: bool, optional
+        If True, conflicts result in a warning but do not trigger a 
+        VersionConflict exception
 
     Returns
     -------
@@ -303,11 +307,14 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 oslogger.debug(f'deleted: {vc.deleted}')
                 if vc.conflicting:
                     file_list = '- ' + '\n- '.join(vc.conflicting)
-                    raise VersionConflict(
-                        f'The current version of the experiment contains '
-                        f'changes that conflict with the (remote) version of '
-                        f'the experiment on JATOS.\n\nThis conflict results '
-                        f'from the following files:\n\n{file_list}')
+                    msg = f'The current version of the experiment contains ' \
+                          f'changes that conflict with the (remote) version ' \
+                          f'of the experiment on JATOS.\n\nThis conflict ' \
+                          f'results from the following files:\n\n{file_list}'
+                    if ignore_conflicts:
+                        oslogger.warning(msg)
+                    else:
+                        raise VersionConflict(msg)
             else:
                 oslogger.debug(f'no older version info found')
                 # TODO For now we don't strip the unmodified assets because

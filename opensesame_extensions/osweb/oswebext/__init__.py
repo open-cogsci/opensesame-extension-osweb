@@ -12,7 +12,8 @@ settings = {
   "oswebext_welcome_text": "",
   "oswebext_external_js": "",
   "oswebext_jatos_url": "https://jatos.mindprobe.eu",
-  "oswebext_jatos_api_token": ""
+  "oswebext_jatos_api_token": "",
+  "oswebext_jatos_ignore_conflicts": False
 }
 menu = {
   "index": -1,

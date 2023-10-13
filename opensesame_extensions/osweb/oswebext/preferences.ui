@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
-    <height>522</height>
+    <width>1005</width>
+    <height>666</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -273,48 +273,6 @@
       <property name="bottomMargin">
        <number>12</number>
       </property>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_uuid">
-        <property name="text">
-         <string>JATOS UUID</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_9">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt; to request a free account&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>JATOS server</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="cfg_oswebext_jatos_api_token">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>jap_</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="cfg_oswebext_jatos_url">
         <property name="minimumSize">
@@ -340,23 +298,36 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="edit_uuid">
-        <property name="readOnly">
-         <bool>true</bool>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_9">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
         </property>
-        <property name="placeholderText">
-         <string>undefined</string>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Visit &lt;a href=&quot;https://mindprobe.eu&quot;&gt;mindprobe.eu&lt;/a&gt; to request a free account&lt;/small&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_uuid">
         <property name="text">
-         <string>JATOS API token</string>
+         <string>JATOS UUID</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="button_clear_jatos_uuid">
+        <property name="text">
+         <string>Clear UUID</string>
+        </property>
+        <property name="icon">
+         <iconset theme="edit-clear">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -378,7 +349,39 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="3">
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_16">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Resets link between experiment and JATOS&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="edit_uuid">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>undefined</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>JATOS server</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="3">
        <widget class="QLabel" name="label_13">
         <property name="font">
          <font>
@@ -393,26 +396,42 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="button_clear_jatos_uuid">
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="cfg_oswebext_jatos_api_token">
         <property name="text">
-         <string>Clear UUID</string>
+         <string/>
         </property>
-        <property name="icon">
-         <iconset theme="edit-clear">
-          <normaloff>.</normaloff>.</iconset>
+        <property name="placeholderText">
+         <string>jap_</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="label_16">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>JATOS API token</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="cfg_oswebext_jatos_ignore_conflicts">
+        <property name="text">
+         <string>Ignore conflicts</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLabel" name="label_17">
         <property name="font">
          <font>
           <family>Roboto Condensed</family>
          </font>
         </property>
         <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Resets link between experiment and JATOS&lt;/small&gt;</string>
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Overwrites conflicting files when publishing. This option is automatically reset.&lt;/small&gt;</string>
         </property>
        </widget>
       </item>
