@@ -20,7 +20,7 @@ from libopensesame.py3compat import *
 from libopensesame.osexpfile import OSExpWriter
 from libopensesame.oslogging import oslogger
 from metapensiero.pj.__main__ import transform_string as py2js
-from .oswebexceptions import PythonToJavaScriptError
+from .oswebexceptions import PythonToJavaScriptError, OSWebCompatibilityError
 import re
 
 RE_VAR = re.compile('(?<!\w)var\.', re.MULTILINE)
@@ -68,7 +68,14 @@ class OSWebWriter(OSExpWriter):
     def script(self):
         script = self._exp.to_string()
         for m in RE_RUN_IF.finditer(script):
-            _, (item, cond), _ = self.parse_cmd(m.group('cmd'))
+            try:
+                _, (item, cond), _ = self.parse_cmd(m.group('cmd'))
+            except ValueError:
+                # This mainly happens for coroutines, which have a slightly
+                # deviant run statement
+                raise OSWebCompatibilityError(
+                    f'The following OpenSesame script is not supported in '
+                    f'OSWeb:\n\n```\n{m.group("cmd")}\n```')
             cond = self.transform(cond)
             cmd = self.create_cmd('run', (item, cond))
             oslogger.debug(f'rewriting {m.group("cmd")} to {cmd}')

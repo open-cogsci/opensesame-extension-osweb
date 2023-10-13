@@ -293,7 +293,7 @@ class Oswebext(BaseExtension):
                 welcome_text=cfg.oswebext_welcome_text,
                 external_js=self._external_js(),
                 intro_click=cfg.oswebext_intro_click)
-        except PythonToJavaScriptError as e:
+        except (OSWebCompatibilityError, PythonToJavaScriptError) as e:
             return e
         else:
             webbrowser.open('file://{}'.format(index_path))
