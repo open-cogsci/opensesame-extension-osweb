@@ -62,10 +62,10 @@ class Oswebext(BaseExtension):
         file_menu = self.get_submenu('file')
         if cfg.oswebext_jatos_url == 'https://jatos.mindprobe.eu':
             open_title = _('Open from MindProbe')
-            publish_title = _('Publish to MindProbe')
+            publish_title = _('Save and publish to MindProbe')
         else:
             open_title = _('Open from JATOS')
-            publish_title = _('Publish to JATOS')
+            publish_title = _('Save and publish to JATOS')
         action_open_jatos = self.qaction('document-open',
                                          open_title,
                                          self.event_osweb_open_jatos)
@@ -224,6 +224,7 @@ class Oswebext(BaseExtension):
         finally:
             self.main_window.set_busy(False)
         self._refresh_control_panel()
+        self.main_window.save_file()
     
     def event_osweb_convert_results(self):
         from osweb import results

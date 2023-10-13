@@ -222,7 +222,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Publish to JATOS</string>
+               <string>Save and publish to JATOS</string>
               </property>
              </widget>
             </item>
@@ -234,7 +234,7 @@
                </font>
               </property>
               <property name="text">
-               <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Upload experiment directly to JATOS&lt;/small&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:small; color:#78909c;&quot;&gt;Save experiment and upload directly to JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
