@@ -3,57 +3,37 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="10" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Experiment started in external browser</source>
         <translation>Experiment in externem Browser gestartet</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="12" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Save as…</source>
         <translation>Speichern unter..</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="26" />
         <source>OSWeb and JATOS control panel</source>
         <translation>OSWeb und JATOS Kontrollpanel</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
-        <source>Publish to JATOS</source>
-        <translation>Veröffentlichen auf JATOS</translation>
-    </message>
-    <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
-        <source>Publish to MindProbe</source>
-        <translation>Veröffentlichen auf MindProbe</translation>
-    </message>
-    <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
         <source>Create online experiments</source>
         <translation>Online-Experimente erstellen</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>Open from MindProbe</source>
         <translation>Öffnen von MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="8" />
-        <source>Please specify a JATOS server and API token</source>
-        <translation>Bitte geben Sie einen JATOS-Server und ein API-Token an</translation>
-    </message>
-    <message>
-        <location filename="../../../../translation_tools/translatables.py" line="6" />
-        <source>Experiment succesfully exported</source>
-        <translation>Experiment erfolgreich exportiert</translation>
-    </message>
-    <message>
-        <location filename="../../../../translation_tools/translatables.py" line="9" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Open from JATOS</source>
         <translation>Öffnen von JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="11" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
@@ -63,19 +43,34 @@
         <translation>Das Experiment wurde auf JATOS veröffentlicht</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Select OSWeb results file…</source>
         <translation>Wählen Sie die OSWeb-Ergebnisdatei aus..</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
-        <source>Export JATOS study…</source>
-        <translation>JATOS-Studie exportieren…</translation>
-    </message>
-    <message>
-        <location filename="../../../../translation_tools/translatables.py" line="7" />
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
         <source>Browse</source>
         <translation>Durchsuchen</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="25" />
+        <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
+        <translation>Sie haben den Namen des Experiments geändert. Möchten Sie auch die Verbindung zum JATOS aufheben (indem Sie die UUID zurücksetzen), damit Sie ein neues Remote-Experiment erstellen können?</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <source>Save and publish to JATOS</source>
+        <translation>Speichern und veröffentlichen zu JATOS</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <source>Unlink from JATOS</source>
+        <translation>Von JATOS trennen</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <source>Save and publish to MindProbe</source>
+        <translation>Speichern und veröffentlichen zu MindProbe</translation>
     </message>
 </context>
 <context>
@@ -114,16 +109,6 @@
         <location filename="../osweb_control_panel.ui" line="212" />
         <source>&lt;small  style="color:#78909c"&gt;Download experiment directly from JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;Laden Sie das Experiment direkt von JATOS herunter&lt;/small&gt;</translation>
-    </message>
-    <message>
-        <location filename="../osweb_control_panel.ui" line="225" />
-        <source>Publish to JATOS</source>
-        <translation>Veröffentlichen auf JATOS</translation>
-    </message>
-    <message>
-        <location filename="../osweb_control_panel.ui" line="237" />
-        <source>&lt;small  style="color:#78909c"&gt;Upload experiment directly to JATOS&lt;/small&gt;</source>
-        <translation>&lt;small style="color:#78909c"&gt;Laden Sie das Experiment direkt auf JATOS hoch&lt;/small&gt;</translation>
     </message>
     <message>
         <location filename="../osweb_control_panel.ui" line="250" />
@@ -175,26 +160,36 @@
         <source>&lt;h2 style="color:#78909c"&gt;&amp;#x1F6C8; To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</source>
         <translation>&lt;h2 style="color:#78909c"&gt;&amp;#x1F6C8; Um Experimente direkt an JATOS zu veröffentlichen, geben Sie bitte unten einen Server und ein API-Token an&lt;/h2&gt;</translation>
     </message>
+    <message>
+        <location filename="../osweb_control_panel.ui" line="225" />
+        <source>Save and publish to JATOS</source>
+        <translation>Speichern und veröffentlichen zu JATOS</translation>
+    </message>
+    <message>
+        <location filename="../osweb_control_panel.ui" line="237" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;Save experiment and upload directly to JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;Speichern Sie das Experiment und laden Sie es direkt zu JATOS hoch&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>plugin_inline_html</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>Embeds custom HTML</source>
         <translation>Einbinden von individuell gestaltetem HTML</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>An HTML editor widget</source>
         <translation>Ein HTML-Editor-Widget</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="6" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>HTML editor</source>
         <translation>HTML-Editor</translation>
     </message>
@@ -202,12 +197,12 @@
 <context>
     <name>plugin_inline_javascript</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="26" />
+        <location filename="../../../../translation_tools/translatables.py" line="10" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="27" />
+        <location filename="../../../../translation_tools/translatables.py" line="9" />
         <source>Executes JavaScript code</source>
         <translation>Führt JavaScript-Code aus</translation>
     </message>
@@ -300,57 +295,57 @@
         <translation>JATOS</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="279" />
+        <location filename="../preferences.ui" line="316" />
         <source>JATOS UUID</source>
         <translation>JATOS UUID</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="294" />
+        <location filename="../preferences.ui" line="309" />
         <source>&lt;small  style="color:#78909c"&gt;Visit &lt;a href="https://mindprobe.eu"&gt;mindprobe.eu&lt;/a&gt; to request a free account&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;Besuchen Sie &lt;a href="https://mindprobe.eu"&gt;mindprobe.eu&lt;/a&gt; um ein kostenloses Konto zu beantragen&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="301" />
+        <location filename="../preferences.ui" line="377" />
         <source>JATOS server</source>
         <translation>JATOS-Server</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="314" />
+        <location filename="../preferences.ui" line="405" />
         <source>jap_</source>
         <translation>jap_</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="327" />
+        <location filename="../preferences.ui" line="285" />
         <source>https://jatos.mindprobe.eu</source>
         <translation>https://jatos.mindprobe.eu</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="339" />
+        <location filename="../preferences.ui" line="297" />
         <source>&lt;small  style="color:#78909c"&gt;Identifies experiment on JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;Identifiziert Experiment auf JATOS&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="349" />
+        <location filename="../preferences.ui" line="370" />
         <source>undefined</source>
         <translation>undefiniert</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="356" />
+        <location filename="../preferences.ui" line="412" />
         <source>JATOS API token</source>
         <translation>JATOS-API-Token</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="371" />
+        <location filename="../preferences.ui" line="342" />
         <source>&lt;small  style="color:#78909c"&gt;Available from JATOS user profile&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;Verfügbar aus dem JATOS-Benutzerprofil&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="399" />
+        <location filename="../preferences.ui" line="326" />
         <source>Clear UUID</source>
         <translation>UUID löschen</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="415" />
+        <location filename="../preferences.ui" line="360" />
         <source>&lt;small  style="color:#78909c"&gt;Resets link between experiment and JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;Setzt die Verbindung zwischen Experiment und JATOS zurück&lt;/small&gt;</translation>
     </message>
@@ -365,9 +360,19 @@
         <translation>&lt;small style="color:#78909c"&gt;&amp;#x1F6C8; OSWeb ist eine JavaScript-Bibliothek zum Ausführen von OpenSesame-Experimenten in einem Webbrowser.&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../preferences.ui" line="389" />
+        <location filename="../preferences.ui" line="392" />
         <source>&lt;small  style="color:#78909c"&gt;&amp;#x1F6C8; JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;&amp;#x1F6C8; JATOS ist Server-Software für die Verwaltung von Online-Experimenten. Sie benötigen ein Konto auf einem JATOS-Server, wie z.B. mindprobe.eu, um Experimente online durchzuführen. Sie müssen ein JATOS-API-Token eingeben, um OpenSesame mit JATOS zu verbinden. Besuchen Sie die OpenSesame-Dokumentation für Anweisungen.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <location filename="../preferences.ui" line="422" />
+        <source>Ignore conflicts</source>
+        <translation>Konflikte ignorieren</translation>
+    </message>
+    <message>
+        <location filename="../preferences.ui" line="434" />
+        <source>&lt;small  style="color:#78909c"&gt;Overwrites conflicting files when publishing. This option is automatically reset.&lt;/small&gt;</source>
+        <translation>&lt;small style="color:#78909c"&gt;Überschreibt konfliktierende Dateien beim Veröffentlichen. Diese Option wird automatisch zurückgesetzt.&lt;/small&gt;</translation>
     </message>
 </context>
 </TS>
