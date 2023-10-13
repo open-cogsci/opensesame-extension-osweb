@@ -4927,7 +4927,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.0.3";
+const VERSION_NUMBER = "2.0.4";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -7861,6 +7861,7 @@ class Sampler extends _generic_response_js__WEBPACK_IMPORTED_MODULE_0__["default
     this.vars.set('stop_after', 0);
     this.vars.set('volume', 1);
     this.vars.set('duration', 'sound');
+    this.vars.set('linked_sketchpad', '');
   }
 
   /** Implements the prepare phase of an item. */
@@ -12217,4 +12218,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.26ab87b2a563d8d9da2d.bundle.js.map
+//# sourceMappingURL=osweb.3cdda0b89497fc2f623d.bundle.js.map
