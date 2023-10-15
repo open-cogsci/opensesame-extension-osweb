@@ -67,10 +67,12 @@ def check_compatibility(exp, fullscreen):
     list of text strings. An empty list indicates that the experiment is
     compatible.
     """
-    return '- ' + '\n - '.join(
-        check_supported_items(exp, fullscreen)
-        + check_structure(exp, fullscreen)
-        + check_filesize(exp))
+    errors = check_supported_items(exp, fullscreen) \
+        + check_structure(exp, fullscreen) \
+        + check_filesize(exp)
+    if not errors:
+        return ''
+    return '- ' + '\n - '.join(errors)
 
 
 def check_item(item, fullscreen):
