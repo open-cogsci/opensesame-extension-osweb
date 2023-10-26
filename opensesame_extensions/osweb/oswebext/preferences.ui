@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
-    <height>666</height>
+    <width>1088</width>
+    <height>980</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>OSWeb</string>
+      <string>OSWeb: Configure how the experiment runs in the browser</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
@@ -154,7 +154,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;&amp;#x1F6C8; OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&lt;/small&gt;</string>
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;OSWeb is a JavaScript library for running OpenSesame experiments in a web browser.&lt;/small&gt;</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -250,6 +250,114 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>JATOS: Configure experiment properties on the server</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <property name="leftMargin">
+       <number>12</number>
+      </property>
+      <property name="topMargin">
+       <number>12</number>
+      </property>
+      <property name="rightMargin">
+       <number>12</number>
+      </property>
+      <property name="bottomMargin">
+       <number>12</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>JATOS end-redirect URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="edit_end_redirect_url">
+        <property name="placeholderText">
+         <string>https://</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_19">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Notifies participant platform (Sona Systems, Prolific, etc.) when experiment finishes&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_uuid">
+        <property name="text">
+         <string>JATOS UUID</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="edit_uuid">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>undefined</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_8">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Identifies experiment on JATOS&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="button_clear_jatos_uuid">
+        <property name="text">
+         <string>Clear UUID</string>
+        </property>
+        <property name="icon">
+         <iconset theme="edit-clear">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_16">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Resets link between experiment and JATOS&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupbox_jatos">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -258,7 +366,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>JATOS</string>
+      <string>JATOS: Configure the server</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
@@ -273,7 +381,17 @@
       <property name="bottomMargin">
        <number>12</number>
       </property>
-      <item row="1" column="1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>JATOS server</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <widget class="QLineEdit" name="cfg_oswebext_jatos_url">
         <property name="minimumSize">
          <size>
@@ -286,19 +404,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="label_8">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Identifies experiment on JATOS&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
+      <item row="0" column="2">
        <widget class="QLabel" name="label_9">
         <property name="font">
          <font>
@@ -310,28 +416,27 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_uuid">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>JATOS UUID</string>
+         <string>JATOS API token</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="button_clear_jatos_uuid">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="cfg_oswebext_jatos_api_token">
         <property name="text">
-         <string>Clear UUID</string>
+         <string/>
         </property>
-        <property name="icon">
-         <iconset theme="edit-clear">
-          <normaloff>.</normaloff>.</iconset>
+        <property name="placeholderText">
+         <string>jap_</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
+      <item row="1" column="2">
        <widget class="QLabel" name="label_2">
         <property name="font">
          <font>
@@ -349,81 +454,14 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="label_16">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Resets link between experiment and JATOS&lt;/small&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="edit_uuid">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="placeholderText">
-         <string>undefined</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>JATOS server</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0" colspan="3">
-       <widget class="QLabel" name="label_13">
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;&amp;#x1F6C8; JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="cfg_oswebext_jatos_api_token">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>jap_</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>JATOS API token</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
+      <item row="2" column="1">
        <widget class="QCheckBox" name="cfg_oswebext_jatos_ignore_conflicts">
         <property name="text">
          <string>Ignore conflicts</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="2">
+      <item row="2" column="2">
        <widget class="QLabel" name="label_17">
         <property name="font">
          <font>
@@ -432,6 +470,21 @@
         </property>
         <property name="text">
          <string>&lt;small  style=&quot;color:#78909c&quot;&gt;Overwrites conflicting files when publishing. This option is automatically reset.&lt;/small&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLabel" name="label_13">
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;small  style=&quot;color:#78909c&quot;&gt;JATOS is server software for managing online experiments. You need an account on a JATOS server, such as mindprobe.eu, to run experiments online. You need to enter a JATOS API token to connect OpenSesame to JATOS. Visit the OpenSesame documentation for instructions.&lt;/small&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

@@ -45,6 +45,8 @@ class OSWebControlPanel(BaseWidget):
     def refresh(self):
         self._settings_widget.ui.edit_uuid.setText(
             self.experiment.var.get('jatos_uuid', ''))
+        self._settings_widget.ui.edit_end_redirect_url.setText(
+            self.experiment.var.get('jatos_end_redirect_url', ''))
         if self.experiment.var.canvas_backend == 'osweb':
             self.ui.button_experiment_properties.setVisible(False)
             self.ui.label_experiment_properties.setVisible(False)

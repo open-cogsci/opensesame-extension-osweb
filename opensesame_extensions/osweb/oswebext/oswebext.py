@@ -325,6 +325,9 @@ class Oswebext(BaseExtension):
         # to update the preferences or control panel
         del self.experiment.var.jatos_uuid
         self.tabwidget.close_other()
+        
+    def event_change_experiment(self, path=None):
+        pass
 
     def activate(self):
         self._show_controls()
@@ -333,7 +336,12 @@ class Oswebext(BaseExtension):
         widget = super().settings_widget()
         widget.ui.button_clear_jatos_uuid.clicked.connect(
             lambda: self._clear_jatos_uuid(widget))
+        widget.ui.edit_end_redirect_url.textEdited.connect(
+            self._update_end_redirect_url)
         return widget
+    
+    def _update_end_redirect_url(self, text):
+        self.experiment.var.jatos_end_redirect_url = text
         
     def _clear_jatos_uuid(self, widget):
         del self.experiment.var.jatos_uuid

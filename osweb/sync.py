@@ -129,12 +129,13 @@ def upload(exp, jatos_info, **jzip_kwargs):
 
     This function converts an experiment into a jzip file, logs the size of the
     file, sends a POST request to the JATOS server to upload the study, and
-    finally deletes the local jzip file. It returns a boolean indicating the
-    success of the upload operation.
+    finally deletes the local jzip file. The JATOS UUID is returned.
 
     Parameters
     ----------
     exp : Experiment
+        If no UUID was specified in the experiment, the experiment object is 
+        modified in place such that a jatos_uuid variabiable is added.
     jatos_info : JatosInfo
     jzip_kwags : dict, optional
         Parameters that are passed onto convert.exp_to_jzip()
