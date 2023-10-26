@@ -1637,13 +1637,9 @@ class ResponseDevice {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SamplerBackend; });
 /* harmony import */ var _system_constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../system/constants.js */ "./src/js/osweb/system/constants.js");
+/* harmony import */ var _system_audio_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../system/audio_context */ "./src/js/osweb/system/audio_context.js");
 
-let audioCtx = null;
-try {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-} catch (e) {
-  console.warn('Web Audio API is not supported in this browser');
-}
+
 
 /** Class representing a sampler. */
 class SamplerBackend {
@@ -1659,6 +1655,7 @@ class SamplerBackend {
    * @param {Boolean} block - If true use the sound ad a block wave.
    */
   constructor(experiment, source, volume, pitch, pan, duration, fade, block) {
+    this.source = null;
     this.block = typeof block === 'undefined' ? false : block;
     this.duration = typeof duration === 'undefined' ? 'sound' : duration;
     this.experiment = experiment;
@@ -1667,19 +1664,20 @@ class SamplerBackend {
     this.pan = typeof pan === 'undefined' ? 0 : pan;
     this.pitch = typeof pitch === 'undefined' ? 1 : pitch;
     try {
-      this.sample = source.data;
+      this.audioBuffer = source.data;
     } catch (e) {
       console.error('Could not play sound:', source);
       throw e;
     }
-    this.sample.onended = () => this.experiment._runner._events._audioEnded(this);
-    if (audioCtx) {
-      // We can only connect a sample to an audio context once
-      if (typeof source.mediaElementSource === 'undefined') source.mediaElementSource = audioCtx.createMediaElementSource(this.sample);
-      this.source = source.mediaElementSource;
-    } else {
-      this.source = this.sample;
-    }
+    this.audioContext = Object(_system_audio_context__WEBPACK_IMPORTED_MODULE_1__["getAudioContext"])();
+    this.initBufferSource();
+  }
+  initBufferSource() {
+    // Initializes the buffer source
+    this.source = this.audioContext.createBufferSource();
+    this.source.buffer = this.audioBuffer;
+    this.source.onended = () => this.experiment._runner._events._audioEnded(this);
+    this.source.connect(this.applyFilters());
   }
 
   /**
@@ -1699,15 +1697,9 @@ class SamplerBackend {
     this.pitch = typeof pitch === 'undefined' ? this.pitch : pitch;
     this.pan = typeof pan === 'undefined' ? this.pan : pan;
     this.fade = typeof fade === 'undefined' ? this.fade : fade;
-    if (audioCtx) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      this.source.connect(this.applyFilters());
-    } else {
-      this.source.volume = this.volume;
-    }
-    this.sample.preservesPitch = false;
-    this.sample.playbackRate = this.pitch;
-    this.sample.play();
+    if (this.source === null) this.initBufferSource();
+    this.source.start(0);
+    this.source = null;
   }
 
   /** Set the blocking of the sound (wait period). */
@@ -1720,30 +1712,30 @@ class SamplerBackend {
     this.nodes.forEach(node => node.disconnect());
   }
   applyFilters() {
-    this.nodes = [audioCtx.destination];
+    this.nodes = [this.audioContext.destination];
+    // Set pitch
+    if (this.pitch !== undefined && this.pitch !== 1) {
+      this.source.playbackRate.setValueAtTime(this.pitch, this.audioContext.currentTime);
+    }
     // Set volume
-    const gainNode = new GainNode(audioCtx);
-    gainNode.gain.setValueAtTime(this.volume, audioCtx.currentTime);
+    const gainNode = new GainNode(this.audioContext);
+    gainNode.gain.setValueAtTime(this.volume, this.audioContext.currentTime);
     if (this.fade) {
-      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(this.volume, audioCtx.currentTime + this.fade / 1000);
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(this.volume, this.audioContext.currentTime + this.fade / 1000);
     }
     this.nodes.unshift(gainNode);
     // Set panning
     if (this.pan) {
       let pan;
       if (this.pan === 'left') pan = -1;else if (this.pan === 'right') pan = 1;else pan = this.pan;
-      try {
-        this.nodes.unshift(new StereoPannerNode(audioCtx, {
-          pan: pan
-        }));
-      } catch (e) {
-        console.warn('Unable to apply panning', e);
-      }
+      this.nodes.unshift(new StereoPannerNode(this.audioContext, {
+        pan: pan
+      }));
     }
     // Connect the filters creating a chain
     for (let i = 0; i < this.nodes.length; i++) {
-      if (this.nodes[i] !== audioCtx.destination) {
+      if (this.nodes[i] !== this.audioContext.destination) {
         this.nodes[i].connect(this.nodes[i + 1]);
       }
     }
@@ -4927,7 +4919,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.0.4";
+const VERSION_NUMBER = "2.1.0a1";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -7866,24 +7858,11 @@ class Sampler extends _generic_response_js__WEBPACK_IMPORTED_MODULE_0__["default
 
   /** Implements the prepare phase of an item. */
   prepare() {
-    // Create the sample
     const sample = this.vars.get('sample');
-    if (sample !== '') {
-      // Retrieve the content from the file pool.
-      this._sample = this._runner._pool[sample];
-      if (typeof this._sample === 'undefined') this.experiment._runner._debugger.addError("\"".concat(sample, "\" does not exist in the file pool"));
-      this._sampler = new _backends_sampler_js__WEBPACK_IMPORTED_MODULE_1__["default"](this.experiment, this._sample);
-      this._sampler.volume = this.vars.get("volume");
-      this._sampler.duration = this.vars.get("duration");
-      this._sampler.fade = this.vars.get("fade_in");
-      this._sampler.pan = this.vars.get("pan");
-      this._sampler.pitch = this.vars.get("pitch");
-    } else {
-      // Show error message.
-      this._runner._debugger.addError("No sample has been specified in sampler: ".concat(sample));
-    }
-
-    // Inherited.
+    if (sample === '') throw "No sample has been specified in sampler: ".concat(sample);
+    this._sample = this._runner._pool[sample];
+    if (typeof this._sample === 'undefined') this.experiment._runner._debugger.addError("\"".concat(sample, "\" does not exist in the file pool"));
+    this._sampler = new _backends_sampler_js__WEBPACK_IMPORTED_MODULE_1__["default"](this.experiment, this._sample, this.vars.get("volume"), this.vars.get("pitch"), this.vars.get("pan"), this.vars.get("duration"), this.vars.get("fade_in"));
     super.prepare();
   }
 
@@ -10027,6 +10006,28 @@ class PythonString {
 
 /***/ }),
 
+/***/ "./src/js/osweb/system/audio_context.js":
+/*!**********************************************!*\
+  !*** ./src/js/osweb/system/audio_context.js ***!
+  \**********************************************/
+/*! exports provided: getAudioContext */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAudioContext", function() { return getAudioContext; });
+let audioContext = null;
+
+// A singleton function to expose the same audio context throughout the app
+function getAudioContext() {
+  if (audioContext === null) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioContext;
+}
+
+/***/ }),
+
 /***/ "./src/js/osweb/system/constants.js":
 /*!******************************************!*\
   !*** ./src/js/osweb/system/constants.js ***!
@@ -11292,10 +11293,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Screen; });
 /* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/isFunction */ "./node_modules/lodash/isFunction.js");
 /* harmony import */ var lodash_isFunction__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_isFunction__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
-/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../index.js */ "./src/js/osweb/index.js");
+/* harmony import */ var _audio_context__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./audio_context */ "./src/js/osweb/system/audio_context.js");
+
+
 
 
 
@@ -11351,21 +11357,21 @@ class Screen {
     // Check if introscreen is used.
     if (this._active === true) {
       // Define introscreen elements.
-      this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]();
+      this._introScreen = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Container"]();
       const center = this.screenCenter();
       const logoPath = typeof logoSrc === 'undefined' ? 'img/opensesame.png' : logoSrc;
-      const oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from(logoPath);
-      const oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]('OSWeb', {
+      const oswebLogo = pixi_js__WEBPACK_IMPORTED_MODULE_3__["Sprite"].from(logoPath);
+      const oswebTitle = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('OSWeb', {
         fontFamily: 'Arial',
         fontSize: 48,
         fill: '#607d8b'
       });
-      const versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_3__["VERSION_NUMBER"], {
+      const versionInfo = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"](_index_js__WEBPACK_IMPORTED_MODULE_4__["VERSION_NUMBER"], {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: '#607d8b'
       });
-      const copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
+      const copyrightText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]("Copyright Jaap Bos, Daniel Schreij & Sebastiaan Mathot, 2016 - ".concat(new Date().getFullYear()), {
         fontFamily: 'Arial',
         fontSize: 16,
         fill: '#607d8b'
@@ -11375,7 +11381,7 @@ class Screen {
       oswebTitle.position.set(center.x - oswebTitle.width / 2, 215);
       versionInfo.position.set(center.x - versionInfo.width / 2, 270);
       copyrightText.position.set(center.x - copyrightText.width / 2, center.y * 2 - copyrightText.height * 2);
-      this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"]('', {
+      this._statusText = new pixi_js__WEBPACK_IMPORTED_MODULE_3__["Text"]('', {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: '#607d8b'
@@ -11397,29 +11403,43 @@ class Screen {
         text = "\nNever provide personal or sensitive information\n    such as credit card numbers or PIN codes\n\n           Click or touch the screen to begin!";
       }
       this._updateIntroScreen(text);
-      // We preload each audio stimulus by briefly playing it. This seems
-      // required on Safari. We use a callback to insert a brief delay between
-      // each preload. When all stimuli have been preloaded, we continue with
-      // initializing the experiment.
+      // We preload each audio stimulus by briefly and silently playing it.
+      // This is required on Safari and iOS. When all stimuli have been 
+      // started, we continue with initializing the experiment.
       let preloadStimuli = function (event) {
         if (this._preloadQueue.length > 0) {
-          let item = this._preloadQueue.pop();
-          if (item.type === 'audio') {
-            console.log('silently playing audio file for preloading');
-            item.data.volume = 0;
-            item.data.play().catch(error => console.error('Failed to play audio:', error));
-            item.data.pause();
-            item.data.currentTime = 0;
-            item.data.volume = 1;
+          console.log("silently playing ".concat(this._preloadQueue.length, " audio samples"));
+          let promises = [];
+          while (this._preloadQueue.length > 0) {
+            let item = this._preloadQueue.pop();
+            if (item.type === 'audioBuffer') {
+              console.log('silently playing audio buffer for preloading');
+              const source = this._audioContext.createBufferSource();
+              source.buffer = item.data;
+              // Create a Gain Node to mute the audio
+              const gainNode = this._audioContext.createGain();
+              gainNode.gain.setValueAtTime(0, this._audioContext.currentTime);
+              source.connect(gainNode).connect(this._audioContext.destination);
+              // Create a promise to be resolved when this buffer starts playing
+              promises.push(new Promise(resolve => {
+                source.onended = resolve;
+              }));
+              // Start and stop playing the audio buffer almost immediately
+              source.start(0);
+              source.stop(0 + 0.001);
+            }
           }
-          setTimeout(preloadStimuli, 10);
-        } else {
-          this._runner._renderer.view.removeEventListener('click', preloadStimuli);
-          this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
-          this._clearIntroScreen();
-          this._runner._initialize();
+          // Wait for all audio to finish playing, then proceed
+          Promise.all(promises).then(() => {
+            console.log('finished silent playback');
+            this._runner._renderer.view.removeEventListener('click', preloadStimuli);
+            this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
+            this._clearIntroScreen();
+            this._runner._initialize();
+          });
         }
       }.bind(this);
+      this._audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_5__["getAudioContext"])();
       this._preloadQueue = this._runner._experiment.pool._items.slice();
       this._runner._renderer.view.addEventListener('click', preloadStimuli, false);
       this._runner._renderer.view.addEventListener('touchstart', preloadStimuli, false);
@@ -11565,15 +11585,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Transfer; });
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! webfontloader */ "./node_modules/webfontloader/webfontloader.js");
-/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(webfontloader__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _util_files__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/files */ "./src/js/osweb/util/files.js");
-/* harmony import */ var lodash_isString__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/isString */ "./node_modules/lodash/isString.js");
-/* harmony import */ var lodash_isString__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash_isString__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var lodash_isObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/isObject */ "./node_modules/lodash/isObject.js");
-/* harmony import */ var lodash_isObject__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash_isObject__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_typed_array_uint8_array_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.typed-array.uint8-array.js */ "./node_modules/core-js/modules/es.typed-array.uint8-array.js");
+/* harmony import */ var core_js_modules_es_typed_array_uint8_array_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_typed_array_uint8_array_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_typed_array_fill_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.typed-array.fill.js */ "./node_modules/core-js/modules/es.typed-array.fill.js");
+/* harmony import */ var core_js_modules_es_typed_array_fill_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_typed_array_fill_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_typed_array_set_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.typed-array.set.js */ "./node_modules/core-js/modules/es.typed-array.set.js");
+/* harmony import */ var core_js_modules_es_typed_array_set_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_typed_array_set_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_typed_array_sort_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.typed-array.sort.js */ "./node_modules/core-js/modules/es.typed-array.sort.js");
+/* harmony import */ var core_js_modules_es_typed_array_sort_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_typed_array_sort_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! webfontloader */ "./node_modules/webfontloader/webfontloader.js");
+/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(webfontloader__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _audio_context__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./audio_context */ "./src/js/osweb/system/audio_context.js");
+/* harmony import */ var _util_files__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../util/files */ "./src/js/osweb/util/files.js");
+/* harmony import */ var lodash_isString__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lodash/isString */ "./node_modules/lodash/isString.js");
+/* harmony import */ var lodash_isString__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lodash_isString__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var lodash_isObject__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lodash/isObject */ "./node_modules/lodash/isObject.js");
+/* harmony import */ var lodash_isObject__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash_isObject__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_10__);
+
+
+
+
+
 
 
 
@@ -11600,7 +11634,7 @@ class Transfer {
    */
   async _readSource(source) {
     // Check type of object.
-    if (!lodash_isString__WEBPACK_IMPORTED_MODULE_3___default()(source) && (!lodash_isObject__WEBPACK_IMPORTED_MODULE_4___default()(source) || source.constructor !== File)) {
+    if (!lodash_isString__WEBPACK_IMPORTED_MODULE_8___default()(source) && (!lodash_isObject__WEBPACK_IMPORTED_MODULE_9___default()(source) || source.constructor !== File)) {
       throw new Error('No osexp source file defined.');
     }
     // This var will hold the OS script after parsing
@@ -11612,9 +11646,9 @@ class Transfer {
       } catch (e) {
         throw new Error("Could not read local osexp, ".concat(e));
       }
-    } else if (lodash_isString__WEBPACK_IMPORTED_MODULE_3___default()(source)) {
+    } else if (lodash_isString__WEBPACK_IMPORTED_MODULE_8___default()(source)) {
       // Check if the source string is an URL
-      const uri = Object(_util_files__WEBPACK_IMPORTED_MODULE_2__["parseUrl"])(source);
+      const uri = Object(_util_files__WEBPACK_IMPORTED_MODULE_7__["parseUrl"])(source);
       if (uri !== false) {
         // Attempt to download and load the remote experiment
         try {
@@ -11631,7 +11665,7 @@ class Transfer {
         }
       }
     }
-    this._readPoolElements();
+    await this._readPoolElements();
     await this._readWebFonts();
     return osScript;
   }
@@ -11645,7 +11679,7 @@ class Transfer {
    */
   async _readExpFile(osexp) {
     if ([File, Blob].includes(osexp.constructor)) {
-      osexp = await Object(_util_files__WEBPACK_IMPORTED_MODULE_2__["readFileAsText"])(osexp);
+      osexp = await Object(_util_files__WEBPACK_IMPORTED_MODULE_7__["readFileAsText"])(osexp);
     }
     return this._processScript(osexp);
   }
@@ -11657,7 +11691,7 @@ class Transfer {
    * @return {void}
    */
   async fetch(url) {
-    const response = await axios__WEBPACK_IMPORTED_MODULE_5___default.a.get(url, {
+    const response = await axios__WEBPACK_IMPORTED_MODULE_10___default.a.get(url, {
       responseType: 'blob'
     });
     let res;
@@ -11683,43 +11717,94 @@ class Transfer {
   }
 
   /**
-    * If file-pool assets are included as HTML elements, they are added to the
-    * file pool here.
-    *
-    * @returns Promise
-    * @memberof Transfer
-    */
-  _readPoolElements() {
+   * If file-pool assets are included as HTML elements, they are added to the
+   * file pool here.
+   *
+   * @returns Promise
+   * @memberof Transfer
+   */
+  async _readPoolElements() {
     const filePool = document.getElementById('filePool');
     if (filePool === null) {
       console.log('file pool not embedded in HTML');
       return;
     }
     console.log("file pool embedded in HTML (".concat(filePool.children.length, " files)"));
-    let item;
+    const audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_6__["getAudioContext"])();
+    let audioPromises = [];
     for (const asset of filePool.children) {
-      item = {
-        data: null,
-        type: 'undefined'
-      };
       if (asset instanceof HTMLImageElement) {
-        item.data = asset;
-        item.type = 'image';
-      } else if (asset instanceof HTMLAudioElement) {
-        item.data = asset;
-        item.type = 'audio';
+        this._runner._pool.add({
+          data: asset,
+          type: 'image'
+        }, asset.id);
+      } else if (asset instanceof HTMLAudioElement || asset instanceof HTMLSpanElement && asset.className === 'audioFile') {
+        // Audio can be embedded either as the text content of a `<span>`
+        // element or the source of an `<audio><source></src>` element.
+        // By default, spans are used because too many audio elements 
+        // breaks on iOS. In all cases, audio is read into a buffer for
+        // later playback through the WebAudio API.
+        let audioSrc = asset instanceof HTMLAudioElement ? asset.querySelector('source').src : asset.textContent;
+        let promise = new Promise((resolve, reject) => {
+          if (audioSrc.startsWith('data:')) {
+            // Handle Base64 encoded data
+            const base64String = audioSrc.split(',')[1];
+            const audioData = atob(base64String);
+            const audioArray = new Uint8Array(audioData.length);
+            for (let i = 0; i < audioData.length; i++) {
+              audioArray[i] = audioData.charCodeAt(i);
+            }
+            const audioBuffer = new ArrayBuffer(audioArray.length);
+            const bufferView = new Uint8Array(audioBuffer);
+            bufferView.set(audioArray);
+            audioContext.decodeAudioData(audioBuffer, function (buffer) {
+              this._runner._pool.add({
+                data: buffer,
+                type: 'audioBuffer'
+              }, asset.id);
+              resolve();
+            }.bind(this), function (error) {
+              console.error('Error decoding audio:', error);
+              reject(error);
+            });
+          } else {
+            // Handle audio file from a URI
+            let request = new XMLHttpRequest();
+            request.open('GET', audioSrc, true);
+            request.responseType = 'arraybuffer';
+            request.onload = function () {
+              audioContext.decodeAudioData(request.response, function (buffer) {
+                this._runner._pool.add({
+                  data: buffer,
+                  type: 'audioBuffer'
+                }, asset.id);
+                resolve();
+              }.bind(this), function (error) {
+                console.error('Error decoding audio:', error);
+                reject(error);
+              });
+            }.bind(this);
+            request.send();
+          }
+        });
+        audioPromises.push(promise);
       } else if (asset instanceof HTMLVideoElement) {
-        item.data = asset;
-        item.type = 'video';
+        this._runner._pool.add({
+          data: asset,
+          type: 'video'
+        }, asset.id);
       } else if (asset instanceof HTMLPreElement) {
-        item.data = asset.innerText;
-        item.type = 'text';
+        this._runner._pool.add({
+          data: asset.innerText,
+          type: 'text'
+        }, asset.id);
       } else {
         console.log("unknown pool element: ".concat(asset));
         continue;
       }
-      this._runner._pool.add(item, asset.id);
     }
+    await Promise.all(audioPromises);
+    console.log("all audio files have been loaded and decoded");
   }
 
   /**
@@ -11733,7 +11818,7 @@ class Transfer {
     this._runner._screen._updateIntroScreen('Retrieving required webfonts.');
     return new Promise((resolve, reject) => {
       // Load the required fonts using webfont.
-      webfontloader__WEBPACK_IMPORTED_MODULE_1___default.a.load({
+      webfontloader__WEBPACK_IMPORTED_MODULE_5___default.a.load({
         google: {
           families: ['Droid Sans', 'Droid Serif', 'Droid Sans Mono'],
           urls: ['//fonts.googleapis.com/css?family=Droid Sans', '//fonts.googleapis.com/css?family=Droid Serif', '//fonts.googleapis.com/css?family=Droid Sans Mono']
@@ -12218,4 +12303,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.3cdda0b89497fc2f623d.bundle.js.map
+//# sourceMappingURL=osweb.e1b9368e2dd9eaa9a50f.bundle.js.map
