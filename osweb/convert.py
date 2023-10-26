@@ -271,8 +271,7 @@ def exp_to_jzip(exp, jzip_path=None, subject='0', fullscreen=False,
                 'batchList': []
             }
         }
-        print(exp.var.get('jatos_end_redirect_url', None))
-        if exp.var.get('jatos_end_redirect_url', None):
+        if exp.var.get('jatos_end_redirect_url', ''):
             info['data']['endRedirectUrl'] = exp.var.jatos_end_redirect_url
         jas_path.write_text(json.dumps(info), 'utf-8')
         # Create a list of (src, jzip paths) where src can be a Path object
