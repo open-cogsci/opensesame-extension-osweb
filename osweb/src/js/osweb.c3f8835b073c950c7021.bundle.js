@@ -4919,7 +4919,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.0a1";
+const VERSION_NUMBER = "2.1.0a2";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11407,6 +11407,13 @@ class Screen {
       // This is required on Safari and iOS. When all stimuli have been 
       // started, we continue with initializing the experiment.
       let preloadStimuli = function (event) {
+        let continueAfterPreload = function () {
+          console.log('finished silent playback');
+          this._runner._renderer.view.removeEventListener('click', preloadStimuli);
+          this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
+          this._clearIntroScreen();
+          this._runner._initialize();
+        }.bind(this);
         if (this._preloadQueue.length > 0) {
           console.log("silently playing ".concat(this._preloadQueue.length, " audio samples"));
           let promises = [];
@@ -11430,13 +11437,9 @@ class Screen {
             }
           }
           // Wait for all audio to finish playing, then proceed
-          Promise.all(promises).then(() => {
-            console.log('finished silent playback');
-            this._runner._renderer.view.removeEventListener('click', preloadStimuli);
-            this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
-            this._clearIntroScreen();
-            this._runner._initialize();
-          });
+          Promise.all(promises).then(continueAfterPreload);
+        } else {
+          continueAfterPreload();
         }
       }.bind(this);
       this._audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_5__["getAudioContext"])();
@@ -12303,4 +12306,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.e1b9368e2dd9eaa9a50f.bundle.js.map
+//# sourceMappingURL=osweb.c3f8835b073c950c7021.bundle.js.map
