@@ -808,19 +808,20 @@ class Canvas {
     this._textures.push(texture);
     const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
     sprite.roi = this.current_roi;
-    // sprite.anchor.set(.5)
+    sprite.anchor.set(0.5); // Set the anchor point to the center of the sprite.
     if (typeof scale !== 'undefined') {
       sprite.scale.x = scale;
       sprite.scale.y = scale;
     }
     if (typeof rotation !== 'undefined') sprite.angle = rotation;
-    // Position the image
+    // Position the image when it is centered
     if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
-      sprite.x = Math.floor(x - sprite.width / 2);
-      sprite.y = Math.floor(y - sprite.height / 2);
+      sprite.x = Math.floor(x);
+      sprite.y = Math.floor(y);
+      // And when it is not centered, i.e. anchored to the top-left
     } else {
-      sprite.x = x;
-      sprite.y = y;
+      sprite.x = Math.floor(x + sprite.width / 2);
+      sprite.y = Math.floor(y + sprite.height / 2);
     }
     console.log(sprite.x);
     this._container.addChild(sprite);
@@ -4919,7 +4920,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.0a2";
+const VERSION_NUMBER = "2.1.0a4";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11396,24 +11397,36 @@ class Screen {
 
   /** Check if the experiment must be clicked to start. */
   _setupClickScreen(text) {
-    // Check if the experiment must be clicked to start.
-    if (this._click === true) {
-      // Update inroscreen.
-      if (typeof text === "undefined" || text.length === 0) {
-        text = "\nNever provide personal or sensitive information\n    such as credit card numbers or PIN codes\n\n           Click or touch the screen to begin!";
-      }
-      this._updateIntroScreen(text);
-      // We preload each audio stimulus by briefly and silently playing it.
-      // This is required on Safari and iOS. When all stimuli have been 
-      // started, we continue with initializing the experiment.
-      let preloadStimuli = function (event) {
-        let continueAfterPreload = function () {
-          console.log('finished silent playback');
-          this._runner._renderer.view.removeEventListener('click', preloadStimuli);
-          this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
-          this._clearIntroScreen();
-          this._runner._initialize();
-        }.bind(this);
+    // If no user interaction is required to start the experiment, we continue
+    // straight away
+    if (this._click === false) {
+      this._clearIntroScreen();
+      this._runner._initialize();
+      return;
+    }
+    // Otherwise we require the user to touch/ click the screen, in response
+    // to which all audio files are preloaded before the experiment actually
+    // launches. This implemented in a series of callbacks below.
+    //
+    // Once all audio samples have been preloaded, we continue with the
+    // experiment.
+    let preloadStimuli = function (event) {
+      let continueAfterPreload = function () {
+        if (this._audioContext === null) {
+          console.log('already finished silent playback, ignoring');
+          return;
+        }
+        this._audioContext = null;
+        console.log('finished silent playback');
+        this._runner._renderer.view.removeEventListener('click', preloadStimuli);
+        this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
+        this._clearIntroScreen();
+        this._runner._initialize();
+      }.bind(this);
+      // Once the audio context is running, this function silently and 
+      // briefly plays all audio samples so that they can be played back
+      // without a user interaction later on.
+      let withRunningAudioContext = function () {
         if (this._preloadQueue.length > 0) {
           console.log("silently playing ".concat(this._preloadQueue.length, " audio samples"));
           let promises = [];
@@ -11437,19 +11450,38 @@ class Screen {
             }
           }
           // Wait for all audio to finish playing, then proceed
-          Promise.all(promises).then(continueAfterPreload);
+          Promise.all(promises).then(continueAfterPreload).catch(error => {
+            console.log('failed to preload some or all audio buffers: ' + error);
+          });
         } else {
           continueAfterPreload();
         }
       }.bind(this);
+      // We get the audio context and try to resume it if it is currently
+      // suspended. Once the audio context is running, we continue. If 
+      // resuming the context fails, we do nothing so that the user can
+      // click the screen again to try again.
       this._audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_5__["getAudioContext"])();
-      this._preloadQueue = this._runner._experiment.pool._items.slice();
-      this._runner._renderer.view.addEventListener('click', preloadStimuli, false);
-      this._runner._renderer.view.addEventListener('touchstart', preloadStimuli, false);
-    } else {
-      this._clearIntroScreen();
-      this._runner._initialize();
+      if (this._audioContext.state === 'suspended') {
+        this._audioContext.resume().then(() => {
+          console.log('audio context resumed');
+          withRunningAudioContext();
+        }).catch(() => {
+          console.log('failed to resume audio context, click to try again');
+        });
+      } else {
+        console.log('no need to resume audio context');
+        withRunningAudioContext();
+      }
+    }.bind(this);
+    // Update inroscreen.
+    if (typeof text === "undefined" || text.length === 0) {
+      text = "\nNever provide personal or sensitive information\n    such as credit card numbers or PIN codes\n\n           Click or touch the screen to begin!";
     }
+    this._updateIntroScreen(text);
+    this._preloadQueue = this._runner._experiment.pool._items.slice();
+    this._runner._renderer.view.addEventListener('click', preloadStimuli);
+    this._runner._renderer.view.addEventListener('touchstart', preloadStimuli);
   }
 
   /** Clear the introscreen elements. */
@@ -12306,4 +12338,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.c3f8835b073c950c7021.bundle.js.map
+//# sourceMappingURL=osweb.a03c8e7c7b4aea4a0465.bundle.js.map
