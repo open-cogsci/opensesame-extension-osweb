@@ -388,4 +388,5 @@ class Oswebext(BaseExtension):
         except UnsupportedJZIP as e:
             self.report_exception(e)
         else:
+            self.main_window.ui.tabwidget.close_all(avoid_empty=False)
             self.main_window.open_experiment(exp)
