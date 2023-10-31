@@ -4191,17 +4191,38 @@ class VarStoreHandler {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return WorkspaceVarStore; });
-/* harmony import */ var _classes_var_store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../classes/var_store.js */ "./src/js/osweb/classes/var_store.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_url_search_params_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.url-search-params.js */ "./node_modules/core-js/modules/web.url-search-params.js");
+/* harmony import */ var core_js_modules_web_url_search_params_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_url_search_params_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _classes_var_store_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../classes/var_store.js */ "./src/js/osweb/classes/var_store.js");
+
+
 
 
 /** Class representing a the var store of the main experiment item, which maps
  *  onto the JavaScript workspace.
  **/
-class WorkspaceVarStore extends _classes_var_store_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+class WorkspaceVarStore extends _classes_var_store_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor(item) {
     let parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     super(item, parent);
     this._scope = window;
+    if (typeof jatos !== 'undefined') {
+      // JATOS uses a special mechanism to pass query parameters
+      for (const param in jatos.urlQueryParameters) {
+        let val = jatos.urlQueryParameters[param];
+        console.log("JATOS query parameter: ".concat(param, " = ").concat(val));
+        this.set(param, item.syntax.convert_if_numeric(val));
+      }
+    } else {
+      // When running outside of JATOS we use the standard URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      for (const [param, val] of urlParams) {
+        console.log("URL query parameter: ".concat(param, " = ").concat(val));
+        this.set(param, item.syntax.convert_if_numeric(val));
+      }
+    }
   }
 }
 
@@ -4920,7 +4941,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.0a4";
+const VERSION_NUMBER = "2.1.0a5";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -12338,4 +12359,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.a03c8e7c7b4aea4a0465.bundle.js.map
+//# sourceMappingURL=osweb.7003ab8bf5263f1a8f9f.bundle.js.map
