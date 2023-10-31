@@ -60,6 +60,7 @@ class Oswebext(BaseExtension):
         cfg.oswebext_jatos_ignore_conflicts = False
         self._control_panel = None
         self._experiment_name = None
+        self._experiment_path = None
         backend.backend_info = decorate_backend_info(backend.backend_info)
         file_menu = self.get_submenu('file')
         if cfg.oswebext_jatos_url == 'https://jatos.mindprobe.eu':
@@ -308,6 +309,9 @@ class Oswebext(BaseExtension):
         self._experiment_name = self.experiment.var.title
     
     def event_change_experiment(self):
+        """When the experiment title changes, we offer to reset the JATOS
+        UUID.
+        """
         if not self.experiment.var.has('jatos_uuid'):
             return
         if self._experiment_name == self.experiment.var.title:
@@ -326,9 +330,30 @@ class Oswebext(BaseExtension):
         del self.experiment.var.jatos_uuid
         self.tabwidget.close_other()
         
-    def event_change_experiment(self, path=None):
-        pass
-
+    def event_save_experiment(self, path=None):
+        """If an experiment is saved under a different name, we offer to reset
+        the JATOS UUID.
+        """
+        if self.experiment.var.has('jatos_uuid') and \
+                self._experiment_path is not None and \
+                self._experiment_path != path:
+            resp = QMessageBox.question(
+                self.main_window,
+                _('Unlink from JATOS'),
+                _('You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?'),
+                QMessageBox.Yes,
+                QMessageBox.No
+            )
+            if resp == QMessageBox.Yes:
+                # Delete the JATOS uuid and close all other tabs so that we don't have
+                # to update the preferences or control panel
+                del self.experiment.var.jatos_uuid
+                self.tabwidget.close_other()
+        self._experiment_path = path
+    
+    def event_open_experiment(self, path=None):
+        self._experiment_path = path
+        
     def activate(self):
         self._show_controls()
         
