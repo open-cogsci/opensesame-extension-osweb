@@ -4941,7 +4941,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.0a5";
+const VERSION_NUMBER = "2.1.0";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -12359,4 +12359,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.7003ab8bf5263f1a8f9f.bundle.js.map
+//# sourceMappingURL=osweb.92488aa609000e3644d2.bundle.js.map
