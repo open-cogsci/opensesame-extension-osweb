@@ -3,12 +3,12 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="27" />
         <source>Experiment started in external browser</source>
         <translation>外部のブラウザーで実験を開始しました</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Save as…</source>
         <translation>名前を付けて保存…</translation>
     </message>
@@ -18,47 +18,47 @@
         <translation>OSWebとJATOSのコントロールパネル</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Create online experiments</source>
         <translation>オンライン実験を作成する</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="24" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Open from MindProbe</source>
         <translation>MindProbeから開く</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>Open from JATOS</source>
         <translation>JATOSから開く</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Open</source>
         <translation>開く</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
         <source>Experiment has been published to JATOS</source>
         <translation>実験はJATOSに公開されました</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Select OSWeb results file…</source>
         <translation>OSWebの結果ファイルを選択します…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Browse</source>
         <translation>ブラウズ</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="18" />
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
         <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>実験の名前を変更しました。また、新しいリモート実験を作成できるように、JATOSとのリンクを解除（UUIDをリセット）したいですか？</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
         <source>Save and publish to JATOS</source>
         <translation>JATOSに保存して公開</translation>
     </message>
@@ -68,9 +68,14 @@
         <translation>JATOSからリンクを解除</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Save and publish to MindProbe</source>
         <translation>MindProbeに保存して公開</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <source>You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
+        <translation>別のファイル名で実験を保存しました。新しいリモート実験を作成するために、JATOSから実験をリンク解除（UUIDをリセット）もしたいですか？</translation>
     </message>
 </context>
 <context>
@@ -86,67 +91,67 @@
         <translation>アイコン</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="121" />
+        <location filename="../osweb_control_panel.ui" line="136" />
         <source>Actions</source>
         <translation>アクション</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="166" />
+        <location filename="../osweb_control_panel.ui" line="181" />
         <source>Experiment properties</source>
         <translation>実験のプロパティ</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="184" />
+        <location filename="../osweb_control_panel.ui" line="199" />
         <source>&lt;small  style="color:#78909c"&gt;Select OSWeb backend to run in browser&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;ブラウザで実行するためのOSWebバックエンドを選択してください&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="200" />
+        <location filename="../osweb_control_panel.ui" line="215" />
         <source>Open from JATOS</source>
         <translation>JATOSから開く</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="212" />
+        <location filename="../osweb_control_panel.ui" line="227" />
         <source>&lt;small  style="color:#78909c"&gt;Download experiment directly from JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;JATOSから直接実験をダウンロードします&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="250" />
+        <location filename="../osweb_control_panel.ui" line="265" />
         <source>Convert OSWeb results to .csv/ .xlsx</source>
         <translation>OSWebの結果を.csv/.xlsxに変換する</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="262" />
+        <location filename="../osweb_control_panel.ui" line="277" />
         <source>&lt;small  style="color:#78909c"&gt;Convert JATOS result file to spreadsheet format&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;JATOSの結果ファイルをスプレッドシート形式に変換します&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="290" />
+        <location filename="../osweb_control_panel.ui" line="305" />
         <source>Import from JATOS archive</source>
         <translation>JATOSアーカイブからインポートする</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="303" />
+        <location filename="../osweb_control_panel.ui" line="318" />
         <source>Export to JATOS archive</source>
         <translation>JATOSアーカイブにエクスポートする</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="316" />
+        <location filename="../osweb_control_panel.ui" line="331" />
         <source>Export to HTML</source>
         <translation>HTMLにエクスポートする</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="328" />
+        <location filename="../osweb_control_panel.ui" line="343" />
         <source>&lt;small  style="color:#78909c"&gt;Open experiment from jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;jzipファイルから実験を開きます&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="340" />
+        <location filename="../osweb_control_panel.ui" line="355" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;実験をjzipファイルとして保存します&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="352" />
+        <location filename="../osweb_control_panel.ui" line="367" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as standalone html file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;実験を独立したhtmlファイルとして保存します&lt;/small&gt;</translation>
     </message>
@@ -156,17 +161,17 @@
         <translation>&lt;b&gt;OSWebとJATOSコントロールパネル&lt;/b&gt;&lt;br /&gt;オンライン実験とJATOS同期のオプション</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="225" />
+        <location filename="../osweb_control_panel.ui" line="240" />
         <source>Save and publish to JATOS</source>
         <translation>JATOSに保存して公開</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="237" />
+        <location filename="../osweb_control_panel.ui" line="252" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;Save experiment and upload directly to JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;実験を保存して、直接JATOSにアップロードする&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="96" />
+        <location filename="../osweb_control_panel.ui" line="126" />
         <source>&lt;h2 style="color:#78909c"&gt;To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</source>
         <translation>&lt;h2 style="color:#78909c"&gt;実験を直接JATOSに公開するには、以下でサーバーとAPIトークンを指定してください&lt;/h2&gt;</translation>
     </message>
@@ -179,17 +184,17 @@
         <translation>カスタムHTMLを埋め込む</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>An HTML editor widget</source>
         <translation>HTMLエディターウィジェット</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>HTML editor</source>
         <translation>HTMLエディター</translation>
     </message>

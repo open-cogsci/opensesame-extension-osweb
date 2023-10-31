@@ -3,12 +3,12 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="27" />
         <source>Experiment started in external browser</source>
         <translation>在外部浏览器中启动了实验</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Save as…</source>
         <translation>另存为…</translation>
     </message>
@@ -18,47 +18,47 @@
         <translation>OSWeb 和 JATOS 控制面板</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Create online experiments</source>
         <translation>创建在线实验</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="24" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Open from MindProbe</source>
         <translation>从 MindProbe 打开</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>Open from JATOS</source>
         <translation>从 JATOS 打开</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
         <source>Experiment has been published to JATOS</source>
         <translation>实验已发布到 JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Select OSWeb results file…</source>
         <translation>选择 OSWeb 结果文件…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Browse</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="18" />
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
         <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>你已经改变了实验的名字。你是否也想要取消与JATOS的链接（通过重置UUID），这样你就能够创建一个新的远程实验？</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
         <source>Save and publish to JATOS</source>
         <translation>保存并发布到JATOS</translation>
     </message>
@@ -68,9 +68,14 @@
         <translation>解除与JATOS的链接</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Save and publish to MindProbe</source>
         <translation>保存并发布到MindProbe</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <source>You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
+        <translation>您已经以不同的文件名保存了实验。您是否也希望将实验与JATOS解除链接(通过重置UUID)，以便您可以创建一个新的远程实验？</translation>
     </message>
 </context>
 <context>
@@ -86,67 +91,67 @@
         <translation>图标</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="121" />
+        <location filename="../osweb_control_panel.ui" line="136" />
         <source>Actions</source>
         <translation>操作</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="166" />
+        <location filename="../osweb_control_panel.ui" line="181" />
         <source>Experiment properties</source>
         <translation>实验属性</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="184" />
+        <location filename="../osweb_control_panel.ui" line="199" />
         <source>&lt;small  style="color:#78909c"&gt;Select OSWeb backend to run in browser&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;选择 OSWeb 后端在浏览器中运行&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="200" />
+        <location filename="../osweb_control_panel.ui" line="215" />
         <source>Open from JATOS</source>
         <translation>从 JATOS 打开</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="212" />
+        <location filename="../osweb_control_panel.ui" line="227" />
         <source>&lt;small  style="color:#78909c"&gt;Download experiment directly from JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;直接从 JATOS 下载实验&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="250" />
+        <location filename="../osweb_control_panel.ui" line="265" />
         <source>Convert OSWeb results to .csv/ .xlsx</source>
         <translation>将 OSWeb 结果转换为 .csv/ .xlsx</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="262" />
+        <location filename="../osweb_control_panel.ui" line="277" />
         <source>&lt;small  style="color:#78909c"&gt;Convert JATOS result file to spreadsheet format&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;将 JATOS 结果文件转换为电子表格格式&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="290" />
+        <location filename="../osweb_control_panel.ui" line="305" />
         <source>Import from JATOS archive</source>
         <translation>从 JATOS 存档导入</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="303" />
+        <location filename="../osweb_control_panel.ui" line="318" />
         <source>Export to JATOS archive</source>
         <translation>导出到 JATOS 存档</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="316" />
+        <location filename="../osweb_control_panel.ui" line="331" />
         <source>Export to HTML</source>
         <translation>导出为HTML</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="328" />
+        <location filename="../osweb_control_panel.ui" line="343" />
         <source>&lt;small  style="color:#78909c"&gt;Open experiment from jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;从 jzip 文件打开实验&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="340" />
+        <location filename="../osweb_control_panel.ui" line="355" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;将实验保存为 jzip 文件&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="352" />
+        <location filename="../osweb_control_panel.ui" line="367" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as standalone html file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;将实验保存为独立的 html 文件&lt;/small&gt;</translation>
     </message>
@@ -156,17 +161,17 @@
         <translation>&lt;b&gt;OSWeb和JATOS控制面板&lt;/b&gt;&lt;br /&gt;在线实验和JATOS同步的选项</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="225" />
+        <location filename="../osweb_control_panel.ui" line="240" />
         <source>Save and publish to JATOS</source>
         <translation>保存并发布到JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="237" />
+        <location filename="../osweb_control_panel.ui" line="252" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;Save experiment and upload directly to JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;保存实验并直接上传到JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="96" />
+        <location filename="../osweb_control_panel.ui" line="126" />
         <source>&lt;h2 style="color:#78909c"&gt;To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</source>
         <translation>&lt;h2 style="color:#78909c"&gt;要直接将实验发布到 JATOS，请在下面指定服务器和API令牌&lt;/h2&gt;</translation>
     </message>
@@ -179,17 +184,17 @@
         <translation>嵌入自定义 HTML</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>An HTML editor widget</source>
         <translation>一个HTML编辑器小部件</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>HTML editor</source>
         <translation>HTML 编辑器</translation>
     </message>

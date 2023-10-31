@@ -3,12 +3,12 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="27" />
         <source>Experiment started in external browser</source>
         <translation>تم بدء التجربة في متصفح خارجي</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Save as…</source>
         <translation>حفظ بأسم...</translation>
     </message>
@@ -18,47 +18,47 @@
         <translation>لوحة تحكم OSWeb و JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Create online experiments</source>
         <translation>إنشاء تجارب عبر الإنترنت</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="24" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Open from MindProbe</source>
         <translation>افتح من MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>Open from JATOS</source>
         <translation>افتح من JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Open</source>
         <translation>افتح</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
         <source>Experiment has been published to JATOS</source>
         <translation>تم نشر التجربة في JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>Select OSWeb results file…</source>
         <translation>اختر ملف نتائج OSWeb…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Browse</source>
         <translation>تصفح</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="18" />
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
         <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>لقد قمت بتغيير اسم التجربة. هل تريد أيضًا فك ارتباط التجربة من JATOS (عن طريق إعادة تعيين UUID) حتى تتمكن من إنشاء تجربة عن بُعد جديدة؟</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
         <source>Save and publish to JATOS</source>
         <translation>حفظ ونشر في JATOS</translation>
     </message>
@@ -68,9 +68,14 @@
         <translation>رابط التخلص من JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Save and publish to MindProbe</source>
         <translation>حفظ ونشر في MindProbe</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <source>You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
+        <translation>لقد حفظت التجربة تحت اسم ملف مختلف. هل تريد أيضًا قطع الرابط إلى التجربة من JATOS (بإعادة تعيين UUID) بحيث يمكنك إنشاء تجربة بعيدة جديدة؟</translation>
     </message>
 </context>
 <context>
@@ -86,67 +91,67 @@
         <translation>أيقونة</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="121" />
+        <location filename="../osweb_control_panel.ui" line="136" />
         <source>Actions</source>
         <translation>الأفعال</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="166" />
+        <location filename="../osweb_control_panel.ui" line="181" />
         <source>Experiment properties</source>
         <translation>خصائص التجربة</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="184" />
+        <location filename="../osweb_control_panel.ui" line="199" />
         <source>&lt;small  style="color:#78909c"&gt;Select OSWeb backend to run in browser&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;حدد الخلفية OSWeb لتشغيلها في المتصفح&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="200" />
+        <location filename="../osweb_control_panel.ui" line="215" />
         <source>Open from JATOS</source>
         <translation>افتح من JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="212" />
+        <location filename="../osweb_control_panel.ui" line="227" />
         <source>&lt;small  style="color:#78909c"&gt;Download experiment directly from JATOS&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;حمل التجربة مباشرة من JATOS&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="250" />
+        <location filename="../osweb_control_panel.ui" line="265" />
         <source>Convert OSWeb results to .csv/ .xlsx</source>
         <translation>تحويل نتائج OSWeb إلى .csv/ .xlsx</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="262" />
+        <location filename="../osweb_control_panel.ui" line="277" />
         <source>&lt;small  style="color:#78909c"&gt;Convert JATOS result file to spreadsheet format&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;قم بتحويل ملف نتائج JATOS إلى تنسيق جدول بيانات&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="290" />
+        <location filename="../osweb_control_panel.ui" line="305" />
         <source>Import from JATOS archive</source>
         <translation>استيراد من أرشيف JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="303" />
+        <location filename="../osweb_control_panel.ui" line="318" />
         <source>Export to JATOS archive</source>
         <translation>تصدير إلى أرشيف JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="316" />
+        <location filename="../osweb_control_panel.ui" line="331" />
         <source>Export to HTML</source>
         <translation>تصدير إلى HTML</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="328" />
+        <location filename="../osweb_control_panel.ui" line="343" />
         <source>&lt;small  style="color:#78909c"&gt;Open experiment from jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;افتح التجربة من ملف jzip&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="340" />
+        <location filename="../osweb_control_panel.ui" line="355" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as jzip file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;حفظ التجربة كملف jzip&lt;/small&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="352" />
+        <location filename="../osweb_control_panel.ui" line="367" />
         <source>&lt;small  style="color:#78909c"&gt;Save experiment as standalone html file&lt;/small&gt;</source>
         <translation>&lt;small style="color:#78909c"&gt;حفظ التجربة كملف html مستقل&lt;/small&gt;</translation>
     </message>
@@ -156,17 +161,17 @@
         <translation>&lt;b&gt;لوحة تحكم OSWeb و JATOS&lt;/b&gt;&lt;br /&gt;خيارات للتجارب الإلكترونية والتزامن مع JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="225" />
+        <location filename="../osweb_control_panel.ui" line="240" />
         <source>Save and publish to JATOS</source>
         <translation>حفظ ونشر في JATOS</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="237" />
+        <location filename="../osweb_control_panel.ui" line="252" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;Save experiment and upload directly to JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-size:small; color:#78909c;"&gt;حفظ التجربة وتحميلها مباشرة إلى JATOS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../osweb_control_panel.ui" line="96" />
+        <location filename="../osweb_control_panel.ui" line="126" />
         <source>&lt;h2 style="color:#78909c"&gt;To publish experiments directly to JATOS, please specify a server and API token below&lt;/h2&gt;</source>
         <translation>&lt;h2 style="color:#78909c"&gt;لنشر التجارب مباشرة إلى JATOS، يرجى تحديد الخادم ورمز API أدناه&lt;/h2&gt;</translation>
     </message>
@@ -179,17 +184,17 @@
         <translation>يضمن HTML مخصص</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="3" />
+        <location filename="../../../../translation_tools/translatables.py" line="5" />
         <source>An HTML editor widget</source>
         <translation>واجهة محرر HTML</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="3" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="5" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>HTML editor</source>
         <translation>محرر HTML</translation>
     </message>

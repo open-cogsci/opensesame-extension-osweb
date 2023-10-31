@@ -1614,5 +1614,24 @@
     "he": "<small  style=\"color:#78909c\">JATOS הנה תוכנת שרת לניהול ניסויים מקוונים. אתה צריך חשבון בשרת JATOS, כמו mindprobe.eu, כדי להריץ את הניסויים ברשת. על מנת לחבר את OpenSesame ל-JATOS אנו צריכים TOKEN API. אנא בדוק בוויקי של OpenSesame למידע נוסף.</small>",
     "ru": "<small  style=\"color:#78909c\">JATOS - это серверное программное обеспечение для управления онлайн-экспериментами. Вам нужен аккаунт на сервере JATOS, таком как mindprobe.eu, чтобы проводить эксперименты онлайн. Вам нужно ввести токен JATOS API, чтобы подключить OpenSesame к JATOS. Посетите документацию OpenSesame для получения инструкций.</small>",
     "tr": "<small  style=\"color:#78909c\">JATOS, çevrimiçi deneyleri yönetmek için bir sunucu yazılımıdır. Çevrimiçi deneyleri çalıştırmak için mindprobe.eu gibi bir JATOS sunucusunda bir hesaba ihtiyacınız var. OpenSesame'yi JATOS'a bağlamak için bir JATOS API belirtecini girmeniz gerekiyor. Talimatlar için OpenSesame belgelerini ziyaret edin.</small>"
+  },
+  "You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?": {
+    "nl": "U heeft het experiment opgeslagen onder een andere bestandsnaam. Wilt u ook het experiment loskoppelen van JATOS (door de UUID te resetten) zodat u een nieuw extern experiment kunt aanmaken?",
+    "de": "Sie haben das Experiment unter einem anderen Dateinamen gespeichert. Möchten Sie das Experiment auch von JATOS trennen (durch Zurücksetzen der UUID), um ein neues Remote-Experiment erstellen zu können?",
+    "fr": "Vous avez enregistré l'expérience sous un autre nom de fichier. Voulez-vous également dissocier l'expérience de JATOS (en réinitialisant l'UUID) afin de pouvoir créer une nouvelle expérience à distance?",
+    "es": "Ha guardado el experimento con un nombre de archivo diferente. ¿También desea desvincular el experimento de JATOS (restableciendo el UUID) para que pueda crear un nuevo experimento remoto?",
+    "it": "Hai salvato l'esperimento sotto un nome di file diverso. Vuoi anche scollegare l'esperimento da JATOS (resettando l'UUID) in modo da poter creare un nuovo esperimento remoto?",
+    "pt": "Você salvou o experimento sob um nome de arquivo diferente. Você também quer desvincular o experimento do JATOS (redefinindo o UUID) para que você possa criar um novo experimento remoto?",
+    "zh": "您已经以不同的文件名保存了实验。您是否也希望将实验与JATOS解除链接(通过重置UUID)，以便您可以创建一个新的远程实验？",
+    "yue": "你已經以一個不同的文件名儲存了實驗。你亦否希望把實驗與JATOS解鏈(通過重設UUID)，從而你可以建立一個新的遠程實驗？",
+    "ja": "別のファイル名で実験を保存しました。新しいリモート実験を作成するために、JATOSから実験をリンク解除（UUIDをリセット）もしたいですか？",
+    "ko": "다른 파일 이름으로 실험을 저장했습니다. 새로운 원격 실험을 생성할 수 있도록 JATOS에서 실험을 분리( UUID를 재설정)하고 싶으신가요?",
+    "id": "Anda telah menyimpan eksperimen dengan nama file yang berbeda. Apakah Anda juga ingin memutuskan tautan eksperimen dari JATOS (dengan mereset UUID) sehingga Anda dapat membuat eksperimen remote baru?",
+    "hi": "आपने विभिन्न फ़ाइल नाम के तहत प्रयोग को सहेज लिया है। क्या आप नए दूरस्थ प्रयोग को बनाने के लिए JATOS से प्रयोग को अनलिंक (UUID को रीसेट करके) करना भी चाहते हैं?",
+    "bn": "আপনি বিভিন্ন ফাইল নামের অধীনে পরীক্ষাটি সংরক্ষণ করেছেন। কি আপনি একটি নতুন রিমোট পরীক্ষা তৈরি করার জন্য JATOS থেকে পরীক্ষাটি আনলিংক করতে (UUID রিসেট করে) চান?",
+    "ar": "لقد حفظت التجربة تحت اسم ملف مختلف. هل تريد أيضًا قطع الرابط إلى التجربة من JATOS (بإعادة تعيين UUID) بحيث يمكنك إنشاء تجربة بعيدة جديدة؟",
+    "he": "שמרת את הניסוי תחת שם קובץ שונה. האם אתה גם רוצה לבטל את הקישור הניסוי מ-JATOS (על ידי איפוס UUID) כך שתוכל ליצור ניסוי מרחוק חדש?",
+    "ru": "Вы сохранили эксперимент под другим именем файла. Хотите ли вы также отвязать эксперимент от JATOS (сбросив UUID), чтобы вы могли создать новый удаленный эксперимент?",
+    "tr": "Farklı bir dosya adı altında deneyi kaydettiniz. Yeni bir uzaktan deney oluşturabilmeniz için deneyi JATOS'tan da çözmek (UUID'yi sıfırlayarak) istiyor musunuz?"
   }
 }
