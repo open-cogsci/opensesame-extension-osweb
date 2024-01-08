@@ -22,6 +22,7 @@ from libopensesame.py3compat import *
 from openexp._color.color import color
 from libopensesame.experiment import Experiment
 from osweb.oswebwriter import OSWebWriter
+import osweb
 
 
 class OSWebWriterTestCase(unittest.TestCase):
@@ -33,7 +34,7 @@ class OSWebWriterTestCase(unittest.TestCase):
         writer = OSWebWriter(exp, 'tmp.osexp')
         with open('tests/data/oswebwriter_ref.osexp') as fd:
             ref_exp = Experiment(string=fd.read())
-            self.assertEqual(ref_exp.to_string(), writer.script)
+            assert ref_exp.to_string() == writer.script
         
         
 if __name__ == '__main__':

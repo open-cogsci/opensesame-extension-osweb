@@ -27,6 +27,9 @@ RE_VAR = re.compile('(?<!\w)var\.', re.MULTILINE)
 RE_RUN_IF = re.compile(r'^\t(?P<cmd>run \w+ .*)$', re.MULTILINE)
 RE_SET_COND = re.compile(r'^\t(?P<cmd>set (break_if|condition) .*)$',
                          re.MULTILINE)
+RE_SET_COND_MULTILINE = re.compile(
+    '__(?P<key>(break_if|condition))__(?P<value>.*?)__end__\n',
+    re.MULTILINE | re.DOTALL)
 RE_DRAW = re.compile(r'^\t(?P<cmd>draw .*)$', re.MULTILINE)
 RE_FSTRING = re.compile(r'(?<!{){(?!{)(?P<expr>.*?)}')
 RE_IGNORE_RUN = re.compile('___run__.*?__end__\n', re.MULTILINE | re.DOTALL)
@@ -86,6 +89,13 @@ class OSWebWriter(OSExpWriter):
             cmd = self.create_cmd('set', (key, cond))
             oslogger.debug(f'rewriting {m.group("cmd")} to {cmd}')
             script = script.replace(m.group('cmd'), cmd)
+        for m in RE_SET_COND_MULTILINE.finditer(script):
+            key = m.group('key')
+            value = m.group('value')
+            cond = self.transform(value)
+            cmd = f'__{key}__\n\t{cond}\n\t__end__\n'
+            oslogger.debug(f'rewriting {value} to {cmd}')
+            script = script.replace(m.group(), cmd)
         for m in RE_DRAW.finditer(script):
             _, args, kwargs = self.parse_cmd(m.group('cmd'))
             for key, val in kwargs.items():

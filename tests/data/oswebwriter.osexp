@@ -42,8 +42,8 @@ define sequence experiment
 	run inline_javascript always
 	run keyboard_response always
 	run welcome True
-	run form_text_input always
-	run inline_html always
+	run form_text_input "correct == 1"
+	run inline_html "[correct] = 1"
 
 define form_text_input form_text_input
 	set timeout infinite
@@ -100,6 +100,18 @@ define keyboard_response keyboard_response
 	set event_type keypress
 	set duration keypress
 	set description "Collects keyboard responses"
+	
+define repeat_cycle repeat_cycle
+	set description "Optionally repeat a cycle from a loop"
+	__condition__
+	[cursor_roi] = ''
+	__end__
+	
+define repeat_cycle repeat_cycle_2
+	set description "Optionally repeat a cycle from a loop"
+	__condition__
+	cursor_roi == ''
+	__end__
 
 define sketchpad welcome
 	set start_response_interval no
@@ -107,4 +119,3 @@ define sketchpad welcome
 	set duration keypress
 	set description sketchpad
 	draw textline center=1 color=white font_bold=no font_family=serif font_italic=no font_size=32 html=yes show_if=True text="{test_number * 10}" x=0 y=0 z_index=0
-
