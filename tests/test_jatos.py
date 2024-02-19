@@ -93,12 +93,16 @@ def test_convert():
 
 
 def test_upload_download():
+    def print_progress(transferred, total):
+        print(f'{transferred} / {total}')
+    
     if jatos_info.token is None:
         oslogger.warning('no API token provided, skipping test')
         return
     exp = convert.as_jatos_exp('test-data/gaze-cuing.osexp')
-    sync.upload(exp, jatos_info)
-    jzip_path = sync.download_jzip(exp.var.jatos_uuid, jatos_info)
+    sync.upload(exp, jatos_info, callback=print_progress)
+    jzip_path = sync.download_jzip(exp.var.jatos_uuid, jatos_info,
+                                   callback=print_progress)
     exp = convert.jzip_to_exp(jzip_path)
     path = convert.exp_to_html(exp, index_path='tmp.html')
 

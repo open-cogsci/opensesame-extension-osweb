@@ -17,6 +17,7 @@ from libopensesame.py3compat import *
 from collections import namedtuple
 from pathlib import Path
 import requests
+from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 import tempfile
 import os
 from libopensesame.oslogging import oslogger
@@ -29,7 +30,7 @@ from .oswebexceptions import JZIPDownloadError, JZIPUploadError, \
 JatosInfo = namedtuple('JatosInfo', ('url', 'token'))
 
 
-def download_jzip(uuid, jatos_info, jzip_path=None):
+def download_jzip(uuid, jatos_info, callback=None, jzip_path=None):
     """Downloads a JZIP file from a JATOS server and saves it to a specified 
     location.
 
@@ -44,6 +45,9 @@ def download_jzip(uuid, jatos_info, jzip_path=None):
     uuid : str
         The unique identifier of the study on the JATOS server.
     jatos_info : JatosInfo
+    callback : callable, optional
+        A function that takes a MultipartEncoderMonitor as a single argument.
+        This function can be used to monitor upload progress.    
     jzip_path : str, optional
         The path where the JZIP file will be saved. If not provided, the file 
         is saved to a temporary location.
@@ -64,29 +68,27 @@ def download_jzip(uuid, jatos_info, jzip_path=None):
         response = requests.get(
             f'{jatos_info.url}/jatos/api/v1/studies/{uuid}', headers=headers,
             stream=True)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        raise JZIPDownloadError(f'HTTP error occurred: {e}')
     except Exception as e:
         raise JZIPDownloadError(f'Failed to connect to JATOS server: \n\n{e}')
-    if response.status_code == 401:
-        raise JZIPDownloadError(
-            'Invalid API token: {jato_info.token} status code 401)')
-    if response.status_code == 404:
-        raise JZIPDownloadError(
-            f'Invalid server address: {jatos_info.url} (status code 404)')
-    if response.status_code != 200:
-        raise JZIPDownloadError(
-            f'Unknown upload error (status code {response.status_code})')
+
     if jzip_path is None:
-        temp = tempfile.NamedTemporaryFile(delete=False)
-        jzip_path = temp.name
-    jzip_path = Path(jzip_path)
+        jzip_path = Path(tempfile.NamedTemporaryFile(delete=False).name)
+    else:
+        jzip_path = Path(jzip_path)
     try:
         with jzip_path.open('wb') as f:
+            total_length = int(response.headers.get('content-length'))
+            downloaded = 0
             for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
+                downloaded += len(chunk)
+                f.write(chunk)
+                if callback is not None:
+                    callback(downloaded, total_length)
     except Exception as e:
         raise JZIPDownloadError(f'Failed to stream from JATOS server: \n\n{e}')
-    oslogger.debug(f'file downloaded at {jzip_path}')
     return jzip_path
 
 
@@ -124,7 +126,7 @@ def list_remote(jatos_info):
     return study_list
 
 
-def upload(exp, jatos_info, **jzip_kwargs):
+def upload(exp, jatos_info, callback=None, **jzip_kwargs):
     """Upload an experiment to a JATOS server.
 
     This function converts an experiment into a jzip file, logs the size of the
@@ -137,6 +139,9 @@ def upload(exp, jatos_info, **jzip_kwargs):
         If no UUID was specified in the experiment, the experiment object is 
         modified in place such that a jatos_uuid variabiable is added.
     jatos_info : JatosInfo
+    callback : callable, optional
+        A function that takes a MultipartEncoderMonitor as a single argument.
+        This function can be used to monitor upload progress.
     jzip_kwags : dict, optional
         Parameters that are passed onto convert.exp_to_jzip()
         
@@ -161,8 +166,6 @@ def upload(exp, jatos_info, **jzip_kwargs):
         raise JZIPUploadError(f'Failed to connect to server: \n\n{e}')
     oslogger.debug(
         f'jzip exported to {path} ({path.stat().st_size / 1024 ** 2:.2f} Mb)')
-    headers = {'accept': 'application/json',
-               'Authorization': f'Bearer {jatos_info.token}'}
     params = {
         'keepProperties': 'false', 
         'keepAssets': 'true', 
@@ -170,10 +173,24 @@ def upload(exp, jatos_info, **jzip_kwargs):
         'renameAssets': 'true'
     }
     with path.open('rb') as fd:
+        encoder = MultipartEncoder(
+            {'study': ('filename', fd, 'application/zip')})
+        # A callback function that calls the actual user-provided callback
+        # with the number of bytes read and the total number of bytes
+        def upload_callback(monitor):
+            if callback is not None:
+                callback(monitor.bytes_read, encoder.len)
+        monitor = MultipartEncoderMonitor(encoder, upload_callback)
+        headers = {'accept': 'application/json',
+                   'Authorization': f'Bearer {jatos_info.token}',
+                   'Content-Type': monitor.content_type}
         try:
             response = requests.post(f'{jatos_info.url}/jatos/api/v1/study',
                                      headers=headers,
-                                     files={'study': fd})
+                                     data=monitor)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            raise JZIPUploadError(f'HTTP error occurred: {e}')
         except Exception as e:
             raise JZIPUploadError(f'Failed to connect to server: \n\n{e}')
     path.unlink()

@@ -30,7 +30,9 @@ from osweb.oswebexceptions import PythonToJavaScriptError, \
     OSWebCompatibilityError, ListRemoteError, UnsupportedJZIP, \
     JZIPDownloadError
 from openexp import backend
-from qtpy.QtWidgets import QFileDialog, QMessageBox
+from qtpy.QtWidgets import QFileDialog, QMessageBox, QApplication, \
+    QProgressDialog
+from qtpy.QtCore import Qt
 _ = translation_context('oswebext', category='extension')
 
 
@@ -192,21 +194,38 @@ class Oswebext(BaseExtension):
     def _select_remote_experiment(self, remote_exp):
         from osweb import sync, convert
         self.main_window.set_busy(True)
+        self._progress_dialog = QProgressDialog(
+            _('Downloading …'), _('Hide'), 0, 100, self.main_window)
+        self._progress_dialog.setWindowModality(Qt.WindowModal)
+        self._progress_dialog.show()
+        self._progress_dialog.setWindowTitle(_('Please wait …'))
         try:
             jzip_path = sync.download_jzip(remote_exp['uuid'],
-                                           self._jatos_info())
+                                           self._jatos_info(),
+                                           callback=self._progress_callback)
         except JZIPDownloadError as e:
             self.report_exception(e)
         else:
             self._open_jzip(jzip_path)
         finally:
             self.main_window.set_busy(False)
+            
+    def _progress_callback(self, transferred, total):
+        progress_percentage = int((transferred / total) * 100)
+        self._progress_dialog.setValue(progress_percentage)
+        QApplication.processEvents()
     
     def event_osweb_publish_jatos(self):
         from osweb import sync, convert
         if not self._jatos_configured():
             return
         self.main_window.set_busy(True)
+        self.main_window.save_file()
+        self._progress_dialog = QProgressDialog(
+            _('Uploading …'), _('Hide'), 0, 100, self.main_window)
+        self._progress_dialog.setWindowModality(Qt.WindowModal)
+        self._progress_dialog.show()
+        self._progress_dialog.setWindowTitle(_('Please wait …'))
         try:
             sync.upload(
                 self.experiment,
@@ -217,7 +236,8 @@ class Oswebext(BaseExtension):
                 welcome_text=cfg.oswebext_welcome_text,
                 external_js=self._external_js(),
                 intro_click=cfg.oswebext_intro_click,
-                ignore_conflicts=cfg.oswebext_jatos_ignore_conflicts)
+                ignore_conflicts=cfg.oswebext_jatos_ignore_conflicts,
+                callback=self._progress_callback)
         except Exception as e:
             self.report_exception(e)
         else:
@@ -234,7 +254,6 @@ class Oswebext(BaseExtension):
                                     setting='oswebext_jatos_ignore_conflicts',
                                     value=False)
         self._refresh_control_panel()
-        self.main_window.save_file()
     
     def event_osweb_convert_results(self):
         from osweb import results
