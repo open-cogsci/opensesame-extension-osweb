@@ -823,7 +823,6 @@ class Canvas {
       sprite.x = Math.floor(x + sprite.width / 2);
       sprite.y = Math.floor(y + sprite.height / 2);
     }
-    console.log(sprite.x);
     this._container.addChild(sprite);
   }
 
@@ -4941,7 +4940,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.0";
+const VERSION_NUMBER = "2.1.2";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11144,30 +11143,26 @@ class Runner {
    * @param {String|Object} content - The content (div element) in which the experiment is projected.
    */
   _setupContent(content) {
-    // Check if the experiment container is defined.
-    if (typeof content !== 'undefined') {
-      // Get the div element from the DOM element tree
-      this._container = typeof content === 'string' ? document.getElementById(content) : content;
-
-      // Create and set the experiment canvas.
-      try {
-        this._renderer = Object(pixi_js__WEBPACK_IMPORTED_MODULE_0__["autoDetectRenderer"])(800, 600, {
-          antialias: true,
-          transparent: false,
-          resolution: 1
-        });
-      } catch (error) {
-        document.getElementById('webgl-unavailable').style.display = 'block';
-        return;
-      }
-      this._renderer.backgroundColor = 0xFFFFFF;
-
-      // Append the canvas to the container.
-      this._container.appendChild(this._renderer.view);
-    } else {
-      // Show error message.
+    if (typeof content === 'undefined') {
       this._debugger.addError('No content parameter specified.');
+      return;
     }
+    // Get the div element from the DOM element tree
+    this._container = typeof content === 'string' ? document.getElementById(content) : content;
+    // Create and set the experiment canvas.
+    try {
+      this._renderer = Object(pixi_js__WEBPACK_IMPORTED_MODULE_0__["autoDetectRenderer"])(800, 600, {
+        antialias: true,
+        transparent: false,
+        resolution: 1
+      });
+    } catch (error) {
+      document.getElementById('webgl-unavailable').style.display = 'block';
+      return;
+    }
+    this._renderer.backgroundColor = 0xFFFFFF;
+    // Append the canvas to the container.
+    this._container.appendChild(this._renderer.view);
   }
 
   /**
@@ -11175,57 +11170,55 @@ class Runner {
    * @param {Object} context - An JSON object containing information about the experiment.
    */
   async _setupContext(context) {
-    // Check if the script parameter is defined.
-    if (typeof context !== 'undefined') {
-      // Initialize the context parameters.
-      // Use ES6 destructuring to determine values and set default ones if
-      // required.
-      ({
-        confirm: this._confirm = null,
-        debug: this._debugger.enabled = false,
-        fullScreen: this._fullScreen = false,
-        fullBackgroundColor: this._fullBackgroundColor = false,
-        introClick: this._screen._click = true,
-        introScreen: this._screen._active = true,
-        mimetype: this._mimetype = null,
-        name: this._name = 'noname.exp',
-        onConsole: this._onConsole = null,
-        onFinished: this._onFinished = null,
-        onLog: this._onLog = null,
-        onError: this._onError = null,
-        prompt: this._prompt = null,
-        scaleMode: this._scaleMode = 'noScale',
-        source: this._source = null,
-        subject: this._subject = null,
-        target: this._target = null,
-        welcomeText: this._welcomeText = null
-      } = context);
-
-      // Set up the introscreen.
-      this._screen._setupIntroScreen();
-      this._screen._updateIntroScreen('Loading experiment.');
-
-      // Load the script file, using the source parameter.
-      try {
-        this._script = await this._transfer._readSource(this._source);
-      } catch (e) {
-        this._debugger.addError("Error reading osexp: ".concat(e));
-        this._exit();
-        return;
-      }
-
-      // Update the introscreen
-      this._screen._updateIntroScreen('Building experiment structure.');
-
-      // Continue the experiment build.
-      this._build();
-
-      // Initialize the parameters class and request user input.
-      this._parameters._initialize();
-    } else {
-      // Show error message.
+    if (typeof context === 'undefined') {
       this.debugger.addError('No context parameter specified.');
+      return;
     }
+    // Initialize the context parameters.
+    // Use ES6 destructuring to determine values and set default ones if
+    // required.
+    ({
+      confirm: this._confirm = null,
+      debug: this._debugger.enabled = false,
+      fullScreen: this._fullScreen = false,
+      fullBackgroundColor: this._fullBackgroundColor = false,
+      introClick: this._screen._click = true,
+      introScreen: this._screen._active = true,
+      mimetype: this._mimetype = null,
+      name: this._name = 'noname.exp',
+      onConsole: this._onConsole = null,
+      onFinished: this._onFinished = null,
+      onLog: this._onLog = null,
+      onError: this._onError = null,
+      prompt: this._prompt = null,
+      scaleMode: this._scaleMode = 'noScale',
+      source: this._source = null,
+      subject: this._subject = null,
+      target: this._target = null,
+      welcomeText: this._welcomeText = null
+    } = context);
+
+    // Set up the introscreen.
+    this._screen._setupIntroScreen();
+    this._screen._updateIntroScreen('Loading experiment.');
+
+    // Load the script file, using the source parameter.
+    try {
+      this._script = await this._transfer._readSource(this._source);
+    } catch (e) {
+      this._debugger.addError("Error reading osexp: ".concat(e));
+      this._exit();
+      return;
+    }
+
+    // Update the introscreen
+    this._screen._updateIntroScreen('Building experiment structure.');
+
+    // Continue the experiment build.
+    this._build();
+
+    // Initialize the parameters class and request user input.
+    this._parameters._initialize();
   }
 
   /** Build the experiment system. */
@@ -11422,7 +11415,11 @@ class Screen {
     // straight away
     if (this._click === false) {
       this._clearIntroScreen();
-      this._runner._initialize();
+      // Use a timeout callback to push the function to the end of the queue
+      // so that the error handler has time to be set up
+      setTimeout(() => {
+        this._runner._initialize();
+      }, 0);
       return;
     }
     // Otherwise we require the user to touch/ click the screen, in response
@@ -11442,7 +11439,11 @@ class Screen {
         this._runner._renderer.view.removeEventListener('click', preloadStimuli);
         this._runner._renderer.view.removeEventListener('touchstart', preloadStimuli);
         this._clearIntroScreen();
-        this._runner._initialize();
+        // Use a timeout callback to push the function to the end of the queue
+        // so that the error handler has time to be set up
+        setTimeout(() => {
+          this._runner._initialize();
+        }, 0);
       }.bind(this);
       // Once the audio context is running, this function silently and 
       // briefly plays all audio samples so that they can be played back
@@ -12359,4 +12360,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.92488aa609000e3644d2.bundle.js.map
+//# sourceMappingURL=osweb.c19b13d0f29b5cc76b12.bundle.js.map
