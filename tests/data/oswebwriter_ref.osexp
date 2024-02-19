@@ -41,7 +41,6 @@ define sequence experiment
 	set description "Runs a number of items in sequence"
 	run inline_javascript true
 	run keyboard_response true
-	run welcome true
 	run form_text_input "(correct === 1)"
 	run inline_html "(vars.correct === 1)"
 

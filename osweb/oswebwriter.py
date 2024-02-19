@@ -36,6 +36,8 @@ RE_IGNORE_RUN = re.compile('___run__.*?__end__\n', re.MULTILINE | re.DOTALL)
 RE_IGNORE_PREPARE = re.compile('___prepare__.*?__end__\n',
                                re.MULTILINE | re.DOTALL)
 RE_IGNORE_SCRIPT = re.compile('<script>.*?</script>', re.MULTILINE | re.DOTALL)
+RE_STRIP_DISABLED = re.compile(r'^\t(?P<cmd>run \w+ .* disabled)(\n|$)',
+                               re.MULTILINE)
 
 
 class OSWebWriter(OSExpWriter):
@@ -70,6 +72,13 @@ class OSWebWriter(OSExpWriter):
     @property
     def script(self):
         script = self._exp.to_string()
+        # We first remove all the disabled run statements. This way we don't
+        # have to implement support for this in OSWeb
+        while True:
+            m = RE_STRIP_DISABLED.search(script)
+            if m is None:
+                break
+            script = script[:m.start()] + script[m.end():]        
         for m in RE_RUN_IF.finditer(script):
             try:
                 _, (item, cond), _ = self.parse_cmd(m.group('cmd'))

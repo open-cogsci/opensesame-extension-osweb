@@ -41,7 +41,7 @@ define sequence experiment
 	set description "Runs a number of items in sequence"
 	run inline_javascript always
 	run keyboard_response always
-	run welcome True
+	run welcome True disabled
 	run form_text_input "correct == 1"
 	run inline_html "[correct] = 1"
 
