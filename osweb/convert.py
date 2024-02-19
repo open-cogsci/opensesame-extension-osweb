@@ -477,7 +477,7 @@ def _compose_html_and_get_assets(exp, index_path, mode, script=None,
             asset = dom.new_tag('img', src=src, id=id_)
         elif mime.startswith('text/'):
             asset = dom.new_tag('pre', id=id_)
-            asset.string = path.read_text()
+            asset.string = path.read_text(encoding='utf-8')
         elif mime.startswith('video/'):
             src = dom.new_tag('source', src=src)
             asset = dom.new_tag('video', id=id_)
