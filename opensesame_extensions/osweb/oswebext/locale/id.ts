@@ -3,79 +3,99 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="27" />
+        <location filename="../../../../translation_tools/translatables.py" line="28" />
         <source>Experiment started in external browser</source>
         <translation>Eksperimen dimulai di browser eksternal</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Save as…</source>
         <translation>Simpan sebagai...</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="25" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>OSWeb and JATOS control panel</source>
         <translation>Panel kontrol OSWeb dan JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Create online experiments</source>
         <translation>Buat eksperimen online</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Open from MindProbe</source>
         <translation>Buka dari MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="24" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Open from JATOS</source>
         <translation>Buka dari JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="29" />
         <source>Open</source>
         <translation>Buka</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="27" />
         <source>Experiment has been published to JATOS</source>
         <translation>Eksperimen telah dipublikasikan ke JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="30" />
         <source>Select OSWeb results file…</source>
         <translation>Pilih file hasil OSWeb…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="25" />
         <source>Browse</source>
         <translation>Jelajahi</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
         <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>Anda telah mengubah nama eksperimen. Apakah Anda juga ingin membatalkan tautan eksperimen dari JATOS (dengan mereset UUID) sehingga Anda dapat membuat eksperimen jarak jauh baru?</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Save and publish to JATOS</source>
         <translation>Simpan dan terbitkan ke JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="26" />
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
         <source>Unlink from JATOS</source>
         <translation>Putuskan tautan dari JATOS</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="18" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Save and publish to MindProbe</source>
         <translation>Simpan dan terbitkan ke MindProbe</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>Anda telah menyimpan eksperimen dengan nama file yang berbeda. Apakah Anda juga ingin memutuskan tautan eksperimen dari JATOS (dengan mereset UUID) sehingga Anda dapat membuat eksperimen remote baru?</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <source>Downloading …</source>
+        <translation>Mengunduh ...</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <source>Uploading …</source>
+        <translation>Mengunggah ...</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="26" />
+        <source>Hide</source>
+        <translation>Sembunyikan</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="31" />
+        <source>Please wait …</source>
+        <translation>Harap tunggu ...</translation>
     </message>
 </context>
 <context>
@@ -179,7 +199,7 @@
 <context>
     <name>plugin_inline_html</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="6" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>Embeds custom HTML</source>
         <translation>Terapkan HTML kustom</translation>
     </message>
@@ -194,7 +214,7 @@
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="6" />
         <source>HTML editor</source>
         <translation>Editor HTML</translation>
     </message>
@@ -202,12 +222,12 @@
 <context>
     <name>plugin_inline_javascript</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="9" />
+        <location filename="../../../../translation_tools/translatables.py" line="10" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="10" />
+        <location filename="../../../../translation_tools/translatables.py" line="9" />
         <source>Executes JavaScript code</source>
         <translation>Menjalankan kode JavaScript</translation>
     </message>

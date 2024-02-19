@@ -3,79 +3,99 @@
 <context>
     <name>extension_oswebext</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="27" />
+        <location filename="../../../../translation_tools/translatables.py" line="28" />
         <source>Experiment started in external browser</source>
         <translation>외부 브라우저에서 실험 시작됨</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="22" />
+        <location filename="../../../../translation_tools/translatables.py" line="18" />
         <source>Save as…</source>
         <translation>다른 이름으로 저장…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="25" />
+        <location filename="../../../../translation_tools/translatables.py" line="14" />
         <source>OSWeb and JATOS control panel</source>
         <translation>OSWeb와 JATOS 제어판</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="15" />
+        <location filename="../../../../translation_tools/translatables.py" line="17" />
         <source>Create online experiments</source>
         <translation>온라인 실험 만들기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="13" />
+        <location filename="../../../../translation_tools/translatables.py" line="20" />
         <source>Open from MindProbe</source>
         <translation>MindProbe에서 열기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="24" />
+        <location filename="../../../../translation_tools/translatables.py" line="13" />
         <source>Open from JATOS</source>
         <translation>JATOS에서 열기</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="17" />
+        <location filename="../../../../translation_tools/translatables.py" line="29" />
         <source>Open</source>
         <translation>열다</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <location filename="../../../../translation_tools/translatables.py" line="27" />
         <source>Experiment has been published to JATOS</source>
         <translation>실험은 JATOS에 게시되었습니다</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="14" />
+        <location filename="../../../../translation_tools/translatables.py" line="30" />
         <source>Select OSWeb results file…</source>
         <translation>OSWeb 결과 파일을 선택하세요…</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="20" />
+        <location filename="../../../../translation_tools/translatables.py" line="25" />
         <source>Browse</source>
         <translation>브라우즈</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <location filename="../../../../translation_tools/translatables.py" line="16" />
         <source>You have changed the name of the experiment. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>당신은 실험의 이름을 바꾸었습니다. JATOS와의 연결을 해제하여( UUID를 리셋하여) 새로운 원격 실험을 만들고 싶으십니까?</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="19" />
+        <location filename="../../../../translation_tools/translatables.py" line="15" />
         <source>Save and publish to JATOS</source>
         <translation>JATOS에 저장하고 게시</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="26" />
+        <location filename="../../../../translation_tools/translatables.py" line="19" />
         <source>Unlink from JATOS</source>
         <translation>JATOS에서 연결 해제</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="18" />
+        <location filename="../../../../translation_tools/translatables.py" line="22" />
         <source>Save and publish to MindProbe</source>
         <translation>MindProbe에 저장하고 게시</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="16" />
+        <location filename="../../../../translation_tools/translatables.py" line="24" />
         <source>You have saved the experiment under a different file name. Do you also want to unlink the experiment from JATOS (by resetting the UUID) so that you can create a new remote experiment?</source>
         <translation>다른 파일 이름으로 실험을 저장했습니다. 새로운 원격 실험을 생성할 수 있도록 JATOS에서 실험을 분리( UUID를 재설정)하고 싶으신가요?</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="21" />
+        <source>Downloading …</source>
+        <translation>다운로드 중 ...</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="23" />
+        <source>Uploading …</source>
+        <translation>업로드 중 ...</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="26" />
+        <source>Hide</source>
+        <translation>숨기다</translation>
+    </message>
+    <message>
+        <location filename="../../../../translation_tools/translatables.py" line="31" />
+        <source>Please wait …</source>
+        <translation>기다려 주세요 ...</translation>
     </message>
 </context>
 <context>
@@ -179,7 +199,7 @@
 <context>
     <name>plugin_inline_html</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="6" />
+        <location filename="../../../../translation_tools/translatables.py" line="4" />
         <source>Embeds custom HTML</source>
         <translation>사용자 정의 HTML 포함</translation>
     </message>
@@ -194,7 +214,7 @@
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="4" />
+        <location filename="../../../../translation_tools/translatables.py" line="6" />
         <source>HTML editor</source>
         <translation>HTML 편집기</translation>
     </message>
@@ -202,12 +222,12 @@
 <context>
     <name>plugin_inline_javascript</name>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="9" />
+        <location filename="../../../../translation_tools/translatables.py" line="10" />
         <source>OSWeb</source>
         <translation>OSWeb</translation>
     </message>
     <message>
-        <location filename="../../../../translation_tools/translatables.py" line="10" />
+        <location filename="../../../../translation_tools/translatables.py" line="9" />
         <source>Executes JavaScript code</source>
         <translation>JavaScript 코드를 실행합니다</translation>
     </message>
