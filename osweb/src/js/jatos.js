@@ -192,7 +192,7 @@ function onFinishedHandler(data, context) {
             transferModal.open('Errors occurred', 'Failed to transfer your data.', 'error')
             jatos.endStudy(false, 'Failed to transfer data.')
         }
-        transferModal.open('Transferring you data','Please wait a few moments.')
+        transferModal.open('Transferring your data', 'Please wait ...')
 
     }
     submit({data, context}, onSuccess, onFail)
