@@ -4858,8 +4858,14 @@ class Rect extends _base_element_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Textline; });
-/* harmony import */ var _base_element_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./base_element.js */ "./src/js/osweb/elements/base_element.js");
-/* harmony import */ var _backends_styles_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../backends/styles.js */ "./src/js/osweb/backends/styles.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _base_element_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./base_element.js */ "./src/js/osweb/elements/base_element.js");
+/* harmony import */ var _backends_styles_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../backends/styles.js */ "./src/js/osweb/backends/styles.js");
+/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! webfontloader */ "./node_modules/webfontloader/webfontloader.js");
+/* harmony import */ var webfontloader__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(webfontloader__WEBPACK_IMPORTED_MODULE_3__);
+
+
 
 
 
@@ -4867,7 +4873,7 @@ __webpack_require__.r(__webpack_exports__);
  * Class representing a textline element.
  * @extends BaseElement
  */
-class Textline extends _base_element_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+class Textline extends _base_element_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
   /**
      * Create an experiment item which controls the OpenSesame experiment.
      * @param {Object} sketchpad - The sketchpad item that owns the visual element.
@@ -4890,21 +4896,71 @@ class Textline extends _base_element_js__WEBPACK_IMPORTED_MODULE_0__["default"] 
     // Inherited.
     super(sketchpad, script, defaults);
   }
+  drawText(styles) {
+    this.sketchpad.canvas.text(this._properties.text, this._properties.center, this._properties.x, this._properties.y, this._properties.html, styles);
+    this._isDrawn = true;
+  }
 
   /** Implements the draw phase of an element. */
   draw() {
     // Inherited.
     super.draw();
-    const text = this._properties.text;
     // Create a styles object containing style information
-    const styles = new _backends_styles_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    const styles = new _backends_styles_js__WEBPACK_IMPORTED_MODULE_2__["default"]();
     styles.color = this._properties.color;
     styles.font_family = this._properties.font_family;
     styles.font_size = Number(this._properties.font_size);
     styles.font_italic = this._properties.font_italic === 'yes';
     styles.font_bold = this._properties.font_bold === 'yes';
     styles.font_underline = this._properties.font_underline === 'yes';
-    this.sketchpad.canvas.text(text, this._properties.center, this._properties.x, this._properties.y, this._properties.html, styles);
+    this._isDrawn = false;
+    // If the font family is not among the default fonts, we attempt to load it
+    // dynamically from Google Fonts. The resulting promise should always 
+    // resolve, regardless of whether this worked or not
+    if (Object.values(styles._DEFAULT_FONTS).indexOf(styles.font_family) < 0) {
+      const promise = new Promise((resolve, reject) => {
+        webfontloader__WEBPACK_IMPORTED_MODULE_3___default.a.load({
+          google: {
+            families: [styles.font_family]
+          },
+          // The active event is called when the font is succesfully loaded
+          active: () => {
+            console.log("font loaded: ".concat(styles.font_family));
+            this.drawText(styles);
+            resolve();
+          },
+          // The inactive event is called when the font couldn't be loaded
+          inactive: () => {
+            console.warn("failed to load font: ".concat(styles.font_family));
+            this.drawText(styles);
+            resolve();
+          }
+        });
+      });
+      // We create a separate timeout promise to make sure that the font 
+      // loader doesn't hang (because it tends to hand indefinitely). When
+      // a timeout occurs, we draw the text anyway. It's unclear why for
+      // some fonts the inactive event above isn't called, but this timeout
+      // deals with that.
+      const timeout = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (!this._isDrawn) {
+            console.warn("font loading timed out: ".concat(styles.font_family));
+            this.drawText(styles);
+          }
+          resolve();
+        }, 3000);
+      });
+      // The promise resolves when either the font loader resolves or the
+      // timeout, whichever happens first
+      return Promise.race([promise, timeout]);
+    }
+    // For the default fonts, we return a dummy promise that resolves right
+    // away
+    return new Promise(resolve => {
+      this.drawText(styles);
+      resolve();
+    });
   }
 }
 
@@ -4940,7 +4996,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.1.2";
+const VERSION_NUMBER = "2.2.0";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -5506,14 +5562,17 @@ class Experiment extends _item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Feedback; });
-/* harmony import */ var _sketchpad_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sketchpad.js */ "./src/js/osweb/items/sketchpad.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _sketchpad_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sketchpad.js */ "./src/js/osweb/items/sketchpad.js");
+
 
 
 /**
  * Class representing a feedback item.
  * @extends Sketchpad
  */
-class Feedback extends _sketchpad_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+class Feedback extends _sketchpad_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
   /**
    * Create a feedback which show feedback info to the subhect.
    * @param {Object} experiment - The experiment item to which the item belongs.
@@ -5555,9 +5614,21 @@ class Feedback extends _sketchpad_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   /** Implements the run phase of an item. */
   run() {
-    // Inherited.
-    super.prepare();
-    super.run();
+    this.canvas.clear();
+    // The draw functions may return a promise or undefined. We collect all
+    // promises that are returned, and wait for all them to resolve before we
+    // call the super.prepare function. This allows for draw operations that
+    // take some time, for example the textline draw function that may need to
+    // load a webfont.
+    const promises = this.elements.filter(element => element.is_shown() === true).map(element => {
+      return element.draw();
+    }).filter(promise => promise !== undefined);
+    Promise.all(promises).then(() => {
+      // super.prepare() itself uses a promise and this provides access to the
+      // grandparent prepare()
+      super.super_prepare();
+      super.run();
+    });
   }
 }
 
@@ -8175,17 +8246,28 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
     }
   }
 
-  /** Implements the prepare phase of an item. */
-  prepare() {
-    this.canvas.clear();
-    for (let i = 0; i < this.elements.length; i++) {
-      if (this.elements[i].is_shown() === true) {
-        this.elements[i].draw();
-      }
-    }
+  /** Allow derived classes to call the super.prepare() instead of the custom
+    * prepare below.
+    */
+  super_prepare() {
     super.prepare();
   }
 
+  /** Implements the prepare phase of an item. */
+  prepare() {
+    this.canvas.clear();
+    // The draw functions may return a promise or undefined. We collect all
+    // promises that are returned, and wait for all them to resolve before we
+    // call the super.prepare function. This allows for draw operations that
+    // take some time, for example the textline draw function that may need to
+    // load a webfont.
+    const promises = this.elements.filter(element => element.is_shown() === true).map(element => {
+      return element.draw();
+    }).filter(promise => promise !== undefined);
+    Promise.all(promises).then(() => {
+      super.prepare();
+    });
+  }
   /** Implements the run phase of the Sketschpad. */
   run() {
     super.run();
@@ -12360,4 +12442,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.c19b13d0f29b5cc76b12.bundle.js.map
+//# sourceMappingURL=osweb.e85bdae49e24b597933f.bundle.js.map
