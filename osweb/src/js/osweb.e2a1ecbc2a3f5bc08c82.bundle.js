@@ -4868,6 +4868,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const loadedFonts = [];
 
 /**
  * Class representing a textline element.
@@ -4917,7 +4918,8 @@ class Textline extends _base_element_js__WEBPACK_IMPORTED_MODULE_1__["default"] 
     // If the font family is not among the default fonts, we attempt to load it
     // dynamically from Google Fonts. The resulting promise should always 
     // resolve, regardless of whether this worked or not
-    if (Object.values(styles._DEFAULT_FONTS).indexOf(styles.font_family) < 0) {
+    if (!loadedFonts.includes(styles.font_family) && Object.values(styles._DEFAULT_FONTS).indexOf(styles.font_family) < 0) {
+      loadedFonts.push(styles.font_family);
       const promise = new Promise((resolve, reject) => {
         webfontloader__WEBPACK_IMPORTED_MODULE_3___default.a.load({
           google: {
@@ -4996,7 +4998,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.0";
+const VERSION_NUMBER = "2.2.1";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -12442,4 +12444,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.e85bdae49e24b597933f.bundle.js.map
+//# sourceMappingURL=osweb.e2a1ecbc2a3f5bc08c82.bundle.js.map
