@@ -4998,7 +4998,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.1";
+const VERSION_NUMBER = "2.2.2";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -6288,8 +6288,9 @@ class GenericResponse extends _item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
   process_response_mouseclick(retval) {
     this.experiment._start_response_interval = this.sri;
     this.experiment._end_response_interval = retval.rtTime;
-    this.experiment.vars.set('response', retval.resp);
-    this.synonyms = this._mouse._synonyms(this.experiment.vars.response);
+    const response = retval.resp;
+    this.experiment.vars.set('response', response);
+    this.synonyms = this._mouse._synonyms(response);
     this.set_mouse_coordinates(retval.event.clientX, retval.event.clientY);
     this.response_bookkeeping();
     this.cursor_roi_bookkeeping();
@@ -12444,4 +12445,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.e2a1ecbc2a3f5bc08c82.bundle.js.map
+//# sourceMappingURL=osweb.dc50907a0d8174f1777e.bundle.js.map
