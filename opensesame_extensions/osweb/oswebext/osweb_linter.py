@@ -151,6 +151,8 @@ def check_item_loop(item, fullscreen):
         )
     if item._constraints:
         w.append(item_warning(item, 'Constraints not supported'))
+    if item.experiment.items[item._item].item_type != 'sequence':
+        w.append(item_warning(item, 'Loops can only contain sequences'))
     return w
 
     
