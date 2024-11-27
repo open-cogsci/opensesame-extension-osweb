@@ -105,8 +105,8 @@ def test_upload_download():
                                    callback=print_progress)
     exp = convert.jzip_to_exp(jzip_path)
     path = convert.exp_to_html(exp, index_path='tmp.html')
-
-
+    
+    
 jatos_info = sync.JatosInfo(os.environ.get('JATOS_URL', None),
                             os.environ.get('JATOS_API_TOKEN', None))
 oslogger.start('osweb')

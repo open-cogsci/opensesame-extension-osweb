@@ -241,6 +241,7 @@ class Oswebext(BaseExtension):
         except Exception as e:
             self.report_exception(e)
         else:
+            self.main_window.save_file()            
             self.extension_manager.fire(
                 'notify',
                 message=_('Experiment has been published to JATOS'),
@@ -400,7 +401,6 @@ class Oswebext(BaseExtension):
         self._control_panel.set_jatos_configured(jatos_configured)
         
     def _external_js(self):
-        print('external js =', cfg.oswebext_external_js)
         return [url.strip() for url in cfg.oswebext_external_js.splitlines()]
 
     def _jatos_configured(self):
