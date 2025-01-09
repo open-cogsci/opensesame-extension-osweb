@@ -4305,7 +4305,7 @@ __webpack_require__.r(__webpack_exports__);
 /** Class representing a general visual element. */
 class BaseElement {
   /**
-   * Create a log object which stores all the response data.
+   * Create a sketchpad element.
    * @param {Object} sketchpad - The sketchpad item that owns the visual element.
    * @param {String} script - The script containing properties of the visual element.
    * @param {Object} defaults - The default property values of the visual element.
@@ -4354,7 +4354,7 @@ class BaseElement {
    * @memberof BaseElement
    */
   z_index() {
-    return this.properties.z_index;
+    return this.syntax.eval_text(this.properties.z_index, this.vars, false);
   }
 
   /**
@@ -4998,7 +4998,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.2";
+const VERSION_NUMBER = "2.2.3";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -8189,14 +8189,13 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
     * @return {Number} - The result of the comparison.
     */
   _compare(a, b) {
-    // Sort function used for determining the draw index (z-index) of alle elemente.
     if (a.z_index() < b.z_index()) {
       return 1;
-    } else if (a.z_index() > b.z_index()) {
-      return -1;
-    } else {
-      return 0;
     }
+    if (a.z_index() > b.z_index()) {
+      return -1;
+    }
+    return 0;
   }
 
   /** Resets all item variables to their default value. */
@@ -8233,8 +8232,6 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
         }
       }
     }
-    // Sort the elements usin the z-index.
-    this.elements.sort(this._compare);
   }
 
   /**
@@ -8255,22 +8252,27 @@ class Sketchpad extends _generic_response_js__WEBPACK_IMPORTED_MODULE_1__["defau
   super_prepare() {
     super.prepare();
   }
-
-  /** Implements the prepare phase of an item. */
   prepare() {
+    // Sort the elements based on the z-index
+    this.elements.sort(this._compare);
     this.canvas.clear();
-    // The draw functions may return a promise or undefined. We collect all
-    // promises that are returned, and wait for all them to resolve before we
-    // call the super.prepare function. This allows for draw operations that
-    // take some time, for example the textline draw function that may need to
-    // load a webfont.
-    const promises = this.elements.filter(element => element.is_shown() === true).map(element => {
-      return element.draw();
-    }).filter(promise => promise !== undefined);
-    Promise.all(promises).then(() => {
+    // Filter elements that are shown
+    const visibleElements = this.elements.filter(element => element.is_shown() === true);
+    // Chain promises for sequential execution. This ensures that each element
+    // is drawn before the next element to avoid race conditions. Otherwise,
+    // font loading may fail when multiple textline elements are shown.
+    const sequentialDraw = visibleElements.reduce((chain, element) => {
+      return chain.then(() => {
+        const drawPromise = element.draw();
+        return drawPromise !== undefined ? drawPromise : Promise.resolve();
+      });
+    }, Promise.resolve());
+    // After all elements are drawn, call super.prepare()
+    sequentialDraw.then(() => {
       super.prepare();
     });
   }
+
   /** Implements the run phase of the Sketschpad. */
   run() {
     super.run();
@@ -12445,4 +12447,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.dc50907a0d8174f1777e.bundle.js.map
+//# sourceMappingURL=osweb.2499ec92c675b87b5faf.bundle.js.map
