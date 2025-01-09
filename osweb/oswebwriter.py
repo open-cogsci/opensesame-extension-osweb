@@ -60,6 +60,21 @@ class OSWebWriter(OSExpWriter):
         if escape:
             js_cond = js_cond.replace('"', r'\"')
         return js_cond
+    
+    @classmethod
+    def static_transform(cls, cond, escape=False):
+        # JavaScript uses vars as opposed to var for the var_store object
+        py_cond = RE_VAR.sub('vars.', cond)
+        # The last two characters are ;\n, which are not valid in some
+        # contexts and we therefore strip them off
+        try:
+            js_cond = py2js(py_cond)[:-2]
+        except Exception as e:
+            raise PythonToJavaScriptError(
+                f'Failed to convert {cond} to JavaScript')
+        if escape:
+            js_cond = js_cond.replace('"', r'\"')
+        return js_cond
             
     @property
     def create_cmd(self):
@@ -139,4 +154,22 @@ class OSWebWriter(OSExpWriter):
                 break
             else:
                 break
+        return script
+
+    @classmethod
+    def static_convert_fstring(cls, script):
+        replacements = []
+        for m in RE_FSTRING.finditer(script):
+            start, end = m.span()
+            template_literal = f'${{{cls.static_transform(m.group("expr"), escape=True)}}}'
+            replacements.append((start, end, template_literal))
+            print(f'Converting f-string {m.group()} to template literal {template_literal}')
+    
+        # Sort replacements in reverse order of their start positions
+        replacements.sort(key=lambda x: x[0], reverse=True)
+    
+        # Apply replacements from end to start
+        for start, end, replacement in replacements:
+            script = script[:start] + replacement + script[end:]
+    
         return script
