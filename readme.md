@@ -1,6 +1,6 @@
 # OSWeb extension for OpenSesame
 
-Copyright 2018 - 2024 Sebastiaan Mathôt (@smathot)
+Copyright 2018 - 2025 Sebastiaan Mathôt (@smathot)
 
 
 ## About
