@@ -226,7 +226,6 @@ class Canvas {
     this._width = this.experiment._runner._renderer.width; // Width of the HTML canvas used for drawing.
     this._name_counter = 0; // Used to generate unique names
     this.current_roi = null;
-    this._textures = [];
   }
 
   /**
@@ -560,15 +559,12 @@ class Canvas {
    * @param {Object} style_args - JSON object containing style arguments (optional).
    */
   clear(backgroundColor, styleArgs) {
-    // Clear the stage by temoving al the child elements.
-    for (var i = this._container.children.length - 1; i >= 0; i--) {
-      this._container.removeChild(this._container.children[i]);
-    }
-    let texture;
-    while (this._textures.length > 0) {
-      texture = this._textures.pop();
-      texture.destroy(true);
-    }
+    this._container.destroy({
+      children: true,
+      texture: true,
+      baseTexture: true
+    });
+    this._container = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]();
   }
 
   /**
@@ -756,7 +752,6 @@ class Canvas {
 
     // Retrieve the image from the recourses
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
-    this._textures.push(texture);
     var sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
     sprite.roi = this.current_roi;
 
@@ -805,7 +800,6 @@ class Canvas {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
-    this._textures.push(texture);
     const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
     sprite.roi = this.current_roi;
     sprite.anchor.set(0.5); // Set the anchor point to the center of the sprite.
@@ -957,7 +951,6 @@ class Canvas {
 
     // Retrieve the image from the recourses
     const texture = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Texture"].from(canvas);
-    this._textures.push(texture);
     var sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"](texture);
     sprite.roi = this.current_roi;
     // Position the image.
@@ -1169,7 +1162,6 @@ class Canvas {
       };
       var textElement = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Text"](txt, textStyle);
       textElement.roi = this.current_roi;
-      this._textures.push(textElement);
       if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
         textElement.x = Math.floor(x - textElement.width / 2);
         textElement.y = Math.floor(y - textElement.height / 2);
@@ -4998,7 +4990,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.3";
+const VERSION_NUMBER = "2.2.4";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -12447,4 +12439,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.2499ec92c675b87b5faf.bundle.js.map
+//# sourceMappingURL=osweb.56d6cc6e152676bfc61c.bundle.js.map
