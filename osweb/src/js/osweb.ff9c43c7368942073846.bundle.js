@@ -321,18 +321,19 @@ class Canvas {
   _getTextBaseline(textLine, fontFamily, fontSize, fontBold) {
     // Create the text element.
     const text = document.createElement('span');
+    text.style.whiteSpace = 'nowrap';
     text.style.fontFamily = fontFamily || 'Arial';
     text.style.fontWeight = fontBold === true ? 'bold' : 'normal';
     text.style.fontSize = String(fontSize) + 'px';
     text.innerHTML = textLine;
     // Create the calculation div.
     const block = document.createElement('div');
+    block.style.whiteSpace = 'nowrap';
     block.style.display = 'inline-block';
     block.style.lineHeight = 'normal';
-    // block.style.width = '1px'
-    // block.style.height = '0px'
     // Create the container div.
     const div = document.createElement('div');
+    div.style.whiteSpace = 'nowrap';
     div.append(text, block);
     document.body.appendChild(div);
 
@@ -359,8 +360,7 @@ class Canvas {
     result.height = Math.round(top1 - top2);
     result.descent = result.height - result.ascent;
     document.body.removeChild(div);
-
-    // Return the result.
+    // Return the result
     return result;
   }
 
@@ -473,7 +473,6 @@ class Canvas {
 
         // Get the height and descent (for vertical positioning);
         var dimension = this._getTextBaseline(htmlNode.textContent, elementStyle.font_family, elementStyle.font_size, elementStyle.font_bold);
-
         // Position the text element and update the width.
         textElement.x = textBlock.x_pos;
         textElement.y = textBlock.y_pos;
@@ -1109,6 +1108,7 @@ class Canvas {
       // First create a div container for parsing the html text.
       const div = document.createElement('div');
       document.body.appendChild(div);
+      div.style.whiteSpace = 'nowrap';
       div.style.fontFamily = elementStyle.font_family;
       div.style.fontSize = String(elementStyle.font_size) + 'px';
       div.style.fontWeight = elementStyle.font_bold === true ? 'bold' : 'normal';
@@ -4996,7 +4996,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.5";
+const VERSION_NUMBER = "2.2.6";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -12445,4 +12445,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.4f0380386e30c4ed8c62.bundle.js.map
+//# sourceMappingURL=osweb.ff9c43c7368942073846.bundle.js.map
