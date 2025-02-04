@@ -4996,7 +4996,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.6";
+const VERSION_NUMBER = "2.2.7";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -11872,64 +11872,14 @@ class Transfer {
       return;
     }
     console.log("file pool embedded in HTML (".concat(filePool.children.length, " files)"));
-    const audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_6__["getAudioContext"])();
-    let audioPromises = [];
+    // First we process the images, videos, and text, which do not require
+    // promises
     for (const asset of filePool.children) {
       if (asset instanceof HTMLImageElement) {
         this._runner._pool.add({
           data: asset,
           type: 'image'
         }, asset.id);
-      } else if (asset instanceof HTMLAudioElement || asset instanceof HTMLSpanElement && asset.className === 'audioFile') {
-        // Audio can be embedded either as the text content of a `<span>`
-        // element or the source of an `<audio><source></src>` element.
-        // By default, spans are used because too many audio elements 
-        // breaks on iOS. In all cases, audio is read into a buffer for
-        // later playback through the WebAudio API.
-        let audioSrc = asset instanceof HTMLAudioElement ? asset.querySelector('source').src : asset.textContent;
-        let promise = new Promise((resolve, reject) => {
-          if (audioSrc.startsWith('data:')) {
-            // Handle Base64 encoded data
-            const base64String = audioSrc.split(',')[1];
-            const audioData = atob(base64String);
-            const audioArray = new Uint8Array(audioData.length);
-            for (let i = 0; i < audioData.length; i++) {
-              audioArray[i] = audioData.charCodeAt(i);
-            }
-            const audioBuffer = new ArrayBuffer(audioArray.length);
-            const bufferView = new Uint8Array(audioBuffer);
-            bufferView.set(audioArray);
-            audioContext.decodeAudioData(audioBuffer, function (buffer) {
-              this._runner._pool.add({
-                data: buffer,
-                type: 'audioBuffer'
-              }, asset.id);
-              resolve();
-            }.bind(this), function (error) {
-              console.error('Error decoding audio:', error);
-              reject(error);
-            });
-          } else {
-            // Handle audio file from a URI
-            let request = new XMLHttpRequest();
-            request.open('GET', audioSrc, true);
-            request.responseType = 'arraybuffer';
-            request.onload = function () {
-              audioContext.decodeAudioData(request.response, function (buffer) {
-                this._runner._pool.add({
-                  data: buffer,
-                  type: 'audioBuffer'
-                }, asset.id);
-                resolve();
-              }.bind(this), function (error) {
-                console.error('Error decoding audio:', error);
-                reject(error);
-              });
-            }.bind(this);
-            request.send();
-          }
-        });
-        audioPromises.push(promise);
       } else if (asset instanceof HTMLVideoElement) {
         this._runner._pool.add({
           data: asset,
@@ -11945,8 +11895,112 @@ class Transfer {
         continue;
       }
     }
-    await Promise.all(audioPromises);
-    console.log("all audio files have been loaded and decoded");
+
+    // Example snippet with retry logic (fixed 'this' context)
+    const BATCH_SIZE = 10;
+    const audioContext = Object(_audio_context__WEBPACK_IMPORTED_MODULE_6__["getAudioContext"])();
+
+    // Helper function that retries an audio fetch on network errors
+    function loadAudioDataWithRetry(audioContext, audioSrc, assetId) {
+      let attempt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+      let maxAttempts = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 3;
+      let delay = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 5000;
+      // Capture "this"
+      const self = this;
+      return new Promise((resolve, reject) => {
+        // Handle Base64 encoded data
+        if (audioSrc.startsWith('data:')) {
+          try {
+            const base64String = audioSrc.split(',')[1];
+            const audioData = atob(base64String);
+            const audioArray = new Uint8Array(audioData.length);
+            for (let i = 0; i < audioData.length; i++) {
+              audioArray[i] = audioData.charCodeAt(i);
+            }
+            const audioBuffer = new ArrayBuffer(audioArray.length);
+            const bufferView = new Uint8Array(audioBuffer);
+            bufferView.set(audioArray);
+            audioContext.decodeAudioData(audioBuffer, function (buffer) {
+              self._runner._pool.add({
+                data: buffer,
+                type: 'audioBuffer'
+              }, assetId);
+              resolve();
+            }, function (error) {
+              console.error('Error decoding audio:', error);
+              reject(error);
+            });
+          } catch (error) {
+            console.error('Error processing Base64 audio:', error);
+            reject(error);
+          }
+        } else {
+          // Standard URI request
+          const request = new XMLHttpRequest();
+          request.open('GET', audioSrc, true);
+          request.responseType = 'arraybuffer';
+          request.onload = function () {
+            // Check for HTTP success (200-299)
+            if (request.status >= 200 && request.status < 300) {
+              audioContext.decodeAudioData(request.response, function (buffer) {
+                self._runner._pool.add({
+                  data: buffer,
+                  type: 'audioBuffer'
+                }, assetId);
+                resolve();
+              }, function (decodeError) {
+                console.error('Error decoding audio:', decodeError);
+                reject(decodeError);
+              });
+            } else {
+              if (attempt < maxAttempts) {
+                console.warn("Audio request failed for ".concat(audioSrc, " (status: ").concat(request.status, "). Retrying in ").concat(delay, "ms..."));
+                setTimeout(() => {
+                  loadAudioDataWithRetry.call(self, audioContext, audioSrc, assetId, attempt + 1, maxAttempts, delay).then(resolve).catch(reject);
+                }, delay);
+              } else {
+                reject(new Error("Max retries reached. Request for ".concat(audioSrc, " failed with status: ").concat(request.status, ".")));
+              }
+            }
+          };
+          request.onerror = function () {
+            if (attempt < maxAttempts) {
+              console.warn("Network error on audio request for ".concat(audioSrc, ". Retrying in ").concat(delay, "ms..."));
+              setTimeout(() => {
+                loadAudioDataWithRetry.call(self, audioContext, audioSrc, assetId, attempt + 1, maxAttempts, delay).then(resolve).catch(reject);
+              }, delay);
+            } else {
+              reject(new Error("Max retries reached. Network error fetching ".concat(audioSrc, ".")));
+            }
+          };
+          request.send();
+        }
+      });
+    }
+
+    // Filter children to include only HTMLAudioElements or <span class="audioFile">
+    const filteredChildren = [...filePool.children].filter(asset => asset instanceof HTMLAudioElement || asset instanceof HTMLSpanElement && asset.className === 'audioFile');
+    for (let i = 0; i < filteredChildren.length; i += BATCH_SIZE) {
+      // Take a slice of the array
+      const batch = filteredChildren.slice(i, i + BATCH_SIZE);
+      console.log("Fetching audio files ".concat(i, " - ").concat(i + BATCH_SIZE));
+      // Build promises for just the current batch
+      const batchPromises = batch.map(asset => {
+        let audioSrc;
+        if (asset instanceof HTMLAudioElement) {
+          audioSrc = asset.querySelector('source').src;
+        } else {
+          // Assumes textContent points to the file for <span class="audioFile">
+          audioSrc = asset.textContent;
+        }
+        // Use the retry function
+        return loadAudioDataWithRetry.call(this, audioContext, audioSrc, asset.id);
+      });
+
+      // Await them all before moving on to the next batch
+      await Promise.all(batchPromises);
+    }
+    console.log("All audio files have been loaded and decoded");
   }
 
   /**
@@ -12445,4 +12499,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.ff9c43c7368942073846.bundle.js.map
+//# sourceMappingURL=osweb.00fd6565f59c524e7d96.bundle.js.map
