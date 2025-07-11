@@ -14,7 +14,7 @@ homepage = "https://osdoc.cogsci.nl"
 repository = "https://github.com/open-cogsci/opensesame-extension-osweb/"
 
 [tool.poetry.dependencies]
-opensesame-core = ">=4.1.0"
+opensesame-core = ">=4.1.0a0"
 beautifulsoup4 = "*"
 esprima = "*"
 requests-toolbelt = "*"
