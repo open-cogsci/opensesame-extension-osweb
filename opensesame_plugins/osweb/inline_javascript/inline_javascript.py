@@ -17,11 +17,12 @@ class InlineJavascript(InlineScript):
 
 class QtInlineJavascript(QtInlineScript):
 
+    description = _('Executes JavaScript')
     language = 'javascript'
     
     def __init__(self, name, experiment, string=None):
         self._var_cache = None
-        InlineScript.__init__(self, name, experiment, string)
+        InlineJavascript.__init__(self, name, experiment, string)
         QtPlugin.__init__(self, plugin_file=__file__)    
 
     def item_icon(self):
