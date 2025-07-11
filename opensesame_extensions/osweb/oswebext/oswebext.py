@@ -33,6 +33,7 @@ from openexp import backend
 from qtpy.QtWidgets import QFileDialog, QMessageBox, QApplication, \
     QProgressDialog
 from qtpy.QtCore import Qt
+from pyqt_code_editor.widgets import QuickOpenDialog
 _ = translation_context('oswebext', category='extension')
 
 
@@ -52,6 +53,14 @@ def decorate_backend_info(fnc):
                                  'settings': False}
         return backend_info
     return inner
+    
+    
+class OpenJATOSDialog(QuickOpenDialog):
+    def __init__(self, parent, items):
+        super().__init__(parent, items, title=_("Open experiment"))
+
+    def on_item_selected(self, item_dict: dict):
+        item_dict['fnc'](item_dict['remote_exp'])
 
 
 class Oswebext(BaseExtension):
@@ -156,7 +165,6 @@ class Oswebext(BaseExtension):
         self._refresh_control_panel()
         
     def event_osweb_import_jzip(self):
-        from osweb import convert
         path = QFileDialog.getOpenFileName(
             self.main_window, _('Open'),
             directory=os.path.dirname(cfg.file_dialog_path),
@@ -183,16 +191,15 @@ class Oswebext(BaseExtension):
             self.main_window.set_busy(False)
         haystack = []
         for remote_exp in remote_exp_list:
-            haystack.append(
-                (remote_exp['title'], remote_exp,
-                 self._select_remote_experiment))
-        self.extension_manager.fire(
-            'quick_select',
-            haystack=haystack,
-            placeholder_text=_('Browse') + f' {cfg.oswebext_jatos_url} …')
+            haystack.append({
+                'name' : remote_exp['title'],
+                'remote_exp': remote_exp,
+                'fnc': self._select_remote_experiment
+            })
+        OpenJATOSDialog(self.main_window, haystack).exec()
         
     def _select_remote_experiment(self, remote_exp):
-        from osweb import sync, convert
+        from osweb import sync
         self.main_window.set_busy(True)
         self._progress_dialog = QProgressDialog(
             _('Downloading …'), _('Hide'), 0, 100, self.main_window)
@@ -216,7 +223,7 @@ class Oswebext(BaseExtension):
         QApplication.processEvents()
     
     def event_osweb_publish_jatos(self):
-        from osweb import sync, convert
+        from osweb import sync
         if not self._jatos_configured():
             return
         self.main_window.set_busy(True)
