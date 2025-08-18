@@ -14,16 +14,9 @@ This OpenSesame extension allows you to run OpenSesame experiments in a browser 
 
 ## Installation
 
-PyPi:
 
 ```
 pip install opensesame-extension-osweb
-```
-
-Anaconda:
-
-```
-conda install opensesame-extension-osweb -c cogsci
 ```
 
 
