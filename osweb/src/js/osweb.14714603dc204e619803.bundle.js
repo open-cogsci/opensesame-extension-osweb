@@ -4996,7 +4996,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const VERSION_NAME = "osweb";
-const VERSION_NUMBER = "2.2.8";
+const VERSION_NUMBER = "2.2.9";
 
 // Add _pySlide function to string prototype (HACK for the filbert interpreter).
 String.prototype._pySlice = function (start, end, step) {
@@ -6214,7 +6214,6 @@ class GenericResponse extends _item_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
   /** Prepare the system for a timeout. */
   prepare_timeout() {
-    debugger;
     let timeout = this.syntax.convert_if_numeric(this.vars.get('timeout', true, -1));
     this._timeout = typeof timeout === 'number' && timeout !== -1 ? timeout : null;
   }
@@ -12500,4 +12499,4 @@ module.exports = __webpack_require__(/*! /home/sebastiaan/git/osweb/src/app.js *
 /***/ })
 
 /******/ });
-//# sourceMappingURL=osweb.b92ba536fabe3b8a3891.bundle.js.map
+//# sourceMappingURL=osweb.14714603dc204e619803.bundle.js.map
